@@ -33,7 +33,7 @@ class nbCumuleRea
 
         $this->dbh = dbSingleton::getInstance();
 
-        $this->chartName = 'quotidienEntreesHp';
+        $this->chartName = 'nbCumuleRea';
 
         $this->title    = 'Nb cumulé de patients en soins critiques Covid19 | Taux de positivité covid-19';
         $this->regTitle();

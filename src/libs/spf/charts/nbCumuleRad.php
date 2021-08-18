@@ -33,7 +33,7 @@ class nbCumuleRad
 
         $this->dbh = dbSingleton::getInstance();
 
-        $this->chartName = 'quotidienEntreesHp';
+        $this->chartName = 'nbCumuleRad';
 
         $this->title    = 'Nb cumulé des retours à domicile Covid19 | Taux de positivité covid-19';
         $this->regTitle();

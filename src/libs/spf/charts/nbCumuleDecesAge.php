@@ -32,7 +32,7 @@ class nbCumuleDecesAge
 
         $this->dbh = dbSingleton::getInstance();
 
-        $this->chartName = 'quotidienEntreesHp';
+        $this->chartName = 'nbCumuleDecesAge';
 
         $this->title    = 'Nb cumulé de décès par ages Covid19 | Taux de positivité covid-19';
         $this->regTitle();

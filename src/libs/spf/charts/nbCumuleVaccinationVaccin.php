@@ -37,7 +37,7 @@ class nbCumuleVaccinationVaccin
 
         $this->dbh = dbSingleton::getInstance();
 
-        $this->chartName = 'quotidienVaccinationAge';
+        $this->chartName = 'nbCumuleVaccinationVaccin';
 
         $this->title    = 'Nb cumulé de vaccinés covid-19 par vaccin';
         $this->regTitle();
@@ -155,7 +155,7 @@ class nbCumuleVaccinationVaccin
 
             yAxis: [{ // Primary yAxis
                 title: {
-                    text: 'Nombre quotidien de vaccinés',
+                    text: 'Nombre cumulé de vaccinés',
                     style: {
                         color: '#c70000',
                         fontSize: 14
