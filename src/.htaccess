@@ -1,0 +1,9 @@
+<files composer.json>
+    Order allow,deny
+    Deny from all
+</files>
+
+<files composer.lock>
+    Order allow,deny
+    Deny from all
+</files>
