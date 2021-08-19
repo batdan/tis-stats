@@ -3,7 +3,7 @@ namespace spf\charts;
 
 use tools\dbSingleton;
 
-class nbCumuleRea
+class nbOccupationRea
 {
     private $cache;
     private $dbh;
@@ -33,14 +33,14 @@ class nbCumuleRea
 
         $this->dbh = dbSingleton::getInstance();
 
-        $this->chartName = 'nbCumuleRea';
+        $this->chartName = 'nbOccupationRea';
 
-        $this->title    = 'Nb cumulé de patients en soins critiques Covid19 | Taux de positivité covid-19';
+        $this->title    = 'Nb patients en soins critiques actuel Covid19 | Taux de positivité covid-19';
         $this->regTitle();
 
         $this->subTitle = 'Source: Santé Publique France (quotidien, lissé sur 7 jours)';
 
-        $this->yAxis1Label = 'Nb cumulé de patients en soins critiques covid-19';
+        $this->yAxis1Label = 'Nb patients en soins critiques actuel covid-19';
 
         $this->getData();
         $this->highChartsJs();

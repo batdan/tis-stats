@@ -42,8 +42,6 @@ class nbCumuleRad
 
         $this->yAxis1Label = 'Retours à domicile covid-19';
         $this->yAxis2Label = 'Décès covid-19';
-        $this->yAxis3Label = 'Hospitalisations covid-19';
-        $this->yAxis4Label = 'Soins critiques covid-19';
 
         $this->getData();
         $this->highChartsJs();
@@ -90,8 +88,6 @@ class nbCumuleRad
         $req = "SELECT      jour,
                             SUM(rad)  AS sum_rad,
                             SUM(dc)   AS sum_dc,
-                            SUM(hosp) AS sum_hosp,
-                            SUM(rea)  AS sum_rea
 
                 FROM        donnees_hp_cumule_age_covid19_reg_calc_lisse7j
 
@@ -106,8 +102,6 @@ class nbCumuleRad
         while ($res = $sql->fetch()) {
             $this->data[$res->jour]['sum_rad']  = (!isset($res->sum_rad))  ? null : $res->sum_rad;
             $this->data[$res->jour]['sum_dc']   = (!isset($res->sum_dc))   ? null : $res->sum_dc;
-            $this->data[$res->jour]['sum_hosp'] = (!isset($res->sum_hosp)) ? null : $res->sum_hosp;
-            $this->data[$res->jour]['sum_rea']  = (!isset($res->sum_rea))  ? null : $res->sum_rea;
         }
 
         // createCache
@@ -122,20 +116,17 @@ class nbCumuleRad
     {
         $jours = [];
         $rad   = [];
+        $dc    = [];
 
         foreach($this->data as $jour => $res) {
             $jours[] = "'".$jour."'";
             $rad[]  = round($res['sum_rad'],  2);
             $dc[]   = round($res['sum_dc'],   2);
-            $hosp[] = round($res['sum_hosp'], 2);
-            $rea[]  = round($res['sum_rea'],  2);
         }
 
         $jours  = implode(', ', $jours);
         $rad    = implode(', ', $rad);
         $dc     = implode(', ', $dc);
-        $hosp   = implode(', ', $hosp);
-        $rea    = implode(', ', $rea);
 
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {
@@ -201,16 +192,6 @@ class nbCumuleRad
                 color: '#ff891a',
                 // yAxis: 0,
                 data: [$dc]
-            }, {
-                name: '{$this->yAxis3Label}',
-                color: '#b00000',
-                // yAxis: 0,
-                data: [$hosp]
-            }, {
-                name: '{$this->yAxis4Label}',
-                // color: '#c70000',
-                // yAxis: 0,
-                data: [$rea]
             }],
 
             responsive: {
