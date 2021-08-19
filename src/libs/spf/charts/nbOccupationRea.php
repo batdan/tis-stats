@@ -35,12 +35,12 @@ class nbOccupationRea
 
         $this->chartName = 'nbOccupationRea';
 
-        $this->title    = 'Nb patients en soins critiques actuel Covid19 | Taux de positivité covid-19';
+        $this->title    = 'Nb actuel de patients covid-19 en soins critiques | Taux de positivité covid-19';
         $this->regTitle();
 
         $this->subTitle = 'Source: Santé Publique France (quotidien, lissé sur 7 jours)';
 
-        $this->yAxis1Label = 'Nb patients en soins critiques actuel covid-19';
+        $this->yAxis1Label = 'Nb actuel de patients covid-19 en soins critiques';
 
         $this->getData();
         $this->highChartsJs();

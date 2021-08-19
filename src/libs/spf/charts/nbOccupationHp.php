@@ -35,12 +35,12 @@ class nbOccupationHp
 
         $this->chartName = 'nbOccupationHp';
 
-        $this->title    = 'Nb d`hospitalisations actuel Covid19 | Taux de positivité covid-19';
+        $this->title    = 'Nb actuel d`hospitalisations covid-19 | Taux de positivité covid-19';
         $this->regTitle();
 
         $this->subTitle = 'Source: Santé Publique France (quotidien, lissé sur 7 jours)';
 
-        $this->yAxis1Label = 'Nb d`hospitalisations actuel covid-19';
+        $this->yAxis1Label = 'Nb actuel d`hospitalisations covid-19';
 
         $this->getData();
         $this->highChartsJs();

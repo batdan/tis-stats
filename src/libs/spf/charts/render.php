@@ -119,40 +119,62 @@ eof;
 
     private static function chartSelect()
     {
-        $filterRegion  = '<div class="form-group col-lg-3">';
-        $filterRegion .= '<label class="form-label" for="filter-chart">Sélection du graphique</label>';
-        $filterRegion .= '<select id="filter-chart" class="form-select">';
+        $filterChart  = '<div class="form-group col-lg-3">';
+        $filterChart .= '<label class="form-label" for="filter-chart">Sélection du graphique</label>';
+        $filterChart .= '<select id="filter-chart" class="form-select">';
 
         $chartCollections = [
+            'item-1'                                    => 'Tests PCR',
             'spf\charts\positivite'                     => 'C19 | PCR : Taux de positivité',
+            'closeItem-1'                               => '',
+
+            'item-2'                                    => 'Chiffres quotidiens',
             'spf\charts\quotidienEntreesHp'             => 'C19 | Quotidien : hospitalisations',
             'spf\charts\quotidienEntreesRea'            => 'C19 | Quotidien : soins critiques',
             'spf\charts\quotidienDeces'                 => 'C19 | Quotidien : décès',
             'spf\charts\quotidienRad'                   => 'C19 | Quotidien : retours à domicile',
-            'spf\charts\quotidienVaccinationAge'        => 'C19 | Quotidien : Vaccinations par âge',
-            'spf\charts\quotidienVaccinationVaccin'     => 'C19 | Quotidien : Vaccinations par vaccin',
-            'spf\charts\nbOccupationHp'                     => 'C19 | Occupation : hospitalisations',
-            'spf\charts\nbOccupationRea'                    => 'C19 | Occupation : soins critiques',
+            'closeItem-2'                               => '',
+
+            'item-3'                                    => 'Taux d\'occupation des hôpitaux',
+            'spf\charts\nbOccupationHp'                 => 'C19 | Occupation : hospitalisations',
+            'spf\charts\nbOccupationRea'                => 'C19 | Occupation : soins critiques',
+            'closeItem-3'                               => '',
+
+            'item-4'                                    => 'Chiffres cumulés',
             'spf\charts\nbCumuleDeces'                  => 'C19 | Cumulé : décès',
             'spf\charts\nbCumuleDecesAge'               => 'C19 | Cumulé : décès par âge',
             'spf\charts\nbCumuleRad'                    => 'C19 | Cumulé : retours à domicile',
-            'spf\charts\nbCumuleVaccinationAge'         => 'C19 | Cumulé : Vaccinations par âge',
-            'spf\charts\nbCumuleVaccinationVaccin'      => 'C19 | Cumulé : Vaccinations par vaccin',
+            'closeItem-4'                               => '',
+
+            'item-5'                                    => 'Chiffres sur la vaccinations',
+            'spf\charts\quotidienVaccinationAge'        => 'C19 | Quotidien : vaccinations par âge',
+            'spf\charts\quotidienVaccinationVaccin'     => 'C19 | Quotidien : vaccinations par vaccin',
+            'spf\charts\nbCumuleVaccinationAge'         => 'C19 | Cumulé : vaccinations par âge',
+            'spf\charts\nbCumuleVaccinationVaccin'      => 'C19 | Cumulé : vaccinations par vaccin',
+            'closeItem-5'                               => '',
         ];
 
-        foreach ($chartCollections as $chart => $text) {
-            $selected = '';
-            if ($_SESSION['filterChart'] == $chart) {
-                $selected = ' selected="selected"';
-            }
+        foreach ($chartCollections as $key => $text) {
 
-            $filterRegion .= '<option value="' . $chart . '"' . $selected  . '>' . $text . '</option>';
+            if (strstr($key, 'item')) {
+                $filterChart .= '<optgroup label="' . $text . '">';
+            } elseif (strstr($key, 'closeItem')) {
+                $filterChart .= '</optgroup>';
+            } else {
+
+                $selected = '';
+                if ($_SESSION['filterChart'] == $key) {
+                    $selected = ' selected="selected"';
+                }
+
+                $filterChart .= '<option value="' . $key . '"' . $selected  . '>' . $text . '</option>';
+            }
         }
 
-        $filterRegion .= '</select>';
-        $filterRegion .= '</div>';
+        $filterChart .= '</select>';
+        $filterChart .= '</div>';
 
-        $filterRegion .= <<<eof
+        $filterChart .= <<<eof
         <script type="text/javascript">
             $("#filter-chart").change( function() {
                 $.post("/ajax/filterChart.php",
@@ -168,7 +190,7 @@ eof;
         </script>
 eof;
 
-        return $filterRegion;
+        return $filterChart;
     }
 
 
@@ -186,8 +208,11 @@ eof;
             $selected = ' selected="selected"';
         }
 
+        $filterRegion .= '<optgroup label="Pays">';
         $filterRegion .= '<option value="0"' . $selected  . '>FRANCE</option>';
+        $filterRegion .= '</optgroup>';
 
+        $filterRegion .= '<optgroup label="Régions">';
         while ($res = $sql->fetch()) {
             $selected = '';
             if ($_SESSION['filterRegionId'] == $res->region) {
@@ -196,6 +221,7 @@ eof;
 
             $filterRegion .= '<option value="' . $res->region . '"' . $selected  . '>' . $res->nccenr . '</option>';
         }
+        $filterRegion .= '</optgroup>';
 
         $filterRegion .= '</select>';
         $filterRegion .= '</div>';
