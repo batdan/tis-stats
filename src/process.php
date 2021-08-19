@@ -6,7 +6,9 @@ if (php_sapi_name() != "cli") {
     die('Hello World !');
 }
 
-new spf\process([
+
+// Santé publique France
+new main\process([
 
     // Statistique hospitalières quotidiennes
     'statsHpQuotidien',
@@ -30,5 +32,13 @@ new spf\process([
     'statsVaccinationAgeCalcLisse7j',
 
     // // Statistique de la DREES, test PCR
-    // new spf\statsDreesPcr();
-]);
+    // 'statsDreesPcr',
+
+], 'spf');
+
+
+// Our World in Data
+new main\process([
+    'getOwidData',
+
+], 'owid');

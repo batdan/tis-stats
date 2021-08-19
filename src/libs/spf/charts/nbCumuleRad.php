@@ -81,7 +81,7 @@ class nbCumuleRad
             $addReqValues[':cl_age90'] = 0;
         }
 
-        if ($this->cache && $this->data = \spf\cache::getCache($fileName)) {
+        if ($this->cache && $this->data = \main\cache::getCache($fileName)) {
             return;
         }
 
@@ -111,7 +111,7 @@ class nbCumuleRad
         }
 
         // createCache
-        \spf\cache::createCache($fileName, $this->data);
+        \main\cache::createCache($fileName, $this->data);
     }
 
 
