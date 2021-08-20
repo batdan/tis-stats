@@ -157,7 +157,7 @@ class quotidienEntreesRea
 
             chart: {
                 type: 'spline',
-                height: 600
+                height: 580
             },
 
             title: {

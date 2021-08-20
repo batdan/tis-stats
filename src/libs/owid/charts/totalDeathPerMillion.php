@@ -35,12 +35,12 @@ class totalDeathPerMillion
 
         $this->dbh = dbSingleton::getInstance();
 
-        $this->chartName = 'nbCumuleDeathPerMillion';
+        $this->chartName = 'totalDeathPerMillion';
 
         $this->title    = 'Nb cumulé de décès covid-19 par millions d`habitants';
-        $this->subTitle = 'Source: Our World in Data (lissé)';
+        $this->subTitle = 'Source: Our World in Data';
 
-        $this->yAxis1Label = 'Nb cumulé de décès';
+        $this->yAxis1Label = 'Nb cumulé des décès par millions';
 
         $this->getCountries();
 
@@ -51,7 +51,13 @@ class totalDeathPerMillion
 
     private function getCountries()
     {
-        $req = "SELECT ISO, location FROM owid_covid19 WHERE activ = 1";
+        $isoList = [];
+        foreach ($_SESSION['owid_filterCountry'] as $iso) {
+            $isoList[] = "'" . $iso . "'";
+        }
+        $isoList = implode(',', $isoList);
+
+        $req = "SELECT ISO, location FROM owid_covid19 WHERE ISO IN (" . $isoList . ")";
         $sql = $this->dbh->query($req);
 
         $this->countries = [];
@@ -79,6 +85,8 @@ class totalDeathPerMillion
             $fileName .= '_interval_' . $_SESSION['owid_filterInterval'];
         }
 
+        $fileName .= '_' . implode('_', $_SESSION['owid_filterCountry']);
+
         if ($this->cache && $this->data = \main\cache::getCache($fileName)) {
             return;
         }
@@ -90,7 +98,7 @@ class totalDeathPerMillion
             $tableCountry = 'owid_covid19_' . $iso;
 
             $req = "SELECT      jour,
-                                total_deaths_per_million
+                                total_deaths_per_million AS myVal
 
             FROM        $tableCountry
 
@@ -103,24 +111,12 @@ class totalDeathPerMillion
 
             while ($res = $sql->fetch()) {
                 $this->data[$res->jour][$iso] = [
-                    'total_deaths_per_million' => $res->total_deaths_per_million,
+                    '__VAL__' => $res->myVal,
                 ];
             }
         }
 
-        ksort($this->data);
-
-        // clean data
-        foreach ($this->data as $jour => $res) {
-            $sum = 0;
-            foreach($this->countries as $iso => $country) {
-                $sum += floatval($res[$iso]['total_deaths_per_million']);
-            }
-
-            if ($sum == 0) {
-                unset($this->data[$jour]);
-            }
-        }
+        $this->cleanData();
 
         // createCache
         \main\cache::createCache($fileName, $this->data);
@@ -139,8 +135,10 @@ class totalDeathPerMillion
             $jours[] = "'".$jour."'";
 
             foreach($this->countries as $iso => $country) {
-                $tdpm = floatval($res[$iso]['total_deaths_per_million']);
-                $countriesSerie[$iso][] = !empty($tdpm) ? $tdpm : "'NULL'";
+                if (isset($res[$iso]['__VAL__'])) {
+                    $tdpm = floatval($res[$iso]['__VAL__']);
+                    $countriesSerie[$iso][] = !empty($tdpm) ? $tdpm : "'NULL'";
+                }
             }
         }
 
@@ -167,7 +165,7 @@ eof;
 
             chart: {
                 type: 'spline',
-                height: 600
+                height: 580
             },
 
             title: {
@@ -235,6 +233,31 @@ eof;
     }
 
 
+    private function cleanData()
+    {
+        ksort($this->data);
+
+        $lastDayValIso = [];
+
+        foreach ($this->data as $jour => $res) {
+            $sum = 0;
+            foreach($this->countries as $iso => $country) {
+
+                if (isset($res[$iso]['__VAL__'])) {
+                    $val = floatval($res[$iso]['__VAL__']);
+
+                    // On vérifie s'il existe des données pour ce jour
+                    $sum += floatval($res[$iso]['__VAL__']);
+                }
+            }
+
+            if ($sum == 0) {
+                unset($this->data[$jour]);
+            }
+        }
+    }
+
+
     /**
      * Redu HTML
      */
@@ -243,6 +266,7 @@ eof;
         $backLink = (isset($_GET['internal'])) ? false : true;
 
         $filterActiv = [
+            'country'   => true,
             'interval'  => true,
         ];
 

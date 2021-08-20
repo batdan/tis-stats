@@ -7,13 +7,17 @@ class render
 {
     private static $dbh;
 
+    private static $jsRender = '';
 
-    public static function html($chartName, $title, $js, $backLink = true, $filterActiv)
+
+    public static function html($chartName, $title, $jsHightcharts, $backLink = true, $filterActiv)
     {
         self::$dbh = dbSingleton::getInstance();
 
         $backLinkLCH = self::backLink($backLink);
         $chartFilter = self::chartFilters($filterActiv);
+
+        $jsRender = self::$jsRender;
 
         return <<<eof
 <!DOCTYPE html>
@@ -25,11 +29,17 @@ class render
         <link rel="icon" href="https://www.lachainehumaine.com/wp-content/uploads/2021/07/cropped-logo-1-60x60.png" sizes="32x32" />
         <link rel="icon" href="https://www.lachainehumaine.com/wp-content/uploads/2021/07/cropped-logo-1-300x300.png" sizes="192x192" />
         <link rel="apple-touch-icon" href="https://www.lachainehumaine.com/wp-content/uploads/2021/07/cropped-logo-1-300x300.png" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
-        <link href="/css/styles.css" rel="stylesheet" type="text/css">
 
-        <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+        <!-- Boostrap -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
+        <link href="/css/styles.css" rel="stylesheet" type="text/css">
     </head>
 
     <body style="margin:0;">
@@ -44,11 +54,18 @@ class render
             </figure>
         </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+
         <script type="text/javascript" src="//code.highcharts.com/highcharts.js"></script>
         <script type="text/javascript" src="//code.highcharts.com/modules/exporting.js"></script>
         <script type="text/javascript">
-            $js
+            $jsHightcharts
+            $jsRender
         </script>
     </body>
 </html>
@@ -78,10 +95,8 @@ eof;
     public static function chartFilters($filterActiv)
     {
         $filterActivDefault = [
+            'country'   => false,
             'interval'  => false,
-            'age'       => false,
-            'age2'      => false,
-            'vaccin'    => false,
         ];
 
         $filterActiv = array_merge($filterActivDefault, $filterActiv);
@@ -90,20 +105,12 @@ eof;
 
         $chartFilters .= self::chartSelect();
 
+        if ($filterActiv['country']) {
+            $chartFilters .= self::chartFilterCountries();
+        }
+
         if ($filterActiv['interval']) {
             $chartFilters .= self::chartFilterInterval();
-        }
-
-        if ($filterActiv['age']) {
-            $chartFilters .= self::chartFilterAge();
-        }
-
-        if ($filterActiv['age2']) {
-            $chartFilters .= self::chartFilterAge2();
-        }
-
-        if ($filterActiv['vaccin']) {
-            $chartFilters .= self::chartFilterVaccin();
         }
 
         $chartFilters .= '</div>';
@@ -116,7 +123,7 @@ eof;
     {
         $filterChart  = '<div class="form-group col-lg-3">';
         $filterChart .= '<label class="form-label" for="filter-chart">Sélection du graphique</label>';
-        $filterChart .= '<select id="filter-chart" class="form-select">';
+        $filterChart .= '<select id="filter-chart" class="custom-select">';
 
         $chartCollections = [
             // 'item-1'                                    => 'Tests PCR',
@@ -130,23 +137,25 @@ eof;
             // 'spf\charts\quotidienRad'                   => 'C19 | Quotidien : retours à domicile',
             // 'closeItem-2'                               => '',
 
-            // 'item-3'                                    => 'Taux d\'occupation des hôpitaux',
-            // 'spf\charts\nbOccupationHp'                 => 'C19 | Occupation : hospitalisations',
+            'item-3'                                    => 'Taux d\'occupation des hôpitaux',
+            'owid\charts\nbOccupationHp'                => 'C19 | Occupation : hospitalisations',
             // 'spf\charts\nbOccupationRea'                => 'C19 | Occupation : soins critiques',
-            // 'closeItem-3'                               => '',
+            'closeItem-3'                               => '',
 
             'item-4'                                    => 'Chiffres cumulés',
             'owid\charts\totalDeathPerMillion'          => 'C19 | Cumulé : décès par millions d\'habitants',
+            'owid\charts\totalCasesPerMillion'          => 'C19 | Cumulé : cas par millions d\'habitants',
             // 'spf\charts\nbCumuleDecesAge'               => 'C19 | Cumulé : décès par âge',
             // 'spf\charts\nbCumuleRad'                    => 'C19 | Cumulé : retours à domicile',
             'closeItem-4'                               => '',
 
-            // 'item-5'                                    => 'Chiffres sur la vaccinations',
+            'item-5'                                    => 'Chiffres sur la vaccinations',
             // 'spf\charts\quotidienVaccinationAge'        => 'C19 | Quotidien : vaccinations par âge',
             // 'spf\charts\quotidienVaccinationVaccin'     => 'C19 | Quotidien : vaccinations par vaccin',
             // 'spf\charts\nbCumuleVaccinationAge'         => 'C19 | Cumulé : vaccinations par âge',
-            // 'spf\charts\nbCumuleVaccinationVaccin'      => 'C19 | Cumulé : vaccinations par vaccin',
-            // 'closeItem-5'                               => '',
+            'owid\charts\totalFirstVaccinatedPerHundred'=> 'C19 | Partiellement vaccinés %',
+            'owid\charts\totalVaccinatedPerHundred'     => 'C19 | Totalement vaccinés %',
+            'closeItem-5'                               => '',
         ];
 
         foreach ($chartCollections as $key => $text) {
@@ -169,8 +178,8 @@ eof;
         $filterChart .= '</select>';
         $filterChart .= '</div>';
 
-        $filterChart .= <<<eof
-        <script type="text/javascript">
+        self::$jsRender .= <<<eof
+
             $("#filter-chart").change( function() {
                 $.post("/ajax/owid/filterChart.php",
                 {
@@ -182,18 +191,69 @@ eof;
                     history.go(0);
                 }, 'json');
             });
-        </script>
 eof;
 
         return $filterChart;
     }
 
 
+    private static function chartFilterCountries()
+    {
+        $req = "SELECT ISO, location FROM owid_covid19 ORDER BY location ASC";
+        $sql = self::$dbh->query($req);
+
+        $countries = [];
+        while ($res = $sql->fetch()) {
+            $countries[$res->ISO] = $res->location;
+        }
+
+        $_SESSION['owid_filterCountry'];
+
+        $filterCountry  = '<div class="form-group col-lg-3" style="padding-left:0; padding-right:0;">';
+        $filterCountry .= '<label class="form-label col-lg-12" for="filter-country">Pays</label>';
+        $filterCountry .= '<select id="filter-country" class="selectpicker col-lg-11" data-style="btn-default" multiple="multiple">';
+
+        foreach ($countries as $iso => $location) {
+            $selected = '';
+            if (in_array($iso, $_SESSION['owid_filterCountry'])) {
+                $selected = ' selected';
+            }
+
+            $filterCountry .= '<option value="' . $iso . '"' . $selected  . '>' . $location . '</option>';
+        }
+
+        $filterCountry .= '</select>';
+        $filterCountry .= '<button id="country-search" type="submit" class="col-lg-1 btn btn-primary" style="border-radius:0 5px 5px 0; position:relative; left:-15px;">';
+        $filterCountry .= '<i class="fas fa-search" style="position:relative; left:-2px;"></i></button>';
+        $filterCountry .= '</div>';
+
+        self::$jsRender .= <<<eof
+
+            // To style only selects with the my-select class
+            $('#filter-country').selectpicker();
+
+            $("#country-search").on('click', function() {
+                $.post("/ajax/owid/filterCountries.php",
+                {
+                    filterCountries : $("#filter-country").val()
+                },
+                function success(data)
+                {
+                    console.log(data);
+                    history.go(0);
+                }, 'json');
+            });
+eof;
+
+        return $filterCountry;
+    }
+
+
     private static function chartFilterInterval()
     {
-        $filterRegion  = '<div class="form-group col-lg-3">';
-        $filterRegion .= '<label class="form-label" for="filter-interval">Période</label>';
-        $filterRegion .= '<select id="filter-interval" class="form-select">';
+        $filterInterval  = '<div class="form-group col-lg-3">';
+        $filterInterval .= '<label class="form-label" for="filter-interval">Période</label>';
+        $filterInterval .= '<select id="filter-interval" class="custom-select">';
 
         $d = new \dateTime();
         $interval = new \DateInterval('P1M');
@@ -229,14 +289,14 @@ eof;
                 $selected = ' selected="selected"';
             }
 
-            $filterRegion .= '<option value="' . $chart . '"' . $selected  . '>' . $text . '</option>';
+            $filterInterval .= '<option value="' . $chart . '"' . $selected  . '>' . $text . '</option>';
         }
 
-        $filterRegion .= '</select>';
-        $filterRegion .= '</div>';
+        $filterInterval .= '</select>';
+        $filterInterval .= '</div>';
 
-        $filterRegion .= <<<eof
-        <script type="text/javascript">
+        self::$jsRender .= <<<eof
+
             $("#filter-interval").change( function() {
                 $.post("/ajax/owid/filterInterval.php",
                 {
@@ -248,162 +308,8 @@ eof;
                     history.go(0);
                 }, 'json');
             });
-        </script>
 eof;
 
-        return $filterRegion;
-    }
-
-
-    private static function chartFilterAge()
-    {
-        $filterRegion  = '<div class="form-group col-lg-3">';
-        $filterRegion .= '<label class="form-label" for="filter-age">Age</label>';
-        $filterRegion .= '<select id="filter-age" class="form-select">';
-
-        $chartInterval = [
-            '0'     => 'Tous les ages',
-            '09'    => '0 à 9 ans',
-            '19'    => '10 à 19 ans',
-            '29'    => '20 à 29 ans',
-            '39'    => '30 à 39 ans',
-            '49'    => '40 à 49 ans',
-            '59'    => '50 à 59 ans',
-            '69'    => '60 à 69 ans',
-            '79'    => '70 à 79 ans',
-            '89'    => '80 à 89 ans',
-            '90'    => '90 ans et plus',
-        ];
-
-        foreach ($chartInterval as $chart => $text) {
-            $selected = '';
-            if ($_SESSION['owid_filterAge'] == $chart) {
-                $selected = ' selected="selected"';
-            }
-
-            $filterRegion .= '<option value="' . $chart . '"' . $selected  . '>' . $text . '</option>';
-        }
-
-        $filterRegion .= '</select>';
-        $filterRegion .= '</div>';
-
-        $filterRegion .= <<<eof
-        <script type="text/javascript">
-            $("#filter-age").change( function() {
-                $.post("/ajax/owid/filterAge.php",
-                {
-                    filterAge : $(this).find(":selected").val()
-                },
-                function success(data)
-                {
-                    console.log(data);
-                    history.go(0);
-                }, 'json');
-            });
-        </script>
-eof;
-
-        return $filterRegion;
-    }
-
-
-    private static function chartFilterAge2()
-    {
-        $filterRegion  = '<div class="form-group col-lg-3">';
-        $filterRegion .= '<label class="form-label" for="filter-age2">Age</label>';
-        $filterRegion .= '<select id="filter-age2" class="form-select">';
-
-        $chartInterval = [
-            '0'  => 'Tous les ages',
-            '04' => '0 à 4 ans',
-            '09' => '5 à 9 ans',
-            '11' => '10 à 11 ans',
-            '17' => '12 à 17 ans',
-            '24' => '18 à 24 ans',
-            '29' => '25 à 29 ans',
-            '39' => '30 à 39 ans',
-            '49' => '40 à 49 ans',
-            '59' => '50 à 59 ans',
-            '69' => '60 à 69 ans',
-            '74' => '70 à 74 ans',
-            '79' => '75 à 79 ans',
-            '80' => '80 ans et plus',
-        ];
-
-        foreach ($chartInterval as $chart => $text) {
-            $selected = '';
-            if ($_SESSION['owid_filterAge2'] == $chart) {
-                $selected = ' selected="selected"';
-            }
-
-            $filterRegion .= '<option value="' . $chart . '"' . $selected  . '>' . $text . '</option>';
-        }
-
-        $filterRegion .= '</select>';
-        $filterRegion .= '</div>';
-
-        $filterRegion .= <<<eof
-        <script type="text/javascript">
-            $("#filter-age2").change( function() {
-                $.post("/ajax/owid/filterAge2.php",
-                {
-                    filterAge2 : $(this).find(":selected").val()
-                },
-                function success(data)
-                {
-                    console.log(data);
-                    history.go(0);
-                }, 'json');
-            });
-        </script>
-eof;
-
-        return $filterRegion;
-    }
-
-
-    private static function chartFilterVaccin()
-    {
-        $filterRegion  = '<div class="form-group col-lg-3">';
-        $filterRegion .= '<label class="form-label" for="filter-vaccin">Vaccin</label>';
-        $filterRegion .= '<select id="filter-vaccin" class="form-select">';
-
-        $chartInterval = [
-            0 => 'Tous Vaccins',
-            1 => 'Pfizer',
-            2 => 'Moderna',
-            3 => 'AstraZeneka',
-            4 => 'Janssen',
-        ];
-
-        foreach ($chartInterval as $chart => $text) {
-            $selected = '';
-            if ($_SESSION['owid_filterVaccin'] == $chart) {
-                $selected = ' selected="selected"';
-            }
-
-            $filterRegion .= '<option value="' . $chart . '"' . $selected  . '>' . $text . '</option>';
-        }
-
-        $filterRegion .= '</select>';
-        $filterRegion .= '</div>';
-
-        $filterRegion .= <<<eof
-        <script type="text/javascript">
-            $("#filter-vaccin").change( function() {
-                $.post("/ajax/owid/filterVaccin.php",
-                {
-                    filterVaccin : $(this).find(":selected").val()
-                },
-                function success(data)
-                {
-                    console.log(data);
-                    history.go(0);
-                }, 'json');
-            });
-        </script>
-eof;
-
-        return $filterRegion;
+        return $filterInterval;
     }
 }

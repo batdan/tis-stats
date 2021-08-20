@@ -2,7 +2,8 @@
 // Chargement des classes
 include ( __DIR__ . '/../../bootstrap.php' );
 
-$cache = true;
+$cache              = true;
+$defaultCountries   = ['FRA', 'GBR', 'SWE', 'MEX', 'ESP', 'USA', 'ISR'];
 
 // echo '<pre>';
 // print_r($_SESSION);
@@ -13,13 +14,9 @@ $cache = true;
 // }
 
 // Initialisation des filtres
-$_SESSION['owid_filterChart']        = (isset($_SESSION['owid_filterChart']))      ? $_SESSION['owid_filterChart']      : 'owid\charts\totalDeathPerMillion';
-$_SESSION['owid_filterRegionId']     = (isset($_SESSION['owid_filterRegionId']))   ? $_SESSION['owid_filterRegionId']   : 0;
-$_SESSION['owid_filterRegionName']   = (isset($_SESSION['owid_filterRegionName'])) ? $_SESSION['owid_filterRegionName'] : 'France';
-$_SESSION['owid_filterInterval']     = (isset($_SESSION['owid_filterInterval']))   ? $_SESSION['owid_filterInterval']   : 'all';
-$_SESSION['owid_filterAge']          = (isset($_SESSION['owid_filterAge']))        ? $_SESSION['owid_filterAge']        : '0';
-$_SESSION['owid_filterAge2']         = (isset($_SESSION['owid_filterAge2']))       ? $_SESSION['owid_filterAge2']       : '0';
-$_SESSION['owid_filterVaccin']       = (isset($_SESSION['owid_filterVaccin']))     ? $_SESSION['owid_filterVaccin']     : 0;
+$_SESSION['owid_filterChart']       = (isset($_SESSION['owid_filterChart']))    ? $_SESSION['owid_filterChart']     : 'owid\charts\totalDeathPerMillion';
+$_SESSION['owid_filterCountry']     = (isset($_SESSION['owid_filterCountry']))  ? $_SESSION['owid_filterCountry']   : $defaultCountries;
+$_SESSION['owid_filterInterval']    = (isset($_SESSION['owid_filterInterval'])) ? $_SESSION['owid_filterInterval']  : 'all';
 
 // Affichage du graphique
 $class = new $_SESSION['owid_filterChart']($cache);

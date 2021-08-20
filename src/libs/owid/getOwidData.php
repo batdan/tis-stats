@@ -46,7 +46,8 @@ class getOwidData
     private function getData()
     {
         $table      = 'owid_covid19';
-        $countries  = ['FRA', 'GBR', 'SWE', 'MEX', 'PRT', 'ESP', 'CHE', 'IND', 'USA'];
+        // $countries  = ['FRA', 'GBR', 'SWE', 'MEX', 'PRT', 'ESP', 'CHE', 'IND', 'USA', 'ISR'];
+        $countries = [];
 
         $file = file($this->url);
         $json = $file[0];
@@ -72,12 +73,11 @@ class getOwidData
             male_smokers,
             hospital_beds_per_thousand,
             life_expectancy,
-            human_development_index,
-            activ) VALUES ";
+            human_development_index) VALUES ";
 
         foreach ($data as $k => $v) {
 
-            $activ = in_array($k, $countries) ? 1 : 0;
+            $countries[] = $k;
 
             $continent                  = $v['continent'] ?? '';
             $location                   = $v['location'] ?? '';
@@ -112,8 +112,7 @@ class getOwidData
             $req .= $male_smokers . ",";
             $req .= $hospital_beds_per_thousand . ",";
             $req .= $life_expectancy . ",";
-            $req .= $human_development_index . ",";
-            $req .= $activ . "),";
+            $req .= $human_development_index . "),";
         }
 
         $req = substr($req, 0, -1);
@@ -301,8 +300,7 @@ class getOwidData
           `male_smokers`                    decimal(5,2)    NULL,
           `hospital_beds_per_thousand`      decimal(6,2)    NULL,
           `life_expectancy`                 decimal(4,2)    NULL,
-          `human_development_index`         decimal(8,3)    NULL,
-          `activ`                           tinyint(1)      NULL
+          `human_development_index`         decimal(8,3)    NULL
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
         $this->dbh->query($req);
 

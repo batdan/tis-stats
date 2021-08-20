@@ -130,7 +130,7 @@ class nbOccupationHp
 
             chart: {
                 type: 'spline',
-                height: 600
+                height: 580
             },
 
             title: {
@@ -158,7 +158,8 @@ class nbOccupationHp
                     formatter: function() {
                         return Highcharts.numberFormat(this.value, 0, '.', ' ');
                     }
-                }
+                },
+                opposite: true
             }],
 
             xAxis: {
