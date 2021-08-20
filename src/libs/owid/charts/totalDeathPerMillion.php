@@ -1,12 +1,14 @@
 <?php
-namespace spf\charts;
+namespace owid\charts;
 
 use tools\dbSingleton;
 
-class nbOccupationHp
+class totalDeathPerMillion
 {
     private $cache;
     private $dbh;
+
+    private $countries;
 
     private $chartName;
 
@@ -33,17 +35,29 @@ class nbOccupationHp
 
         $this->dbh = dbSingleton::getInstance();
 
-        $this->chartName = 'nbOccupationHp';
+        $this->chartName = 'nbCumuleDeathPerMillion';
 
-        $this->title    = 'Nb actuel d`hospitalisations covid-19 | Taux de positivité covid-19';
-        $this->regTitle();
+        $this->title    = 'Nb cumulé de décès covid-19 par millions d`habitants';
+        $this->subTitle = 'Source: Our World in Data (lissé)';
 
-        $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours)';
+        $this->yAxis1Label = 'Nb cumulé de décès';
 
-        $this->yAxis1Label = 'Nb actuel d`hospitalisations covid-19';
+        $this->getCountries();
 
         $this->getData();
         $this->highChartsJs();
+    }
+
+
+    private function getCountries()
+    {
+        $req = "SELECT ISO, location FROM owid_covid19 WHERE activ = 1";
+        $sql = $this->dbh->query($req);
+
+        $this->countries = [];
+        while ($res = $sql->fetch()) {
+            $this->countries[$res->ISO] = $res->location;
+        }
     }
 
 
@@ -51,31 +65,18 @@ class nbOccupationHp
      * Récupération des données de la statistique
      * en cache ou en BDD
      */
-    public function getData()
+    private function getData()
     {
         $className = str_replace('\\', '_', get_class($this));
         $fileName  = date('Y-m-d_') . $className;
 
         $addReq = "";
         $addReqValues = [];
-        if (!empty($_SESSION['spf_filterRegionId']) && is_numeric($_SESSION['spf_filterRegionId'])) {
-            $addReq .= " AND reg = :reg";
-            $addReqValues[':reg'] = $_SESSION['spf_filterRegionId'];
-            $fileName .= '_reg_' . $_SESSION['spf_filterRegionId'];
-        }
 
-        if (!empty($_SESSION['spf_filterInterval']) && $_SESSION['spf_filterInterval'] != 'all') {
+        if (!empty($_SESSION['owid_filterInterval']) && $_SESSION['owid_filterInterval'] != 'all') {
             $addReq .= " AND jour >= :jour";
-            $addReqValues[':jour'] = $_SESSION['spf_filterInterval'];
-            $fileName .= '_interval_' . $_SESSION['spf_filterInterval'];
-        }
-
-        $addReq .= " AND cl_age90 = :cl_age90";
-        if (!empty($_SESSION['spf_filterAge']) && $_SESSION['spf_filterAge'] != '0') {
-            $addReqValues[':cl_age90'] = $_SESSION['spf_filterAge'];
-            $fileName .= '_age_' . $_SESSION['spf_filterAge'];
-        } else {
-            $addReqValues[':cl_age90'] = 0;
+            $addReqValues[':jour'] = $_SESSION['owid_filterInterval'];
+            $fileName .= '_interval_' . $_SESSION['owid_filterInterval'];
         }
 
         if ($this->cache && $this->data = \main\cache::getCache($fileName)) {
@@ -84,21 +85,41 @@ class nbOccupationHp
 
         $this->data = [];
 
-        $req = "SELECT      jour,
-                            SUM(hosp) AS sum_hosp
+        foreach($this->countries as $iso => $country) {
 
-                FROM        donnees_hp_cumule_age_covid19_reg_calc_lisse7j
+            $tableCountry = 'owid_covid19_' . $iso;
 
-                WHERE       1 $addReq
+            $req = "SELECT      jour,
+                                total_deaths_per_million
 
-                GROUP BY    jour
-                ORDER BY    jour ASC";
+            FROM        $tableCountry
 
-        $sql = $this->dbh->prepare($req);
-        $sql->execute($addReqValues);
+            WHERE       1 $addReq
 
-        while ($res = $sql->fetch()) {
-            $this->data[$res->jour]['sum_hosp'] = (!isset($res->sum_hosp)) ? null : $res->sum_hosp;
+            ORDER BY    jour ASC";
+
+            $sql = $this->dbh->prepare($req);
+            $sql->execute($addReqValues);
+
+            while ($res = $sql->fetch()) {
+                $this->data[$res->jour][$iso] = [
+                    'total_deaths_per_million' => $res->total_deaths_per_million,
+                ];
+            }
+        }
+
+        ksort($this->data);
+
+        // clean data
+        foreach ($this->data as $jour => $res) {
+            $sum = 0;
+            foreach($this->countries as $iso => $country) {
+                $sum += floatval($res[$iso]['total_deaths_per_million']);
+            }
+
+            if ($sum == 0) {
+                unset($this->data[$jour]);
+            }
         }
 
         // createCache
@@ -111,16 +132,32 @@ class nbOccupationHp
      */
     private function highChartsJs()
     {
-        $jours      = [];
-        $hosp       = [];
+        $jours = [];
+        $countriesSerie = [];
 
         foreach($this->data as $jour => $res) {
             $jours[] = "'".$jour."'";
-            $hosp[]  = round($res['sum_hosp'], 2);
+
+            foreach($this->countries as $iso => $country) {
+                $tdpm = floatval($res[$iso]['total_deaths_per_million']);
+                $countriesSerie[$iso][] = !empty($tdpm) ? $tdpm : "'NULL'";
+            }
         }
 
-        $jours      = implode(', ', $jours);
-        $hosp       = implode(', ', $hosp);
+        $jours = implode(',', $jours);
+
+        $series = [];
+        foreach($this->countries as $iso => $country) {
+            $serieCountry = implode(',', $countriesSerie[$iso]);
+            $series[] = <<<eof
+            {
+                name: '$country',
+                data: [$serieCountry]
+            }
+eof;
+        }
+
+        $series = implode(', ', $series);
 
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {
@@ -158,7 +195,8 @@ class nbOccupationHp
                     formatter: function() {
                         return Highcharts.numberFormat(this.value, 0, '.', ' ');
                     }
-                }
+                },
+                opposite: true
             }],
 
             xAxis: {
@@ -176,13 +214,7 @@ class nbOccupationHp
                 verticalAlign: 'middle'
             },
 
-            series: [{
-                name: '{$this->yAxis1Label}',
-                color: '#106097',
-                // type: 'spline',
-                yAxis: 0,
-                data: [$hosp]
-            }],
+            series: [$series],
 
             responsive: {
                 rules: [{
@@ -203,12 +235,6 @@ class nbOccupationHp
     }
 
 
-    private function regTitle()
-    {
-        $this->title .= ($_SESSION['spf_filterRegionId'] == 0) ? ' | ' . $_SESSION['spf_filterRegionName'] : ' | Région : ' . $_SESSION['spf_filterRegionName'];
-    }
-
-
     /**
      * Redu HTML
      */
@@ -217,9 +243,7 @@ class nbOccupationHp
         $backLink = (isset($_GET['internal'])) ? false : true;
 
         $filterActiv = [
-            'region'    => true,
             'interval'  => true,
-            'age'       => true,
         ];
 
         echo render::html(

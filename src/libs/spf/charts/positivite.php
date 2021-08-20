@@ -38,7 +38,7 @@ class positivite
         $this->title = 'Nb de testés covid-19 | Taux de positivité covid-19';
         $this->regTitle();
 
-        $this->subTitle = 'Source: Santé Publique France (quotidien, lissé sur 7 jours)';
+        $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours)';
 
         $this->yAxis1Label = 'Taux de positivité';
         $this->yAxis2Label = 'Nb de testés';
@@ -59,16 +59,16 @@ class positivite
 
         $addReq = "";
         $addReqValues = [];
-        if (!empty($_SESSION['filterRegionId']) && is_numeric($_SESSION['filterRegionId'])) {
+        if (!empty($_SESSION['spf_filterRegionId']) && is_numeric($_SESSION['spf_filterRegionId'])) {
             $addReq .= " AND reg = :reg";
-            $addReqValues[':reg'] = $_SESSION['filterRegionId'];
-            $fileName .= '_reg_' . $_SESSION['filterRegionId'];
+            $addReqValues[':reg'] = $_SESSION['spf_filterRegionId'];
+            $fileName .= '_reg_' . $_SESSION['spf_filterRegionId'];
         }
 
-        if (!empty($_SESSION['filterInterval']) && $_SESSION['filterInterval'] != 'all') {
+        if (!empty($_SESSION['spf_filterInterval']) && $_SESSION['spf_filterInterval'] != 'all') {
             $addReq .= " AND jour >= :jour";
-            $addReqValues[':jour'] = $_SESSION['filterInterval'];
-            $fileName .= '_interval_' . $_SESSION['filterInterval'];
+            $addReqValues[':jour'] = $_SESSION['spf_filterInterval'];
+            $fileName .= '_interval_' . $_SESSION['spf_filterInterval'];
         }
 
         if ($this->cache && $this->data = \main\cache::getCache($fileName)) {
@@ -230,7 +230,7 @@ class positivite
 
     private function regTitle()
     {
-        $this->title .= ($_SESSION['filterRegionId'] == 0) ? ' | ' . $_SESSION['filterRegionName'] : ' | Région : ' . $_SESSION['filterRegionName'];
+        $this->title .= ($_SESSION['spf_filterRegionId'] == 0) ? ' | ' . $_SESSION['spf_filterRegionName'] : ' | Région : ' . $_SESSION['spf_filterRegionName'];
     }
 
 

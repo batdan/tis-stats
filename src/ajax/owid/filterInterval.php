@@ -7,7 +7,7 @@ if ( count($_POST)==0 || !isset($_POST['filterInterval']) ) {
 }
 // ---------------------------------------------------------------------------------------------
 
-$_SESSION['filterInterval'] = $_POST['filterInterval'];
+$_SESSION['owid_filterInterval'] = $_POST['filterInterval'];
 
 // test ----------------------------------------------------------------------------------------
 echo json_encode($_POST);

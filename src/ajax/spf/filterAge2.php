@@ -2,12 +2,12 @@
 session_start();
 
 // Sécurité ------------------------------------------------------------------------------------
-if ( count($_POST)==0 || !isset($_POST['filterChart']) ) {
+if ( count($_POST)==0 || !isset($_POST['filterAge2']) ) {
     die();
 }
 // ---------------------------------------------------------------------------------------------
 
-$_SESSION['filterChart'] = $_POST['filterChart'];
+$_SESSION['spf_filterAge2'] = $_POST['filterAge2'];
 
 // test ----------------------------------------------------------------------------------------
 echo json_encode($_POST);

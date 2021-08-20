@@ -1,5 +1,5 @@
 <?php
-namespace spf\charts;
+namespace owid\charts;
 
 use tools\dbSingleton;
 
@@ -78,7 +78,6 @@ eof;
     public static function chartFilters($filterActiv)
     {
         $filterActivDefault = [
-            'region'    => false,
             'interval'  => false,
             'age'       => false,
             'age2'      => false,
@@ -90,10 +89,6 @@ eof;
         $chartFilters = '<div class="row" style="margin-bottom:10px;">';
 
         $chartFilters .= self::chartSelect();
-
-        if ($filterActiv['region']) {
-            $chartFilters .= self::chartFilterRegion();
-        }
 
         if ($filterActiv['interval']) {
             $chartFilters .= self::chartFilterInterval();
@@ -124,34 +119,34 @@ eof;
         $filterChart .= '<select id="filter-chart" class="form-select">';
 
         $chartCollections = [
-            'item-1'                                    => 'Tests PCR',
-            'spf\charts\positivite'                     => 'C19 | PCR : Taux de positivité',
-            'closeItem-1'                               => '',
+            // 'item-1'                                    => 'Tests PCR',
+            // 'spf\charts\positivite'                     => 'C19 | PCR : Taux de positivité',
+            // 'closeItem-1'                               => '',
 
-            'item-2'                                    => 'Chiffres quotidiens',
-            'spf\charts\quotidienEntreesHp'             => 'C19 | Quotidien : hospitalisations',
-            'spf\charts\quotidienEntreesRea'            => 'C19 | Quotidien : soins critiques',
-            'spf\charts\quotidienDeces'                 => 'C19 | Quotidien : décès',
-            'spf\charts\quotidienRad'                   => 'C19 | Quotidien : retours à domicile',
-            'closeItem-2'                               => '',
+            // 'item-2'                                    => 'Chiffres quotidiens',
+            // 'spf\charts\quotidienEntreesHp'             => 'C19 | Quotidien : hospitalisations',
+            // 'spf\charts\quotidienEntreesRea'            => 'C19 | Quotidien : soins critiques',
+            // 'spf\charts\quotidienDeces'                 => 'C19 | Quotidien : décès',
+            // 'spf\charts\quotidienRad'                   => 'C19 | Quotidien : retours à domicile',
+            // 'closeItem-2'                               => '',
 
-            'item-3'                                    => 'Taux d\'occupation des hôpitaux',
-            'spf\charts\nbOccupationHp'                 => 'C19 | Occupation : hospitalisations',
-            'spf\charts\nbOccupationRea'                => 'C19 | Occupation : soins critiques',
-            'closeItem-3'                               => '',
+            // 'item-3'                                    => 'Taux d\'occupation des hôpitaux',
+            // 'spf\charts\nbOccupationHp'                 => 'C19 | Occupation : hospitalisations',
+            // 'spf\charts\nbOccupationRea'                => 'C19 | Occupation : soins critiques',
+            // 'closeItem-3'                               => '',
 
             'item-4'                                    => 'Chiffres cumulés',
-            'spf\charts\nbCumuleDeces'                  => 'C19 | Cumulé : décès',
-            'spf\charts\nbCumuleDecesAge'               => 'C19 | Cumulé : décès par âge',
-            'spf\charts\nbCumuleRad'                    => 'C19 | Cumulé : retours à domicile',
+            'owid\charts\totalDeathPerMillion'          => 'C19 | Cumulé : décès par millions d\'habitants',
+            // 'spf\charts\nbCumuleDecesAge'               => 'C19 | Cumulé : décès par âge',
+            // 'spf\charts\nbCumuleRad'                    => 'C19 | Cumulé : retours à domicile',
             'closeItem-4'                               => '',
 
-            'item-5'                                    => 'Chiffres sur la vaccinations',
-            'spf\charts\quotidienVaccinationAge'        => 'C19 | Quotidien : vaccinations par âge',
-            'spf\charts\quotidienVaccinationVaccin'     => 'C19 | Quotidien : vaccinations par vaccin',
-            'spf\charts\nbCumuleVaccinationAge'         => 'C19 | Cumulé : vaccinations par âge',
-            'spf\charts\nbCumuleVaccinationVaccin'      => 'C19 | Cumulé : vaccinations par vaccin',
-            'closeItem-5'                               => '',
+            // 'item-5'                                    => 'Chiffres sur la vaccinations',
+            // 'spf\charts\quotidienVaccinationAge'        => 'C19 | Quotidien : vaccinations par âge',
+            // 'spf\charts\quotidienVaccinationVaccin'     => 'C19 | Quotidien : vaccinations par vaccin',
+            // 'spf\charts\nbCumuleVaccinationAge'         => 'C19 | Cumulé : vaccinations par âge',
+            // 'spf\charts\nbCumuleVaccinationVaccin'      => 'C19 | Cumulé : vaccinations par vaccin',
+            // 'closeItem-5'                               => '',
         ];
 
         foreach ($chartCollections as $key => $text) {
@@ -163,7 +158,7 @@ eof;
             } else {
 
                 $selected = '';
-                if ($_SESSION['spf_filterChart'] == $key) {
+                if ($_SESSION['owid_filterChart'] == $key) {
                     $selected = ' selected="selected"';
                 }
 
@@ -177,7 +172,7 @@ eof;
         $filterChart .= <<<eof
         <script type="text/javascript">
             $("#filter-chart").change( function() {
-                $.post("/ajax/spf/filterChart.php",
+                $.post("/ajax/owid/filterChart.php",
                 {
                     filterChart : $(this).find(":selected").val()
                 },
@@ -191,58 +186,6 @@ eof;
 eof;
 
         return $filterChart;
-    }
-
-
-    private static function chartFilterRegion()
-    {
-        $filterRegion  = '<div class="form-group col-lg-3">';
-        $filterRegion .= '<label class="form-label" for="filter-region">Région</label>';
-        $filterRegion .= '<select id="filter-region" class="form-select">';
-
-        $req = "SELECT region, nccenr FROM geo_reg2018 ORDER BY id";
-        $sql = self::$dbh->query($req);
-
-        $selected = '';
-        if ($_SESSION['spf_filterRegionId'] == 0) {
-            $selected = ' selected="selected"';
-        }
-
-        $filterRegion .= '<optgroup label="Pays">';
-        $filterRegion .= '<option value="0"' . $selected  . '>FRANCE</option>';
-        $filterRegion .= '</optgroup>';
-
-        $filterRegion .= '<optgroup label="Régions">';
-        while ($res = $sql->fetch()) {
-            $selected = '';
-            if ($_SESSION['spf_filterRegionId'] == $res->region) {
-                $selected = ' selected="selected"';
-            }
-
-            $filterRegion .= '<option value="' . $res->region . '"' . $selected  . '>' . $res->nccenr . '</option>';
-        }
-        $filterRegion .= '</optgroup>';
-
-        $filterRegion .= '</select>';
-        $filterRegion .= '</div>';
-
-        $filterRegion .= <<<eof
-        <script type="text/javascript">
-            $("#filter-region").change( function() {
-                $.post("/ajax/spf/filterRegion.php",
-                {
-                    filterRegion : $(this).find(":selected").val()
-                },
-                function success(data)
-                {
-                    console.log(data);
-                    history.go(0);
-                }, 'json');
-            });
-        </script>
-eof;
-
-        return $filterRegion;
     }
 
 
@@ -282,7 +225,7 @@ eof;
 
         foreach ($chartInterval as $chart => $text) {
             $selected = '';
-            if ($_SESSION['spf_filterInterval'] == $chart) {
+            if ($_SESSION['owid_filterInterval'] == $chart) {
                 $selected = ' selected="selected"';
             }
 
@@ -295,7 +238,7 @@ eof;
         $filterRegion .= <<<eof
         <script type="text/javascript">
             $("#filter-interval").change( function() {
-                $.post("/ajax/spf/filterInterval.php",
+                $.post("/ajax/owid/filterInterval.php",
                 {
                     filterInterval : $(this).find(":selected").val()
                 },
@@ -334,7 +277,7 @@ eof;
 
         foreach ($chartInterval as $chart => $text) {
             $selected = '';
-            if ($_SESSION['spf_filterAge'] == $chart) {
+            if ($_SESSION['owid_filterAge'] == $chart) {
                 $selected = ' selected="selected"';
             }
 
@@ -347,7 +290,7 @@ eof;
         $filterRegion .= <<<eof
         <script type="text/javascript">
             $("#filter-age").change( function() {
-                $.post("/ajax/spf/filterAge.php",
+                $.post("/ajax/owid/filterAge.php",
                 {
                     filterAge : $(this).find(":selected").val()
                 },
@@ -389,7 +332,7 @@ eof;
 
         foreach ($chartInterval as $chart => $text) {
             $selected = '';
-            if ($_SESSION['spf_filterAge2'] == $chart) {
+            if ($_SESSION['owid_filterAge2'] == $chart) {
                 $selected = ' selected="selected"';
             }
 
@@ -402,7 +345,7 @@ eof;
         $filterRegion .= <<<eof
         <script type="text/javascript">
             $("#filter-age2").change( function() {
-                $.post("/ajax/spf/filterAge2.php",
+                $.post("/ajax/owid/filterAge2.php",
                 {
                     filterAge2 : $(this).find(":selected").val()
                 },
@@ -435,7 +378,7 @@ eof;
 
         foreach ($chartInterval as $chart => $text) {
             $selected = '';
-            if ($_SESSION['spf_filterVaccin'] == $chart) {
+            if ($_SESSION['owid_filterVaccin'] == $chart) {
                 $selected = ' selected="selected"';
             }
 
@@ -448,7 +391,7 @@ eof;
         $filterRegion .= <<<eof
         <script type="text/javascript">
             $("#filter-vaccin").change( function() {
-                $.post("/ajax/spf/filterVaccin.php",
+                $.post("/ajax/owid/filterVaccin.php",
                 {
                     filterVaccin : $(this).find(":selected").val()
                 },

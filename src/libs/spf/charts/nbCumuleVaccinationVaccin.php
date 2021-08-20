@@ -42,7 +42,7 @@ class nbCumuleVaccinationVaccin
         $this->title    = 'Nb cumulé de vaccinés covid-19 par vaccin';
         $this->regTitle();
 
-        $this->subTitle = 'Source: Santé Publique France (quotidien, lissé sur 7 jours)';
+        $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours)';
 
         $this->yAxis1Label = 'Nb cumulé de vaccinés 1ère dose';
         $this->yAxis2Label = 'Nb cumulé de vaccinés 2ème dose';
@@ -63,22 +63,22 @@ class nbCumuleVaccinationVaccin
 
         $addReq = "";
         $addReqValues = [];
-        if (!empty($_SESSION['filterRegionId']) && is_numeric($_SESSION['filterRegionId'])) {
+        if (!empty($_SESSION['spf_filterRegionId']) && is_numeric($_SESSION['spf_filterRegionId'])) {
             $addReq .= " AND reg = :reg";
-            $addReqValues[':reg'] = $_SESSION['filterRegionId'];
-            $fileName .= '_reg_' . $_SESSION['filterRegionId'];
+            $addReqValues[':reg'] = $_SESSION['spf_filterRegionId'];
+            $fileName .= '_reg_' . $_SESSION['spf_filterRegionId'];
         }
 
-        if (!empty($_SESSION['filterInterval']) && $_SESSION['filterInterval'] != 'all') {
+        if (!empty($_SESSION['spf_filterInterval']) && $_SESSION['spf_filterInterval'] != 'all') {
             $addReq .= " AND jour >= :jour";
-            $addReqValues[':jour'] = $_SESSION['filterInterval'];
-            $fileName .= '_interval_' . $_SESSION['filterInterval'];
+            $addReqValues[':jour'] = $_SESSION['spf_filterInterval'];
+            $fileName .= '_interval_' . $_SESSION['spf_filterInterval'];
         }
 
         $addReq .= " AND vaccin = :vaccin";
-        if (!empty($_SESSION['filterVaccin']) && $_SESSION['filterVaccin'] != '0') {
-            $addReqValues[':vaccin'] = $_SESSION['filterVaccin'];
-            $fileName .= '_vaccin_' . $_SESSION['filterVaccin'];
+        if (!empty($_SESSION['spf_filterVaccin']) && $_SESSION['spf_filterVaccin'] != '0') {
+            $addReqValues[':vaccin'] = $_SESSION['spf_filterVaccin'];
+            $fileName .= '_vaccin_' . $_SESSION['spf_filterVaccin'];
         } else {
             $addReqValues[':vaccin'] = 0;
         }
@@ -224,7 +224,7 @@ class nbCumuleVaccinationVaccin
 
     private function regTitle()
     {
-        $this->title .= ($_SESSION['filterRegionId'] == 0) ? ' | ' . $_SESSION['filterRegionName'] : ' | Région : ' . $_SESSION['filterRegionName'];
+        $this->title .= ($_SESSION['spf_filterRegionId'] == 0) ? ' | ' . $_SESSION['spf_filterRegionName'] : ' | Région : ' . $_SESSION['spf_filterRegionName'];
     }
 
 

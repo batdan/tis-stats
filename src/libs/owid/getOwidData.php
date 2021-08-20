@@ -46,7 +46,7 @@ class getOwidData
     private function getData()
     {
         $table      = 'owid_covid19';
-        $countries  = ['FRA', 'GBR', 'SWE', 'MEX'];
+        $countries  = ['FRA', 'GBR', 'SWE', 'MEX', 'PRT', 'ESP', 'CHE', 'IND', 'USA'];
 
         $file = file($this->url);
         $json = $file[0];
@@ -341,7 +341,7 @@ class getOwidData
           `hosp_patients`                           int             NULL,
           `hosp_patients_per_million`               decimal(10,3)   NULL,
 
-          `stringency_index`                        decimal(5,3)    NULL,
+          `stringency_index`                        decimal(8,3)    NULL,
           `excess_mortality`                        decimal(10,3)   NULL,
 
           `icu_patients`                            int             NULL,

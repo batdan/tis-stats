@@ -5,14 +5,14 @@ include ( __DIR__ . '/../../bootstrap.php' );
 $cache = true;
 
 // Initialisation des filtres
-$_SESSION['filterChart']        = (isset($_SESSION['filterChart']))      ? $_SESSION['filterChart']      : 'spf\charts\positivite';
-$_SESSION['filterRegionId']     = (isset($_SESSION['filterRegionId']))   ? $_SESSION['filterRegionId']   : 0;
-$_SESSION['filterRegionName']   = (isset($_SESSION['filterRegionName'])) ? $_SESSION['filterRegionName'] : 'France';
-$_SESSION['filterInterval']     = (isset($_SESSION['filterInterval']))   ? $_SESSION['filterInterval']   : 'all';
-$_SESSION['filterAge']          = (isset($_SESSION['filterAge']))        ? $_SESSION['filterAge']        : '0';
-$_SESSION['filterAge2']         = (isset($_SESSION['filterAge2']))        ? $_SESSION['filterAge2']      : '0';
-$_SESSION['filterVaccin']       = (isset($_SESSION['filterVaccin']))     ? $_SESSION['filterVaccin']     : 0;
+$_SESSION['spf_filterChart']        = (isset($_SESSION['spf_filterChart']))      ? $_SESSION['spf_filterChart']      : 'spf\charts\positivite';
+$_SESSION['spf_filterRegionId']     = (isset($_SESSION['spf_filterRegionId']))   ? $_SESSION['spf_filterRegionId']   : 0;
+$_SESSION['spf_filterRegionName']   = (isset($_SESSION['spf_filterRegionName'])) ? $_SESSION['spf_filterRegionName'] : 'France';
+$_SESSION['spf_filterInterval']     = (isset($_SESSION['spf_filterInterval']))   ? $_SESSION['spf_filterInterval']   : 'all';
+$_SESSION['spf_filterAge']          = (isset($_SESSION['spf_filterAge']))        ? $_SESSION['spf_filterAge']        : '0';
+$_SESSION['spf_filterAge2']         = (isset($_SESSION['spf_filterAge2']))       ? $_SESSION['spf_filterAge2']       : '0';
+$_SESSION['spf_filterVaccin']       = (isset($_SESSION['spf_filterVaccin']))     ? $_SESSION['spf_filterVaccin']     : 0;
 
 // Affichage du graphique
-$class = new $_SESSION['filterChart']($cache);
+$class = new $_SESSION['spf_filterChart']($cache);
 $class->render();

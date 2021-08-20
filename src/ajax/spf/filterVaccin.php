@@ -2,12 +2,12 @@
 session_start();
 
 // Sécurité ------------------------------------------------------------------------------------
-if ( count($_POST)==0 || !isset($_POST['filterAge']) ) {
+if ( count($_POST)==0 || !isset($_POST['filterVaccin']) ) {
     die();
 }
 // ---------------------------------------------------------------------------------------------
 
-$_SESSION['filterAge'] = $_POST['filterAge'];
+$_SESSION['spf_filterVaccin'] = $_POST['filterVaccin'];
 
 // test ----------------------------------------------------------------------------------------
 echo json_encode($_POST);

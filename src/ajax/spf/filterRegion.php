@@ -3,7 +3,7 @@ use tools\dbSingleton;
 
 session_start();
 
-include ( __DIR__ . '/../vendor/autoload.php');
+include ( __DIR__ . '/../../vendor/autoload.php');
 
 $dbh = dbSingleton::getInstance();
 
@@ -13,18 +13,18 @@ if ( count($_POST)==0 || !isset($_POST['filterRegion']) ) {
 }
 // ---------------------------------------------------------------------------------------------
 
-$_SESSION['filterRegionId'] = $_POST['filterRegion'];
+$_SESSION['spf_filterRegionId'] = $_POST['filterRegion'];
 
-if ($_SESSION['filterRegionId'] == 0) {
-    $_SESSION['filterRegionName'] = 'France';
+if ($_SESSION['spf_filterRegionId'] == 0) {
+    $_SESSION['spf_filterRegionName'] = 'France';
 } else {
     $req = "SELECT nccenr FROM geo_reg2018 WHERE region = :region";
     $sql = $dbh->prepare($req);
-    $sql->execute([':region' => $_SESSION['filterRegionId']]);
+    $sql->execute([':region' => $_SESSION['spf_filterRegionId']]);
 
     if ($sql->rowCount()) {
         $res = $sql->fetch();
-        $_SESSION['filterRegionName'] = $res->nccenr;
+        $_SESSION['spf_filterRegionName'] = $res->nccenr;
     }
 }
 

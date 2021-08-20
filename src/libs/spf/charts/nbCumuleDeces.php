@@ -38,7 +38,7 @@ class nbCumuleDeces
         $this->title    = 'Nb cumulé de décès Covid19 | Taux de positivité covid-19';
         $this->regTitle();
 
-        $this->subTitle = 'Source: Santé Publique France (quotidien, lissé sur 7 jours)';
+        $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours)';
 
         $this->yAxis1Label = 'Nb cumulé de décès covid-19';
 
@@ -58,22 +58,22 @@ class nbCumuleDeces
 
         $addReq = "";
         $addReqValues = [];
-        if (!empty($_SESSION['filterRegionId']) && is_numeric($_SESSION['filterRegionId'])) {
+        if (!empty($_SESSION['spf_filterRegionId']) && is_numeric($_SESSION['spf_filterRegionId'])) {
             $addReq .= " AND reg = :reg";
-            $addReqValues[':reg'] = $_SESSION['filterRegionId'];
-            $fileName .= '_reg_' . $_SESSION['filterRegionId'];
+            $addReqValues[':reg'] = $_SESSION['spf_filterRegionId'];
+            $fileName .= '_reg_' . $_SESSION['spf_filterRegionId'];
         }
 
-        if (!empty($_SESSION['filterInterval']) && $_SESSION['filterInterval'] != 'all') {
+        if (!empty($_SESSION['spf_filterInterval']) && $_SESSION['spf_filterInterval'] != 'all') {
             $addReq .= " AND jour >= :jour";
-            $addReqValues[':jour'] = $_SESSION['filterInterval'];
-            $fileName .= '_interval_' . $_SESSION['filterInterval'];
+            $addReqValues[':jour'] = $_SESSION['spf_filterInterval'];
+            $fileName .= '_interval_' . $_SESSION['spf_filterInterval'];
         }
 
         $addReq .= " AND cl_age90 = :cl_age90";
-        if (!empty($_SESSION['filterAge']) && $_SESSION['filterAge'] != '0') {
-            $addReqValues[':cl_age90'] = $_SESSION['filterAge'];
-            $fileName .= '_age_' . $_SESSION['filterAge'];
+        if (!empty($_SESSION['spf_filterAge']) && $_SESSION['spf_filterAge'] != '0') {
+            $addReqValues[':cl_age90'] = $_SESSION['spf_filterAge'];
+            $fileName .= '_age_' . $_SESSION['spf_filterAge'];
         } else {
             $addReqValues[':cl_age90'] = 0;
         }
@@ -205,7 +205,7 @@ class nbCumuleDeces
 
     private function regTitle()
     {
-        $this->title .= ($_SESSION['filterRegionId'] == 0) ? ' | ' . $_SESSION['filterRegionName'] : ' | Région : ' . $_SESSION['filterRegionName'];
+        $this->title .= ($_SESSION['spf_filterRegionId'] == 0) ? ' | ' . $_SESSION['spf_filterRegionName'] : ' | Région : ' . $_SESSION['spf_filterRegionName'];
     }
 
 
