@@ -2,6 +2,7 @@
 namespace owid\charts;
 
 use tools\dbSingleton;
+use main\highChartsCommon;
 
 class totalVaccinatedPerHundred
 {
@@ -164,11 +165,15 @@ eof;
 
         $series = implode(', ', $series);
 
+        $event = highChartsCommon::exportImgLogo();
+
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {
             credits: {
                 enabled: false
             },
+
+            $event
 
             chart: {
                 type: 'spline',
