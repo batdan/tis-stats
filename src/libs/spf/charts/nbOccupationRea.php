@@ -2,6 +2,7 @@
 namespace spf\charts;
 
 use tools\dbSingleton;
+use main\highChartsCommon;
 
 class nbOccupationRea
 {
@@ -122,11 +123,15 @@ class nbOccupationRea
         $jours      = implode(', ', $jours);
         $rea       = implode(', ', $rea);
 
+        $event = highChartsCommon::exportImgLogo();
+
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {
             credits: {
                 enabled: false
             },
+
+            $event
 
             chart: {
                 type: 'spline',
@@ -158,7 +163,8 @@ class nbOccupationRea
                     formatter: function() {
                         return Highcharts.numberFormat(this.value, 0, '.', ' ');
                     }
-                }
+                },
+                opposite: true
             }],
 
             xAxis: {

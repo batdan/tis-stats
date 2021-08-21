@@ -2,7 +2,7 @@
 namespace spf\charts;
 
 use tools\dbSingleton;
-
+use main\highChartsCommon;
 
 /**
  * Nombre quotidien de vaccinés par age
@@ -134,11 +134,15 @@ class nbCumuleVaccinationAge
         $n_cum_dose1 = implode(', ', $n_cum_dose1);
         $n_cum_dose2 = implode(', ', $n_cum_dose2);
 
+        $event = highChartsCommon::exportImgLogo(true);
+
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {
             credits: {
                 enabled: false
             },
+
+            $event
 
             chart: {
                 type: 'spline',

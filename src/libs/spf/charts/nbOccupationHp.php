@@ -2,6 +2,7 @@
 namespace spf\charts;
 
 use tools\dbSingleton;
+use main\highChartsCommon;
 
 class nbOccupationHp
 {
@@ -122,11 +123,15 @@ class nbOccupationHp
         $jours      = implode(', ', $jours);
         $hosp       = implode(', ', $hosp);
 
+        $event = highChartsCommon::exportImgLogo();
+
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {
             credits: {
                 enabled: false
             },
+
+            $event
 
             chart: {
                 type: 'spline',

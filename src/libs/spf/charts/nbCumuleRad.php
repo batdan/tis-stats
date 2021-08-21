@@ -2,6 +2,7 @@
 namespace spf\charts;
 
 use tools\dbSingleton;
+use main\highChartsCommon;
 
 class nbCumuleRad
 {
@@ -35,7 +36,7 @@ class nbCumuleRad
 
         $this->chartName = 'nbCumuleRad';
 
-        $this->title    = 'Nb cumulé des retours à domicile Covid19 | Taux de positivité covid-19';
+        $this->title    = 'Nb cumulé des retours à domicile Covid19 | Nb cumulé de décès covid-19';
         $this->regTitle();
 
         $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours)';
@@ -128,11 +129,15 @@ class nbCumuleRad
         $rad    = implode(', ', $rad);
         $dc     = implode(', ', $dc);
 
+        $event = highChartsCommon::exportImgLogo(true);
+
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {
             credits: {
                 enabled: false
             },
+
+            $event
 
             chart: {
                 type: 'spline',
@@ -164,7 +169,8 @@ class nbCumuleRad
                     formatter: function() {
                         return Highcharts.numberFormat(this.value, 0, '.', ' ');
                     }
-                }
+                },
+                opposite: true
             }],
 
             xAxis: {

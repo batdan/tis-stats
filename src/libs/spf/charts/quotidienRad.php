@@ -2,6 +2,7 @@
 namespace spf\charts;
 
 use tools\dbSingleton;
+use main\highChartsCommon;
 
 class quotidienRad
 {
@@ -136,11 +137,15 @@ class quotidienRad
         $hosp   = implode(', ', $hosp);
         $rea    = implode(', ', $rea);
 
+        $event = highChartsCommon::exportImgLogo(true);
+
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {
             credits: {
                 enabled: false,
             },
+
+            $event
 
             chart: {
                 type: 'spline',

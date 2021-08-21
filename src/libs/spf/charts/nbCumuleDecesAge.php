@@ -2,6 +2,7 @@
 namespace spf\charts;
 
 use tools\dbSingleton;
+use main\highChartsCommon;
 
 class nbCumuleDecesAge
 {
@@ -149,12 +150,15 @@ eof;
         $series = implode(',', $series);
         $series = 'series: [' . $series . '],' . chr(10);
 
+        $event = highChartsCommon::exportImgLogo(true);
 
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {
             credits: {
                 enabled: false
             },
+
+            $event
 
             chart: {
                 type: 'spline',
@@ -186,7 +190,8 @@ eof;
                     formatter: function() {
                         return Highcharts.numberFormat(this.value, 0, '.', ' ');
                     }
-                }
+                },
+                opposite: true
             }],
 
             xAxis: {

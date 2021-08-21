@@ -2,6 +2,7 @@
 namespace spf\charts;
 
 use tools\dbSingleton;
+use main\highChartsCommon;
 
 class nbCumuleDeces
 {
@@ -122,11 +123,15 @@ class nbCumuleDeces
         $jours  = implode(', ', $jours);
         $dc     = implode(', ', $dc);
 
+        $event = highChartsCommon::exportImgLogo(true);
+
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {
             credits: {
                 enabled: false
             },
+
+            $event
 
             chart: {
                 type: 'spline',
@@ -158,7 +163,8 @@ class nbCumuleDeces
                     formatter: function() {
                         return Highcharts.numberFormat(this.value, 0, '.', ' ');
                     }
-                }
+                },
+                opposite: true
             }],
 
             xAxis: {

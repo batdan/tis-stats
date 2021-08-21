@@ -2,6 +2,7 @@
 namespace spf\charts;
 
 use tools\dbSingleton;
+use main\highChartsCommon;
 
 class quotidienEntreesRea
 {
@@ -149,11 +150,15 @@ class quotidienEntreesRea
         $rea        = implode(', ', $rea);
         $positivite = implode(', ', $positivite);
 
+        $event = highChartsCommon::exportImgLogo(true);
+
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {
             credits: {
                 enabled: false
             },
+
+            $event
 
             chart: {
                 type: 'spline',
