@@ -45,19 +45,18 @@ class getOwidData
 
     private function getData()
     {
-        $table      = 'owid_covid19';
-        // $countries  = ['FRA', 'GBR', 'SWE', 'MEX', 'PRT', 'ESP', 'CHE', 'IND', 'USA', 'ISR'];
-        $countries = [];
-
         $file = file($this->url);
         $json = $file[0];
         $data = json_decode($json, true);
 
-        // Table principale
-        $this->dropTable($table);
-        $this->createTable($table);
+        $table      = 'owid_covid19';
+        $tmpTable = $table . '_tmp';
 
-        $req = "INSERT INTO $table (
+        $this->createTable($tmpTable);
+
+        $countries = [];
+
+        $req = "INSERT INTO $tmpTable (
             ISO,
             continent,
             location,
@@ -118,17 +117,20 @@ class getOwidData
         $req = substr($req, 0, -1);
         $sql = $this->dbh->query($req);
 
+        $this->dropTable($table);
+        $this->renameTable($tmpTable, $table);
+
         // Table countries
         foreach ($countries as $country) {
 
             $tableCountry = $table . '_' . $country;
+            $tmpTableCountry = $table . '_' . $country . '_tmp';
 
-            $this->dropTable($tableCountry);
-            $this->createTableCountry($tableCountry);
+            $this->createTableCountry($tmpTableCountry);
 
             $dataCountry = $data[$country]['data'];
 
-            $req = "INSERT INTO $tableCountry (
+            $req = "INSERT INTO $tmpTableCountry (
                 jour,
                 total_cases,
                 new_cases,
@@ -256,6 +258,9 @@ class getOwidData
 
             $req = substr($req, 0, -1);
             $sql = $this->dbh->query($req);
+
+            $this->dropTable($tableCountry);
+            $this->renameTable($tmpTableCountry, $tableCountry);
         }
     }
 
@@ -277,12 +282,22 @@ class getOwidData
         }
     }
 
+
+    private function renameTable($tmpTable, $table)
+    {
+        $req = "RENAME TABLE `$tmpTable` TO `$table`";
+        $sql = $this->dbh->query($req);
+    }
+
+
     /**
      * Création de la table globale
      * @param  string $table    Nom table
      */
     private function createTable($table)
     {
+        $this->dropTable($table);
+
         $req = "CREATE TABLE `$table` (
           `id`                              int             NOT NULL,
           `ISO`                             varchar(10)     NULL,
@@ -326,6 +341,8 @@ class getOwidData
      */
     private function createTableCountry($table)
     {
+        $this->dropTable($table);
+
         $req = "CREATE TABLE `$table` (
           `id`                                      int             NOT NULL,
           `jour`                                    date            NOT NULL,

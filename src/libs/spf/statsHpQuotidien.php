@@ -77,19 +77,38 @@ class statsHpQuotidien
             $line = str_replace(chr(10), '', $line);
             $line = explode(';', $line);
 
-            $req .= "('".trim($line[0],'"')."', '".$line[1]."',".$line[2].",".$line[3].",".$line[4].",".$line[5]."),";
+            $dep        = empty($line[0]) ? '' : trim($line[0],'"');
+            $jour       = empty($line[1]) ? '' : $line[1];
+            $incid_hosp = empty($line[2]) ? 0  : $line[2];
+            $incid_rea  = empty($line[3]) ? 0  : $line[3];
+            $incid_dc   = empty($line[4]) ? 0  : $line[4];
+            $incid_rad  = empty($line[5]) ? 0  : $line[5];
+
+            $req .= "('".$dep."', '".$jour."',".$incid_hosp.",".$incid_rea.",".$incid_dc.",".$incid_rad.")," . chr(10);
 
             $i++;
         }
 
-        $req = substr($req, 0, -1);
-        $sql = $this->dbh->query($req);
+        $req = substr($req, 0, -2);
 
-        $this->setRegion($tmpTable);
+        try {
+            $sql = $this->dbh->query($req);
 
-        $this->dropTable($table);
-        $this->renameTable($tmpTable, $table);
-        $this->dropTable($tmpTable);
+            $this->setRegion($tmpTable);
+
+            $this->dropTable($table);
+            $this->renameTable($tmpTable, $table);
+
+        } catch (\Exception $e) {
+            echo chr(10);
+            echo chr(10);
+            echo $req;
+            echo chr(10);
+            echo chr(10);
+            echo $e->getMessage();
+            echo chr(10);
+            echo chr(10);
+        }
     }
 
 
@@ -120,11 +139,13 @@ class statsHpQuotidien
 
     /**
      * Création de la table
-     * @param  string   $tmpTable   Nom table temporaire
+     * @param  string   $table   Nom table temporaire
      */
-    private function createTable($tmpTable)
+    private function createTable($table)
     {
-        $req = "CREATE TABLE `$tmpTable` (
+        $this->dropTable($table);
+
+        $req = "CREATE TABLE `$table` (
           `id`          int         NOT NULL,
           `dep`         varchar(3)  COLLATE utf8mb4_unicode_ci NOT NULL,
           `reg`         varchar(2)  COLLATE utf8mb4_unicode_ci NULL,
@@ -136,29 +157,29 @@ class statsHpQuotidien
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
         $this->dbh->query($req);
 
-        $req = "ALTER TABLE `$tmpTable` ADD PRIMARY KEY (`id`)";
+        $req = "ALTER TABLE `$table` ADD PRIMARY KEY (`id`)";
         $this->dbh->query($req);
 
-        $req = "ALTER TABLE `$tmpTable` MODIFY `id` int NOT NULL AUTO_INCREMENT";
+        $req = "ALTER TABLE `$table` MODIFY `id` int NOT NULL AUTO_INCREMENT";
         $this->dbh->query($req);
 
-        $req = "ALTER TABLE `$tmpTable` ADD INDEX(`dep`)";
+        $req = "ALTER TABLE `$table` ADD INDEX(`dep`)";
         $this->dbh->query($req);
 
-        $req = "ALTER TABLE `$tmpTable` ADD INDEX(`reg`)";
+        $req = "ALTER TABLE `$table` ADD INDEX(`reg`)";
         $this->dbh->query($req);
 
-        $req = "ALTER TABLE `$tmpTable` ADD INDEX(`jour`)";
+        $req = "ALTER TABLE `$table` ADD INDEX(`jour`)";
         $this->dbh->query($req);
     }
 
     /**
      * Ajout des régions
-     * @param  string $tmpTable    Nom table temporaire
+     * @param  string $table    Nom table temporaire
      */
-    private function setRegion($tmpTable)
+    private function setRegion($table)
     {
-        $req = "UPDATE          `$tmpTable`     a
+        $req = "UPDATE          `$table`     a
                 INNER JOIN      geo_depts2018   b
                 ON              a.dep = b.dep
                 SET             a.reg = b.region";

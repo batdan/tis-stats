@@ -27,7 +27,7 @@ use tools\dbSingleton;
  * pop      integer         Population de reference
  *                          (du departement, de la région, nationale)           656955.0
  */
-class statsDreesPcr
+class Z_statsDreesPcr
 {
     /**
      * Instance PDO
