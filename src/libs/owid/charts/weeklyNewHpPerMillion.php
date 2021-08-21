@@ -3,7 +3,7 @@ namespace owid\charts;
 
 use tools\dbSingleton;
 
-class nbOccupationHp
+class weeklyNewHpPerMillion
 {
     private $cache;
     private $dbh;
@@ -35,12 +35,12 @@ class nbOccupationHp
 
         $this->dbh = dbSingleton::getInstance();
 
-        $this->chartName = 'nbOccupationHp';
+        $this->chartName = 'weeklyNewHpPerMillion';
 
-        $this->title    = 'Nb actuel d`hospitalisations covid-19 par millions d`habitants';
+        $this->title    = 'Nb hebdomataire d`hospitalisations covid-19 par millions d`habitants';
         $this->subTitle = 'Source: Our World in Data';
 
-        $this->yAxis1Label = 'Nb actuel d`hospitalisations par millions';
+        $this->yAxis1Label = 'Nb hebdomataire d`hospitalisations par millions';
 
         $this->getCountries();
 
@@ -98,7 +98,7 @@ class nbOccupationHp
             $tableCountry = 'owid_covid19_' . $iso;
 
             $req = "SELECT      jour,
-                                hosp_patients_per_million AS myVal
+                                weekly_hosp_admissions_per_million AS myVal
 
             FROM        $tableCountry
 

@@ -3,7 +3,7 @@ namespace owid\charts;
 
 use tools\dbSingleton;
 
-class nbOccupationHp
+class newDeathsSmoothedPerMillion
 {
     private $cache;
     private $dbh;
@@ -35,12 +35,12 @@ class nbOccupationHp
 
         $this->dbh = dbSingleton::getInstance();
 
-        $this->chartName = 'nbOccupationHp';
+        $this->chartName = 'newDeathsSmoothedPerMillion';
 
-        $this->title    = 'Nb actuel d`hospitalisations covid-19 par millions d`habitants';
+        $this->title    = 'Nb de décès covid-19 par millions d`habitants';
         $this->subTitle = 'Source: Our World in Data';
 
-        $this->yAxis1Label = 'Nb actuel d`hospitalisations par millions';
+        $this->yAxis1Label = 'Nb de décès par millions';
 
         $this->getCountries();
 
@@ -98,13 +98,13 @@ class nbOccupationHp
             $tableCountry = 'owid_covid19_' . $iso;
 
             $req = "SELECT      jour,
-                                hosp_patients_per_million AS myVal
+                                new_deaths_smoothed_per_million AS myVal
 
-            FROM        $tableCountry
+                    FROM        $tableCountry
 
-            WHERE       1 $addReq
+                    WHERE       1 $addReq
 
-            ORDER BY    jour ASC";
+                    ORDER BY    jour ASC";
 
             $sql = $this->dbh->prepare($req);
             $sql->execute($addReqValues);
@@ -137,7 +137,9 @@ class nbOccupationHp
             foreach($this->countries as $iso => $country) {
                 if (isset($res[$iso]['__VAL__'])) {
                     $tdpm = floatval($res[$iso]['__VAL__']);
-                    if ($tdpm < 0) $tdpm = 0;
+                    if ($tdpm < 0) {
+                        $tdpm = 0;
+                    }
                     $countriesSerie[$iso][] = !empty($tdpm) ? $tdpm : "'NULL'";
                 }
             }

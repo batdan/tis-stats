@@ -3,7 +3,7 @@
 include ( __DIR__ . '/../../bootstrap.php' );
 
 $cache              = true;
-$defaultCountries   = ['FRA', 'GBR', 'SWE', 'MEX', 'ESP', 'USA', 'ISR'];
+$defaultCountries   = ['FRA', 'SWE', 'ISR'];
 
 // echo '<pre>';
 // print_r($_SESSION);
@@ -14,7 +14,7 @@ $defaultCountries   = ['FRA', 'GBR', 'SWE', 'MEX', 'ESP', 'USA', 'ISR'];
 // }
 
 // Initialisation des filtres
-$_SESSION['owid_filterChart']       = (isset($_SESSION['owid_filterChart']))    ? $_SESSION['owid_filterChart']     : 'owid\charts\totalDeathPerMillion';
+$_SESSION['owid_filterChart']       = (isset($_SESSION['owid_filterChart']))    ? $_SESSION['owid_filterChart']     : 'owid\charts\pcrPositivite';
 $_SESSION['owid_filterCountry']     = (isset($_SESSION['owid_filterCountry']))  ? $_SESSION['owid_filterCountry']   : $defaultCountries;
 $_SESSION['owid_filterInterval']    = (isset($_SESSION['owid_filterInterval'])) ? $_SESSION['owid_filterInterval']  : 'all';
 

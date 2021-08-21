@@ -3,7 +3,7 @@ namespace owid\charts;
 
 use tools\dbSingleton;
 
-class nbOccupationHp
+class pcrNewTestsPerThousand
 {
     private $cache;
     private $dbh;
@@ -35,12 +35,12 @@ class nbOccupationHp
 
         $this->dbh = dbSingleton::getInstance();
 
-        $this->chartName = 'nbOccupationHp';
+        $this->chartName = 'newTestsPerThousand';
 
-        $this->title    = 'Nb actuel d`hospitalisations covid-19 par millions d`habitants';
+        $this->title    = 'Nb quotidien de tests PCR covid-19 par milliers d`habitants';
         $this->subTitle = 'Source: Our World in Data';
 
-        $this->yAxis1Label = 'Nb actuel d`hospitalisations par millions';
+        $this->yAxis1Label = 'Nb quotidien de tests PCR par milliers';
 
         $this->getCountries();
 
@@ -98,7 +98,7 @@ class nbOccupationHp
             $tableCountry = 'owid_covid19_' . $iso;
 
             $req = "SELECT      jour,
-                                hosp_patients_per_million AS myVal
+                                new_tests_smoothed_per_thousand AS myVal
 
             FROM        $tableCountry
 

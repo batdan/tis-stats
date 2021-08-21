@@ -137,6 +137,7 @@ class totalDeathPerMillion
             foreach($this->countries as $iso => $country) {
                 if (isset($res[$iso]['__VAL__'])) {
                     $tdpm = floatval($res[$iso]['__VAL__']);
+                    if ($tdpm < 0) $tdpm = 0;
                     $countriesSerie[$iso][] = !empty($tdpm) ? $tdpm : "'NULL'";
                 }
             }
@@ -149,6 +150,10 @@ class totalDeathPerMillion
             $serieCountry = implode(',', $countriesSerie[$iso]);
             $series[] = <<<eof
             {
+                connectNulls: true,
+                marker:{
+                    enabled:false
+                },
                 name: '$country',
                 data: [$serieCountry]
             }

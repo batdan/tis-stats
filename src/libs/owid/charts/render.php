@@ -122,40 +122,38 @@ eof;
     private static function chartSelect()
     {
         $filterChart  = '<div class="form-group col-lg-3">';
-        $filterChart .= '<label class="form-label" for="filter-chart">Sélection du graphique</label>';
+        $filterChart .= '<label class="form-label" for="filter-chart">Sélection de graphiques covid-19</label>';
         $filterChart .= '<select id="filter-chart" class="custom-select">';
 
         $chartCollections = [
-            // 'item-1'                                    => 'Tests PCR',
-            // 'spf\charts\positivite'                     => 'C19 | PCR : Taux de positivité',
-            // 'closeItem-1'                               => '',
+            'item-1'                                    => 'Tests PCR',
+            'owid\charts\pcrPositivite'                 => 'PCR : taux de positivité',
+            'owid\charts\pcrNewTestsPerThousand'        => 'PCR : tests quotidiens par milliers',
+            'closeItem-1'                               => '',
 
-            // 'item-2'                                    => 'Chiffres quotidiens',
-            // 'spf\charts\quotidienEntreesHp'             => 'C19 | Quotidien : hospitalisations',
-            // 'spf\charts\quotidienEntreesRea'            => 'C19 | Quotidien : soins critiques',
-            // 'spf\charts\quotidienDeces'                 => 'C19 | Quotidien : décès',
-            // 'spf\charts\quotidienRad'                   => 'C19 | Quotidien : retours à domicile',
-            // 'closeItem-2'                               => '',
+            'item-2'                                    => 'Chiffres quotidiens',
+            'owid\charts\newDeathsSmoothedPerMillion'   => 'Quotidien : décès par millions',
+            'closeItem-2'                               => '',
 
-            'item-3'                                    => 'Taux d\'occupation des hôpitaux',
-            'owid\charts\nbOccupationHp'                => 'C19 | Occupation : hospitalisations',
-            // 'spf\charts\nbOccupationRea'                => 'C19 | Occupation : soins critiques',
+            'item-3'                                    => 'Chiffres hebdomadaires',
+            'owid\charts\weeklyNewHpPerMillion'         => 'Hebdomadaire : hospitalisations par millions',
+            'owid\charts\weeklyNewReaPerMillion'        => 'Hebdomadaire : soins critiques par millions',
             'closeItem-3'                               => '',
 
-            'item-4'                                    => 'Chiffres cumulés',
-            'owid\charts\totalDeathPerMillion'          => 'C19 | Cumulé : décès par millions d\'habitants',
-            'owid\charts\totalCasesPerMillion'          => 'C19 | Cumulé : cas par millions d\'habitants',
-            // 'spf\charts\nbCumuleDecesAge'               => 'C19 | Cumulé : décès par âge',
-            // 'spf\charts\nbCumuleRad'                    => 'C19 | Cumulé : retours à domicile',
+            'item-4'                                    => 'Occupation des hôpitaux',
+            'owid\charts\nbOccupationHp'                => 'Occupation : hospitalisations par millions',
+            'owid\charts\nbOccupationRea'               => 'Occupation : soins critiques par millions',
             'closeItem-4'                               => '',
 
-            'item-5'                                    => 'Chiffres sur la vaccinations',
-            // 'spf\charts\quotidienVaccinationAge'        => 'C19 | Quotidien : vaccinations par âge',
-            // 'spf\charts\quotidienVaccinationVaccin'     => 'C19 | Quotidien : vaccinations par vaccin',
-            // 'spf\charts\nbCumuleVaccinationAge'         => 'C19 | Cumulé : vaccinations par âge',
-            'owid\charts\totalFirstVaccinatedPerHundred'=> 'C19 | Partiellement vaccinés %',
-            'owid\charts\totalVaccinatedPerHundred'     => 'C19 | Totalement vaccinés %',
+            'item-5'                                    => 'Chiffres cumulés',
+            'owid\charts\totalDeathPerMillion'          => 'Cumulé : décès par millions',
+            'owid\charts\totalCasesPerMillion'          => 'Cumulé : cas par millions',
             'closeItem-5'                               => '',
+
+            'item-6'                                    => 'Chiffres sur la vaccinations',
+            'owid\charts\totalFirstVaccinatedPerHundred'=> 'Cumulé : partiellement vaccinés %',
+            'owid\charts\totalVaccinatedPerHundred'     => 'Cumulé : totalement vaccinés %',
+            'closeItem-6'                               => '',
         ];
 
         foreach ($chartCollections as $key => $text) {
