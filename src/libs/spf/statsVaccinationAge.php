@@ -106,9 +106,7 @@ class statsVaccinationAge
 
         $this->dropTable($table);
         $this->renameTable($tmpTable, $table);
-        $this->dropTable($tmpTable);
     }
-
 
 
     /**
@@ -138,11 +136,13 @@ class statsVaccinationAge
 
     /**
      * Création de la table
-     * @param  string   $tmpTable   Nom table temporaire
+     * @param  string   $table   Nom table temporaire
      */
-    private function createTable($tmpTable)
+    private function createTable($table)
     {
-        $req = "CREATE TABLE `$tmpTable` (
+        $this->dropTable($table);
+
+        $req = "CREATE TABLE `$table` (
             `id`          int             NOT NULL,
             `jour`        date            NOT NULL,
             `reg`         varchar(2)      COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -156,19 +156,19 @@ class statsVaccinationAge
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
         $this->dbh->query($req);
 
-        $req = "ALTER TABLE `$tmpTable` ADD PRIMARY KEY (`id`)";
+        $req = "ALTER TABLE `$table` ADD PRIMARY KEY (`id`)";
         $this->dbh->query($req);
 
-        $req = "ALTER TABLE `$tmpTable` MODIFY `id` int NOT NULL AUTO_INCREMENT";
+        $req = "ALTER TABLE `$table` MODIFY `id` int NOT NULL AUTO_INCREMENT";
         $this->dbh->query($req);
 
-        $req = "ALTER TABLE `$tmpTable` ADD INDEX(`reg`)";
+        $req = "ALTER TABLE `$table` ADD INDEX(`reg`)";
         $this->dbh->query($req);
 
-        $req = "ALTER TABLE `$tmpTable` ADD INDEX(`jour`)";
+        $req = "ALTER TABLE `$table` ADD INDEX(`jour`)";
         $this->dbh->query($req);
 
-        $req = "ALTER TABLE `$tmpTable` ADD INDEX(`clage_vacsi`)";
+        $req = "ALTER TABLE `$table` ADD INDEX(`clage_vacsi`)";
         $this->dbh->query($req);
     }
 }
