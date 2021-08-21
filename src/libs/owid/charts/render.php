@@ -63,6 +63,9 @@ class render
 
         <script type="text/javascript" src="//code.highcharts.com/highcharts.js"></script>
         <script type="text/javascript" src="//code.highcharts.com/modules/exporting.js"></script>
+        <script src="https://code.highcharts.com/modules/offline-exporting.js"></script>
+        <script src="https://code.highcharts.com/modules/export-data.js"></script>
+
         <script type="text/javascript">
             $jsHightcharts
             $jsRender
@@ -122,32 +125,32 @@ eof;
     private static function chartSelect()
     {
         $filterChart  = '<div class="form-group col-lg-3">';
-        $filterChart .= '<label class="form-label" for="filter-chart">Sélection de graphiques covid-19</label>';
+        $filterChart .= '<label class="form-label" for="filter-chart">Sélection de graphiques C19</label>';
         $filterChart .= '<select id="filter-chart" class="custom-select">';
 
         $chartCollections = [
             'item-1'                                    => 'Tests PCR',
             'owid\charts\pcrPositivite'                 => 'PCR : taux de positivité',
-            'owid\charts\pcrNewTestsPerThousand'        => 'PCR : tests quotidiens par milliers',
+            'owid\charts\pcrNewTestsPerThousand'        => 'PCR : tests quotidiens',
             'closeItem-1'                               => '',
 
             'item-2'                                    => 'Chiffres quotidiens',
-            'owid\charts\newDeathsSmoothedPerMillion'   => 'Quotidien : décès par millions',
+            'owid\charts\newDeathsSmoothedPerMillion'   => 'Quotidien : décès',
             'closeItem-2'                               => '',
 
             'item-3'                                    => 'Chiffres hebdomadaires',
-            'owid\charts\weeklyNewHpPerMillion'         => 'Hebdomadaire : hospitalisations par millions',
-            'owid\charts\weeklyNewReaPerMillion'        => 'Hebdomadaire : soins critiques par millions',
+            'owid\charts\weeklyNewHpPerMillion'         => 'Hebdomadaire : hospitalisations',
+            'owid\charts\weeklyNewReaPerMillion'        => 'Hebdomadaire : soins critiques',
             'closeItem-3'                               => '',
 
             'item-4'                                    => 'Occupation des hôpitaux',
-            'owid\charts\nbOccupationHp'                => 'Occupation : hospitalisations par millions',
-            'owid\charts\nbOccupationRea'               => 'Occupation : soins critiques par millions',
+            'owid\charts\nbOccupationHp'                => 'Occupation : hospitalisations',
+            'owid\charts\nbOccupationRea'               => 'Occupation : soins critiques',
             'closeItem-4'                               => '',
 
             'item-5'                                    => 'Chiffres cumulés',
-            'owid\charts\totalDeathPerMillion'          => 'Cumulé : décès par millions',
-            'owid\charts\totalCasesPerMillion'          => 'Cumulé : cas par millions',
+            'owid\charts\totalDeathPerMillion'          => 'Cumulé : décès',
+            'owid\charts\totalCasesPerMillion'          => 'Cumulé : cas',
             'closeItem-5'                               => '',
 
             'item-6'                                    => 'Chiffres sur la vaccinations',

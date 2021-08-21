@@ -37,10 +37,10 @@ class totalCasesPerMillion
 
         $this->chartName = 'totalCasesPerMillion';
 
-        $this->title    = 'Nb cumulé de cas covid-19 par millions d`habitants';
+        $this->title    = 'Nb cumulé de cas covid-19 par million d`habitants';
         $this->subTitle = 'Source: Our World in Data';
 
-        $this->yAxis1Label = 'Nb cumulé de cas covid-19 par millions';
+        $this->yAxis1Label = 'Nb cumulé de cas covid-19 pour un million d`habitants';
 
         $this->getCountries();
 

@@ -37,10 +37,10 @@ class totalDeathPerMillion
 
         $this->chartName = 'totalDeathPerMillion';
 
-        $this->title    = 'Nb cumulé de décès covid-19 par millions d`habitants';
+        $this->title    = 'Nb cumulé de décès covid-19 par million d`habitants';
         $this->subTitle = 'Source: Our World in Data';
 
-        $this->yAxis1Label = 'Nb cumulé des décès par millions';
+        $this->yAxis1Label = 'Nb cumulé de décès pour un million d`habitants';
 
         $this->getCountries();
 

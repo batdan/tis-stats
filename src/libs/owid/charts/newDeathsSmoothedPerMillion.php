@@ -37,10 +37,10 @@ class newDeathsSmoothedPerMillion
 
         $this->chartName = 'newDeathsSmoothedPerMillion';
 
-        $this->title    = 'Nb de décès covid-19 par millions d`habitants';
+        $this->title    = 'Nb de décès covid-19 par million d`habitants';
         $this->subTitle = 'Source: Our World in Data';
 
-        $this->yAxis1Label = 'Nb de décès par millions';
+        $this->yAxis1Label = 'Nb de décès pour un million d`habitants';
 
         $this->getCountries();
 

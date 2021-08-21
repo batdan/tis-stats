@@ -37,10 +37,10 @@ class nbOccupationHp
 
         $this->chartName = 'nbOccupationHp';
 
-        $this->title    = 'Nb actuel d`hospitalisations covid-19 par millions d`habitants';
+        $this->title    = 'Nb actuel d`hospitalisations covid-19 par million d`habitants';
         $this->subTitle = 'Source: Our World in Data';
 
-        $this->yAxis1Label = 'Nb actuel d`hospitalisations par millions';
+        $this->yAxis1Label = 'Nb actuel d`hospitalisations pour un million d`habitants';
 
         $this->getCountries();
 

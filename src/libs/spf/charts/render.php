@@ -120,7 +120,7 @@ eof;
     private static function chartSelect()
     {
         $filterChart  = '<div class="form-group col-lg-3">';
-        $filterChart .= '<label class="form-label" for="filter-chart">Sélection de graphiques covid-19</label>';
+        $filterChart .= '<label class="form-label" for="filter-chart">Sélection de graphiques C19</label>';
         $filterChart .= '<select id="filter-chart" class="form-select">';
 
         $chartCollections = [

@@ -2,6 +2,7 @@
 namespace owid\charts;
 
 use tools\dbSingleton;
+use main\highChartsCommon;
 
 class pcrPositivite
 {
@@ -37,10 +38,10 @@ class pcrPositivite
 
         $this->chartName = 'pcrPositivite';
 
-        $this->title    = 'Nb quotidien de tests PCR covid-19 par milliers d`habitants';
+        $this->title    = 'Taux de positivité tests PCR covid-19';
         $this->subTitle = 'Source: Our World in Data';
 
-        $this->yAxis1Label = 'Nb quotidien de tests PCR par milliers';
+        $this->yAxis1Label = 'Taux de positivité tests PCR covid-19';
 
         $this->getCountries();
 
@@ -162,11 +163,15 @@ eof;
 
         $series = implode(', ', $series);
 
+        $event = highChartsCommon::exportImgLogo();
+
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {
             credits: {
                 enabled: false
             },
+
+            $event
 
             chart: {
                 type: 'spline',
