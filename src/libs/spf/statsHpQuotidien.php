@@ -100,14 +100,7 @@ class statsHpQuotidien
             $this->renameTable($tmpTable, $table);
 
         } catch (\Exception $e) {
-            echo chr(10);
-            echo chr(10);
-            echo $req;
-            echo chr(10);
-            echo chr(10);
-            echo $e->getMessage();
-            echo chr(10);
-            echo chr(10);
+            echo chr(10) . $e->getMessage() . chr(10);
         }
     }
 

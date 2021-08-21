@@ -79,17 +79,30 @@ class statsHpCumuleAge
             $line = str_replace(chr(10), '', $line);
             $line = explode(';', $line);
 
-            $req .= "('".trim($line[0],'"')."', '".trim($line[1],'"')."','".$line[2]."',".$line[3].",".$line[4].",".$line[8].",".$line[9]."),";
+            $reg        = empty($line[0]) ? '' : trim($line[0],'"');
+            $cl_age90   = empty($line[1]) ? '' : trim($line[1],'"');
+            $jour       = empty($line[2]) ? '' : $line[2];
+            $hosp       = empty($line[3]) ? 0  : $line[3];
+            $rea        = empty($line[4]) ? 0  : $line[4];
+            $rad        = empty($line[8]) ? 0  : $line[8];
+            $dc         = empty($line[9]) ? 0  : $line[9];
+
+            $req .= "('".$reg."', '".$cl_age90."','".$jour."',".$hosp.",".$rea.",".$rad.",".$dc.")," . chr(10);
 
             $i++;
         }
 
-        $req = substr($req, 0, -1);
-        $sql = $this->dbh->query($req);
+        $req = substr($req, 0, -2);
 
-        $this->dropTable($table);
-        $this->renameTable($tmpTable, $table);
-        $this->dropTable($tmpTable);
+        try {
+            $sql = $this->dbh->query($req);
+
+            $this->dropTable($table);
+            $this->renameTable($tmpTable, $table);
+            
+        } catch (\Exception $e) {
+            echo chr(10) . $e->getMessage() . chr(10);
+        }
     }
 
 
@@ -120,11 +133,13 @@ class statsHpCumuleAge
 
     /**
      * Création de la table
-     * @param  string   $tmpTable   Nom table temporaire
+     * @param  string   $table   Nom table temporaire
      */
-    private function createTable($tmpTable)
+    private function createTable($table)
     {
-        $req = "CREATE TABLE `$tmpTable` (
+        $this->dropTable($table);
+
+        $req = "CREATE TABLE `$table` (
           `id`          int         NOT NULL,
           `reg`         varchar(2)  COLLATE utf8mb4_unicode_ci NOT NULL,
           `cl_age90`    varchar(2)  COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -136,16 +151,16 @@ class statsHpCumuleAge
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
         $this->dbh->query($req);
 
-        $req = "ALTER TABLE `$tmpTable` ADD PRIMARY KEY (`id`)";
+        $req = "ALTER TABLE `$table` ADD PRIMARY KEY (`id`)";
         $this->dbh->query($req);
 
-        $req = "ALTER TABLE `$tmpTable` MODIFY `id` int NOT NULL AUTO_INCREMENT";
+        $req = "ALTER TABLE `$table` MODIFY `id` int NOT NULL AUTO_INCREMENT";
         $this->dbh->query($req);
 
-        $req = "ALTER TABLE `$tmpTable` ADD INDEX(`reg`)";
+        $req = "ALTER TABLE `$table` ADD INDEX(`reg`)";
         $this->dbh->query($req);
 
-        $req = "ALTER TABLE `$tmpTable` ADD INDEX(`jour`)";
+        $req = "ALTER TABLE `$table` ADD INDEX(`jour`)";
         $this->dbh->query($req);
     }
 }
