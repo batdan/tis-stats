@@ -211,7 +211,7 @@ eof;
 
         $filterCountry  = '<div class="form-group col-lg-3" style="padding-left:0; padding-right:0;">';
         $filterCountry .= '<label class="form-label col-lg-12" for="filter-country">Pays</label>';
-        $filterCountry .= '<select id="filter-country" class="selectpicker col-lg-11" data-style="btn-default" multiple="multiple">';
+        $filterCountry .= '<select id="filter-country" class="selectpicker col-10" data-style="btn-default" multiple="multiple" data-live-search="true">';
 
         foreach ($countries as $iso => $location) {
             $selected = '';
@@ -223,7 +223,7 @@ eof;
         }
 
         $filterCountry .= '</select>';
-        $filterCountry .= '<button id="country-search" type="submit" class="col-lg-1 btn btn-primary" style="border-radius:0 5px 5px 0; position:relative; left:-15px;">';
+        $filterCountry .= '<button id="country-search" type="submit" class="col-2 btn btn-primary" style="border-radius:0 5px 5px 0; position:relative; left:-15px;">';
         $filterCountry .= '<i class="fas fa-search" style="position:relative; left:-2px;"></i></button>';
         $filterCountry .= '</div>';
 

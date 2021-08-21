@@ -3,7 +3,8 @@ namespace main;
 
 class cache
 {
-    private static $pathCache = __DIR__ . '/../../cache/';
+    private static $pathCache   = __DIR__ . '/../../cache/';
+    private static $md5Cache    = true;
 
 
     /**
@@ -15,7 +16,7 @@ class cache
      */
     public static function getCache($fileName)
     {
-        $pathFile = static::$pathCache . $fileName;
+        $pathFile = self::pathFile($fileName);
 
         if (file_exists($pathFile)) {
             $file = file($pathFile);
@@ -31,16 +32,14 @@ class cache
      */
     public static function removeCache()
     {
-        $cdir = scandir(static::$pathCache);
+        $cdir = scandir(self::$pathCache);
 
         foreach($cdir as $file) {
             if ($file == '.' || $file == '..') {
                 continue;
             }
 
-            // if (substr($file, 0, 10) != date('Y-m-d')) {
-                unlink(static::$pathCache . $file);
-            // }
+            unlink(self::$pathCache . $file);
         }
     }
 
@@ -53,8 +52,24 @@ class cache
      */
     public static function createCache($fileName, $data)
     {
-        $file = fopen(static::$pathCache . $fileName, 'w');
+        $file = fopen(self::pathFile($fileName), 'w');
         fwrite($file, json_encode($data));
         fclose($file);
+    }
+
+
+    /**
+     * Convertion des noms de fichier de cache en MD5
+     *
+     * @param  string   $fileName   Nom du fichier
+     * @return string
+     */
+    private static function pathFile($fileName)
+    {
+        if (self::$md5Cache) {
+            $fileName = md5($fileName);
+        }
+
+        return self::$pathCache . $fileName;
     }
 }
