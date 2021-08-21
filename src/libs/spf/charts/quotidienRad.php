@@ -137,7 +137,7 @@ class quotidienRad
         $hosp   = implode(', ', $hosp);
         $rea    = implode(', ', $rea);
 
-        $event = highChartsCommon::exportImgLogo(true);
+        $event = highChartsCommon::exportImgLogo();
 
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {

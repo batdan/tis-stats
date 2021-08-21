@@ -134,7 +134,7 @@ class quotidienVaccinationVaccin
         $n_dose1    = implode(', ', $n_dose1);
         $n_dose2    = implode(', ', $n_dose2);
 
-        $event = highChartsCommon::exportImgLogo(true);
+        $event = highChartsCommon::exportImgLogo();
 
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {

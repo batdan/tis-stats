@@ -7,14 +7,14 @@ class highChartsCommon
     {
         $imgSrc     = 'https://stats.lachainehumaine.com/img/logo_complet_2_30pct_nb.png';
 
-        $imgWidth   = 320;
-        $imgHeight  = 85;
+        $imgWidth   = 274;
+        $imgHeight  = 73;
 
-        $x  = 20;
-        $y  = 95;
+        $x  = 10;
+        $y  = 70;
 
         if ($yAxisleft) {
-            $x  = 100;
+            $x  = 110;
         }
 
         $jsEvent = <<<eof

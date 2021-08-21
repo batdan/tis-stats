@@ -150,7 +150,7 @@ eof;
         $series = implode(',', $series);
         $series = 'series: [' . $series . '],' . chr(10);
 
-        $event = highChartsCommon::exportImgLogo(true);
+        $event = highChartsCommon::exportImgLogo();
 
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {

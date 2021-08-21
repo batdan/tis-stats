@@ -123,7 +123,7 @@ class nbCumuleDeces
         $jours  = implode(', ', $jours);
         $dc     = implode(', ', $dc);
 
-        $event = highChartsCommon::exportImgLogo(true);
+        $event = highChartsCommon::exportImgLogo();
 
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {

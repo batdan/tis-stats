@@ -134,7 +134,7 @@ class nbCumuleVaccinationAge
         $n_cum_dose1 = implode(', ', $n_cum_dose1);
         $n_cum_dose2 = implode(', ', $n_cum_dose2);
 
-        $event = highChartsCommon::exportImgLogo(true);
+        $event = highChartsCommon::exportImgLogo();
 
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {
