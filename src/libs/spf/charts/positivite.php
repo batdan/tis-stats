@@ -41,7 +41,7 @@ class positivite
 
         $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours)';
 
-        $this->yAxis1Label = 'Taux de positivité';
+        $this->yAxis1Label = '% de positifs sur la population testée';
         $this->yAxis2Label = 'Nb de testés';
 
         $this->getData();

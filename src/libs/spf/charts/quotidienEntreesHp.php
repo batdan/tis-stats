@@ -41,7 +41,7 @@ class quotidienEntreesHp
 
         $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours)';
 
-        $this->yAxis1Label = 'Taux de positivité';
+        $this->yAxis1Label = '% de positifs sur la population testée';
         $this->yAxis2Label = 'Nb d`hospitalisations';
 
         $this->getData();
@@ -188,8 +188,7 @@ class quotidienEntreesHp
                         color: '#106097',
                         fontSize: 14
                     }
-                },
-                opposite: true
+                }
 
             }, { // Secondary yAxis
                 title: {
@@ -208,7 +207,8 @@ class quotidienEntreesHp
                     formatter: function() {
                         return Highcharts.numberFormat(this.value, 0, '.', ' ');
                     }
-                }
+                },
+                opposite: true
             }],
 
             xAxis: {

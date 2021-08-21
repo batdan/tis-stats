@@ -35,7 +35,7 @@ class nbCumuleDecesAge
 
         $this->chartName = 'nbCumuleDecesAge';
 
-        $this->title    = 'Nb cumulé de décès par ages Covid19 | Taux de positivité covid-19';
+        $this->title    = 'Nb cumulé de décès par ages Covid19';
         $this->regTitle();
 
         $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours)';
