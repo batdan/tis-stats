@@ -2,3 +2,4 @@
 /src/composer.lock
 /src/vendor
 /deploy/*
+/src/env.php
