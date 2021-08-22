@@ -9,7 +9,7 @@ use tools\dbSingleton;
  *      - du nombre de positifs
  *      - du taux de positivité
  */
-class statsLaboPcrRegCalcLisse7j
+class statsLaboPcrCalcLisse7j
 {
     /**
      * Instance PDO
@@ -33,17 +33,17 @@ class statsLaboPcrRegCalcLisse7j
      */
     private function calcStat()
     {
-        $table = 'donnees_labo_pcr_covid19_reg_calc_lisse7j';
+        $table = 'donnees_labo_pcr_covid19_calc_lisse7j';
         $tmpTable = $table . '_tmp';
 
         $this->createTable($tmpTable);
 
-        $req = "SELECT      jour, reg, T, P
-                FROM        donnees_labo_pcr_covid19_reg_calc
-                ORDER BY    jour, reg ASC";
+        $req = "SELECT      jour, reg, cl_age90, T, P, pop
+                FROM        donnees_labo_pcr_covid19
+                ORDER BY    jour, reg, cl_age90 ASC";
         $sql = $this->dbh->query($req);
 
-        $req = "INSERT INTO $tmpTable (jour, reg, T, P, positivite) VALUES ";
+        $req = "INSERT INTO $tmpTable (jour, reg, cl_age90, T, P, pop) VALUES ";
 
         $T1 = [];
         $P1 = [];
@@ -51,21 +51,25 @@ class statsLaboPcrRegCalcLisse7j
         while ($res = $sql->fetch()) {
 
             $reg = $res->reg;
+            $age = $res->cl_age90;
 
-            $T1[$reg][] = $res->T;
-            $P1[$reg][] = $res->P;
-            $count = count($T1[$reg]);
+            $T1[$reg][$age][] = $res->T;
+            $P1[$reg][$age][] = $res->P;
+            $count = count($T1[$reg][$age]);
 
             if ($count < 7) {
                 continue;
             }
 
-            $T2 = ($T1[$reg][$count-7] + $T1[$reg][$count-6] + $T1[$reg][$count-5] + $T1[$reg][$count-4] + $T1[$reg][$count-3] + $T1[$reg][$count-2] + $T1[$reg][$count-1]) / 7;
-            $P2 = ($P1[$reg][$count-7] + $P1[$reg][$count-6] + $P1[$reg][$count-5] + $P1[$reg][$count-4] + $P1[$reg][$count-3] + $P1[$reg][$count-2] + $P1[$reg][$count-1]) / 7;
+            $T2 = ($T1[$reg][$age][$count-7] + $T1[$reg][$age][$count-6] + $T1[$reg][$age][$count-5] + $T1[$reg][$age][$count-4] + $T1[$reg][$age][$count-3] + $T1[$reg][$age][$count-2] + $T1[$reg][$age][$count-1]) / 7;
+            $P2 = ($P1[$reg][$age][$count-7] + $P1[$reg][$age][$count-6] + $P1[$reg][$age][$count-5] + $P1[$reg][$age][$count-4] + $P1[$reg][$age][$count-3] + $P1[$reg][$age][$count-2] + $P1[$reg][$age][$count-1]) / 7;
 
-            $positivite = (empty($T2)) ? 0 : 100 / $T2 * $P2;
+            $T2 = round($T2, 2);
+            $P2 = round($P2, 2);
 
-            $req .= "('".$res->jour."','".$reg."',".$T2.",".$P2.",".$positivite.")," . chr(10);
+            // $positivite = (empty($T2)) ? 0 : 100 / $T2 * $P2;
+
+            $req .= "('".$res->jour."','".$reg."','".$age."',".$T2.",".$P2.",".$res->pop.")," . chr(10);
         }
 
         try {
@@ -116,9 +120,10 @@ class statsLaboPcrRegCalcLisse7j
           `id`          int             NOT NULL,
           `jour`        date            NOT NULL,
           `reg`         varchar(2)      COLLATE utf8mb4_unicode_ci NOT NULL,
-          `T`           decimal(9,2)    NOT NULL,
-          `P`           decimal(9,2)    NOT NULL,
-          `positivite`  decimal(5,2)    NOT NULL
+          `cl_age90`    varchar(2)      COLLATE utf8mb4_unicode_ci NOT NULL,
+          `T`           decimal(11,2)   NOT NULL,
+          `P`           decimal(11,2)   NOT NULL,
+          `pop`         int             NOT NULL
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
         $this->dbh->query($req);
 
@@ -128,10 +133,13 @@ class statsLaboPcrRegCalcLisse7j
         $req = "ALTER TABLE `$table` MODIFY `id` int NOT NULL AUTO_INCREMENT";
         $this->dbh->query($req);
 
+        $req = "ALTER TABLE `$table` ADD INDEX(`jour`)";
+        $this->dbh->query($req);
+
         $req = "ALTER TABLE `$table` ADD INDEX(`reg`)";
         $this->dbh->query($req);
 
-        $req = "ALTER TABLE `$table` ADD INDEX(`jour`)";
+        $req = "ALTER TABLE `$table` ADD INDEX(`cl_age90`)";
         $this->dbh->query($req);
     }
 }

@@ -22,8 +22,7 @@ new main\process([
 
     // Statistique de laboratoire, test PCR
     'statsLaboPcr',
-    'statsLaboPcrRegCalc',
-    'statsLaboPcrRegCalcLisse7j',
+    'statsLaboPcrCalcLisse7j',
 
     // Statistiques de vaccination
     'statsVaccinationVaccin',

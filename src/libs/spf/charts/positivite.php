@@ -72,19 +72,27 @@ class positivite
             $fileName .= '_interval_' . $_SESSION['spf_filterInterval'];
         }
 
+        $addReq .= " AND cl_age90 = :cl_age90";
+        if (!empty($_SESSION['spf_filterAge']) && $_SESSION['spf_filterAge'] != '0') {
+            $addReqValues[':cl_age90'] = $_SESSION['spf_filterAge'];
+            $fileName .= '_age_' . $_SESSION['spf_filterAge'];
+        } else {
+            $addReqValues[':cl_age90'] = 0;
+        }
+
         if ($this->cache && $this->data = \main\cache::getCache($fileName)) {
             return;
         }
 
         $this->data = [];
 
-        $req = "SELECT  jour,
-                        SUM(T)          AS sum_T,
-                        SUM(P)          AS sum_P
+        $req = "SELECT      jour,
+                            SUM(T)          AS sum_T,
+                            SUM(P)          AS sum_P
 
-                FROM    donnees_labo_pcr_covid19_reg_calc_lisse7j
+                FROM        donnees_labo_pcr_covid19_calc_lisse7j
 
-                WHERE   1 $addReq
+                WHERE       1 $addReq
 
                 GROUP BY    jour
                 ORDER BY    jour ASC";
@@ -93,9 +101,12 @@ class positivite
         $sql->execute($addReqValues);
 
         while ($res = $sql->fetch()) {
+
+            $positivite = (empty($T)) ? 0 : 100 / $T * $P;
+
             $this->data[$res->jour] = [
-                'sum_T' => $res->sum_T,
-                'sum_P' => $res->sum_P,
+                'sum_T'      => $res->sum_T,
+                'sum_P'      => $res->sum_P,
             ];
         }
 
@@ -249,6 +260,7 @@ class positivite
         $filterActiv = [
             'region'    => true,
             'interval'  => true,
+            'age'       => true,
         ];
 
         echo render::html(
