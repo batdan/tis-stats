@@ -4,7 +4,7 @@ namespace spf\charts;
 use tools\dbSingleton;
 use main\highChartsCommon;
 
-class positivite
+class pcrPositivite
 {
     private $cache;
     private $dbh;
