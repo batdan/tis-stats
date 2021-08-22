@@ -73,7 +73,15 @@ class statsVaccinationVaccin
 
         $this->createTable($tmpTable);
 
-        $req = "INSERT INTO $tmpTable (jour, reg, vaccin, n_dose1, n_dose2, n_cum_dose1, n_cum_dose2) VALUES ";
+        $req = "INSERT INTO $tmpTable (
+                    jour,
+                    reg,
+                    vaccin,
+                    n_dose1,
+                    n_dose2,
+                    n_cum_dose1,
+                    n_cum_dose2
+                ) VALUES ";
 
         $i=0;
         foreach ($file as $line) {
@@ -85,16 +93,31 @@ class statsVaccinationVaccin
             $line = str_replace(chr(10), '', $line);
             $line = explode(';', $line);
 
-            $req .= "('".$line[2]."','".$line[0]."', '".$line[1]."',".$line[3].",".$line[4].",".$line[5].",".$line[6]."),";
+            $jour           = $line[2];
+            $reg            = empty($line[0]) ? '' : trim($line[0],'"');
+            $vaccin         = empty($line[1]) ? 0  : $line[1];
+            $n_dose1        = empty($line[3]) ? 0  : $line[3];
+            $n_dose2        = empty($line[4]) ? 0  : $line[4];
+            $n_cum_dose1    = empty($line[5]) ? 0  : $line[5];
+            $n_cum_dose2    = empty($line[6]) ? 0  : $line[6];
+
+            $req .= "('".$jour."','".$reg."', ".$vaccin.",";
+            $req .= $n_dose1.",".$n_dose2.",";
+            $req .= $n_cum_dose1.",".$n_cum_dose2.")," . chr(10);
 
             $i++;
         }
 
-        $req = substr($req, 0, -1);
-        $sql = $this->dbh->query($req);
+        try {
+            $req = substr($req, 0, -2);
+            $sql = $this->dbh->query($req);
 
-        $this->dropTable($table);
-        $this->renameTable($tmpTable, $table);
+            $this->dropTable($table);
+            $this->renameTable($tmpTable, $table);
+
+        } catch (\Exception $e) {
+            echo chr(10) . $e->getMessage() . chr(10);
+        }
     }
 
 

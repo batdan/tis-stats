@@ -65,15 +65,19 @@ class statsLaboPcrRegCalcLisse7j
 
             $positivite = (empty($T2)) ? 0 : 100 / $T2 * $P2;
 
-            $req .= "('".$res->jour."','".$reg."',".$T2.",".$P2.",".$positivite."),";
+            $req .= "('".$res->jour."','".$reg."',".$T2.",".$P2.",".$positivite.")," . chr(10);
         }
 
-        $req = substr($req, 0, -1);
-        $sql = $this->dbh->query($req);
+        try {
+            $req = substr($req, 0, -2);
+            $sql = $this->dbh->query($req);
 
-        $this->dropTable($table);
-        $this->renameTable($tmpTable, $table);
-        $this->dropTable($tmpTable);
+            $this->dropTable($table);
+            $this->renameTable($tmpTable, $table);
+
+        } catch (\Exception $e) {
+            echo chr(10) . $e->getMessage() . chr(10);
+        }
     }
 
 

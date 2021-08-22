@@ -73,14 +73,19 @@ class statsHpCumuleAgeRegCalc7j
             $dc2   = ($dc[$reg][$age][$count-7]   + $dc[$reg][$age][$count-6]   + $dc[$reg][$age][$count-5]   + $dc[$reg][$age][$count-4]   + $dc[$reg][$age][$count-3]   + $dc[$reg][$age][$count-2]   + $dc[$reg][$age][$count-1])   / 7;
             $rad2  = ($rad[$reg][$age][$count-7]  + $rad[$reg][$age][$count-6]  + $rad[$reg][$age][$count-5]  + $rad[$reg][$age][$count-4]  + $rad[$reg][$age][$count-3]  + $rad[$reg][$age][$count-2]  + $rad[$reg][$age][$count-1])  / 7;
 
-            $req .= "('".$res->jour."','".$reg."','".$age."',".$hosp2.",".$rea2.",".$dc2.",".$rad2."),";
+            $req .= "('".$res->jour."','".$reg."','".$age."',".$hosp2.",".$rea2.",".$dc2.",".$rad2.")," . chr(10);
         }
 
-        $req = substr($req, 0, -1);
-        $sql = $this->dbh->query($req);
+        try {
+            $req = substr($req, 0, -2);
+            $sql = $this->dbh->query($req);
 
-        $this->dropTable($table);
-        $this->renameTable($tmpTable, $table);
+            $this->dropTable($table);
+            $this->renameTable($tmpTable, $table);
+
+        } catch (\Exception $e) {
+            echo chr(10) . $e->getMessage() . chr(10);
+        }
     }
 
 

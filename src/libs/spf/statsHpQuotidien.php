@@ -78,7 +78,7 @@ class statsHpQuotidien
             $line = explode(';', $line);
 
             $dep        = empty($line[0]) ? '' : trim($line[0],'"');
-            $jour       = empty($line[1]) ? '' : $line[1];
+            $jour       = $line[1];
             $incid_hosp = empty($line[2]) ? 0  : $line[2];
             $incid_rea  = empty($line[3]) ? 0  : $line[3];
             $incid_dc   = empty($line[4]) ? 0  : $line[4];
@@ -89,9 +89,8 @@ class statsHpQuotidien
             $i++;
         }
 
-        $req = substr($req, 0, -2);
-
         try {
+            $req = substr($req, 0, -2);
             $sql = $this->dbh->query($req);
 
             $this->setRegion($tmpTable);

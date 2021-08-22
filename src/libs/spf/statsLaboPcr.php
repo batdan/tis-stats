@@ -80,19 +80,35 @@ class statsLaboPcr
             $line = str_replace(chr(10), '', $line);
             $line = explode(';', $line);
 
-            $req .= "('".$line[0]."','".$line[1]."',
-                    ".$line[2].",".$line[3].",".$line[4].",
-                    ".$line[5].",".$line[6].",".$line[7].",
-                    ".$line[8].",".$line[9]."),";
+            $reg        = empty($line[0]) ? '' : trim($line[0],'"');
+            $jour       = $line[1];
+            $P_f        = empty($line[2]) ? 0  : $line[2];
+            $P_h        = empty($line[3]) ? 0  : $line[3];
+            $P          = empty($line[4]) ? 0  : $line[4];
+            $T_f        = empty($line[5]) ? 0  : $line[5];
+            $T_h        = empty($line[6]) ? 0  : $line[6];
+            $T          = empty($line[7]) ? 0  : $line[7];
+            $cl_age90   = empty($line[8]) ? '0': $line[8];
+            $pop        = empty($line[9]) ? 0  : $line[9];
+
+            $req .= "('".$reg."','".$jour."',";
+            $req .= $P_f.",".$P_h.",".$P.",";
+            $req .= $T_f.",".$T_h.",".$T.",'";
+            $req .= $cl_age90."',".$pop.")," . chr(10);
 
             $i++;
         }
 
-        $req = substr($req, 0, -1);
-        $sql = $this->dbh->query($req);
+        try {
+            $req = substr($req, 0, -2);
+            $sql = $this->dbh->query($req);
 
-        $this->dropTable($table);
-        $this->renameTable($tmpTable, $table);
+            $this->dropTable($table);
+            $this->renameTable($tmpTable, $table);
+
+        } catch (\Exception $e) {
+            echo chr(10) . $e->getMessage() . chr(10);
+        }
     }
 
 
@@ -139,7 +155,7 @@ class statsLaboPcr
           `T_f`         int         NOT NULL,
           `T_h`         int         NOT NULL,
           `T`           int         NOT NULL,
-          `cl_age90`    int         NOT NULL,
+          `cl_age90`    varchar(2)  COLLATE utf8mb4_unicode_ci NOT NULL,
           `pop`         int         NOT NULL
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
         $this->dbh->query($req);

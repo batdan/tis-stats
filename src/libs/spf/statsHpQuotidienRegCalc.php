@@ -52,14 +52,19 @@ class statsHpQuotidienRegCalc
         $req = "INSERT INTO $tmpTable (jour, reg, hosp, rea, dc, rad) VALUES ";
 
         while ($res = $sql->fetch()) {
-            $req .= "('".$res->jour."','".$res->reg."',".$res->hosp.",".$res->rea.",".$res->dc.",".$res->rad."),";
+            $req .= "('".$res->jour."','".$res->reg."',".$res->hosp.",".$res->rea.",".$res->dc.",".$res->rad.")," . chr(10);
         }
 
-        $req = substr($req, 0, -1);
-        $sql = $this->dbh->query($req);
+        try {
+            $req = substr($req, 0, -2);
+            $sql = $this->dbh->query($req);
 
-        $this->dropTable($table);
-        $this->renameTable($tmpTable, $table);
+            $this->dropTable($table);
+            $this->renameTable($tmpTable, $table);
+
+        } catch (\Exception $e) {
+            echo chr(10) . $e->getMessage() . chr(10);
+        }
     }
 
 

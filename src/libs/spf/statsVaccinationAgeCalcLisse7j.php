@@ -111,14 +111,19 @@ class statsVaccinationAgeCalcLisse7j
             $cd1_2  = ($cd1[$reg][$age][$count-7] + $cd1[$reg][$age][$count-6] + $cd1[$reg][$age][$count-5] + $cd1[$reg][$age][$count-4] + $cd1[$reg][$age][$count-3] + $cd1[$reg][$age][$count-2] + $cd1[$reg][$age][$count-1]) / 7;
             $cd2_2  = ($cd2[$reg][$age][$count-7] + $cd2[$reg][$age][$count-6] + $cd2[$reg][$age][$count-5] + $cd2[$reg][$age][$count-4] + $cd2[$reg][$age][$count-3] + $cd2[$reg][$age][$count-2] + $cd2[$reg][$age][$count-1]) / 7;
 
-            $req .= "('".$res->jour."','".$reg."','".$age."',".$n1_2.",".$n2_2.",".$cn1_2.",".$cn2_2.",".$cd1_2.",".$cd2_2."),";
+            $req .= "('".$res->jour."','".$reg."','".$age."',".$n1_2.",".$n2_2.",".$cn1_2.",".$cn2_2.",".$cd1_2.",".$cd2_2.")," . chr(10);
         }
 
-        $req = substr($req, 0, -1);
-        $sql = $this->dbh->query($req);
+        try {
+            $req = substr($req, 0, -2);
+            $sql = $this->dbh->query($req);
 
-        $this->dropTable($table);
-        $this->renameTable($tmpTable, $table);
+            $this->dropTable($table);
+            $this->renameTable($tmpTable, $table);
+
+        } catch (\Exception $e) {
+            echo chr(10) . $e->getMessage() . chr(10);
+        }
     }
 
 

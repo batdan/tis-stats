@@ -81,7 +81,7 @@ class statsHpCumuleAge
 
             $reg        = empty($line[0]) ? '' : trim($line[0],'"');
             $cl_age90   = empty($line[1]) ? '' : trim($line[1],'"');
-            $jour       = empty($line[2]) ? '' : $line[2];
+            $jour       = $line[2];
             $hosp       = empty($line[3]) ? 0  : $line[3];
             $rea        = empty($line[4]) ? 0  : $line[4];
             $rad        = empty($line[8]) ? 0  : $line[8];
@@ -92,14 +92,13 @@ class statsHpCumuleAge
             $i++;
         }
 
-        $req = substr($req, 0, -2);
-
         try {
+            $req = substr($req, 0, -2);
             $sql = $this->dbh->query($req);
 
             $this->dropTable($table);
             $this->renameTable($tmpTable, $table);
-            
+
         } catch (\Exception $e) {
             echo chr(10) . $e->getMessage() . chr(10);
         }

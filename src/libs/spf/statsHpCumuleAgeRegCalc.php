@@ -55,14 +55,19 @@ class statsHpCumuleAgeRegCalc
         $req = "INSERT INTO $tmpTable (jour, reg, cl_age90, hosp, rea, dc, rad) VALUES ";
 
         while ($res = $sql->fetch()) {
-            $req .= "('".$res->jour."','".$res->reg."','".$res->cl_age90."',".$res->sum_hosp.",".$res->sum_rea.",".$res->sum_dc.",".$res->sum_rad."),";
+            $req .= "('".$res->jour."','".$res->reg."','".$res->cl_age90."',".$res->sum_hosp.",".$res->sum_rea.",".$res->sum_dc.",".$res->sum_rad.")," . chr(10);
         }
 
-        $req = substr($req, 0, -1);
-        $sql = $this->dbh->query($req);
+        try {
+            $req = substr($req, 0, -2);
+            $sql = $this->dbh->query($req);
 
-        $this->dropTable($table);
-        $this->renameTable($tmpTable, $table);
+            $this->dropTable($table);
+            $this->renameTable($tmpTable, $table);
+            
+        } catch (\Exception $e) {
+            echo chr(10) . $e->getMessage() . chr(10);
+        }
     }
 
 

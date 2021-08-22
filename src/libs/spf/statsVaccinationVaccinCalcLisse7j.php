@@ -94,14 +94,19 @@ class statsVaccinationVaccinCalcLisse7j
             $cn1_2  = ($cn1[$reg][$vax][$count-7] + $cn1[$reg][$vax][$count-6] + $cn1[$reg][$vax][$count-5] + $cn1[$reg][$vax][$count-4] + $cn1[$reg][$vax][$count-3] + $cn1[$reg][$vax][$count-2] + $cn1[$reg][$vax][$count-1]) / 7;
             $cn2_2  = ($cn2[$reg][$vax][$count-7] + $cn2[$reg][$vax][$count-6] + $cn2[$reg][$vax][$count-5] + $cn2[$reg][$vax][$count-4] + $cn2[$reg][$vax][$count-3] + $cn2[$reg][$vax][$count-2] + $cn2[$reg][$vax][$count-1]) / 7;
 
-            $req .= "('".$res->jour."','".$reg."','".$vax."',".$n1_2.",".$n2_2.",".$cn1_2.",".$cn2_2."),";
+            $req .= "('".$res->jour."','".$reg."',".$vax.",".$n1_2.",".$n2_2.",".$cn1_2.",".$cn2_2.")," . chr(10);
         }
 
-        $req = substr($req, 0, -1);
-        $sql = $this->dbh->query($req);
+        try {
+            $req = substr($req, 0, -2);
+            $sql = $this->dbh->query($req);
 
-        $this->dropTable($table);
-        $this->renameTable($tmpTable, $table);
+            $this->dropTable($table);
+            $this->renameTable($tmpTable, $table);
+
+        } catch (\Exception $e) {
+            echo chr(10) . $e->getMessage() . chr(10);
+        }
     }
 
 

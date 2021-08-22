@@ -111,14 +111,19 @@ class getOwidData
             $req .= $male_smokers . ",";
             $req .= $hospital_beds_per_thousand . ",";
             $req .= $life_expectancy . ",";
-            $req .= $human_development_index . "),";
+            $req .= $human_development_index . ")," . chr(10);
         }
 
-        $req = substr($req, 0, -1);
-        $sql = $this->dbh->query($req);
+        try {
+            $req = substr($req, 0, -2);
+            $sql = $this->dbh->query($req);
 
-        $this->dropTable($table);
-        $this->renameTable($tmpTable, $table);
+            $this->dropTable($table);
+            $this->renameTable($tmpTable, $table);
+
+        } catch (\Exception $e) {
+            echo chr(10) . $e->getMessage() . chr(10);
+        }
 
         // Table countries
         foreach ($countries as $country) {
@@ -253,14 +258,19 @@ class getOwidData
                 $req .= $new_vaccinations_smoothed . ",";
                 $req .= $new_vaccinations_smoothed_per_million . ",";
                 $req .= $people_fully_vaccinated . ",";
-                $req .= $people_fully_vaccinated_per_hundred . "),";
+                $req .= $people_fully_vaccinated_per_hundred . ")," . chr(10);
             }
 
-            $req = substr($req, 0, -1);
-            $sql = $this->dbh->query($req);
+            try {
+                $req = substr($req, 0, -2);
+                $sql = $this->dbh->query($req);
 
-            $this->dropTable($tableCountry);
-            $this->renameTable($tmpTableCountry, $tableCountry);
+                $this->dropTable($tableCountry);
+                $this->renameTable($tmpTableCountry, $tableCountry);
+
+            } catch (\Exception $e) {
+                echo chr(10) . $e->getMessage() . chr(10);
+            }
         }
     }
 
