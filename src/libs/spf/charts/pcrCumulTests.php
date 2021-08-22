@@ -138,7 +138,7 @@ class pcrCumulTests
         $T      = implode(', ', $T);
         $P      = implode(', ', $P);
 
-        $event = highChartsCommon::exportImgLogo(true);
+        $event = highChartsCommon::exportImgLogo();
 
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {
