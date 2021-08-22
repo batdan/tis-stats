@@ -189,14 +189,20 @@ class nbCumuleRad
             },
 
             series: [{
+                connectNulls: true,
+                marker:{
+                    enabled:false
+                },
                 name: '{$this->yAxis1Label}',
                 color: '#0e8042',
-                // yAxis: 0,
                 data: [$rad]
             }, {
+                connectNulls: true,
+                marker:{
+                    enabled:false
+                },
                 name: '{$this->yAxis2Label}',
                 color: '#ff891a',
-                // yAxis: 0,
                 data: [$dc]
             }],
 

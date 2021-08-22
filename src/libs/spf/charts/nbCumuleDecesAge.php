@@ -141,6 +141,10 @@ class nbCumuleDecesAge
 
             $series[] = <<<eof
             {
+                connectNulls: true,
+                marker:{
+                    enabled:false
+                },
                 name: '$v',
                 data: [$dcSeries]
             }

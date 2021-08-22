@@ -198,18 +198,34 @@ class quotidienRad
             },
 
             series: [{
+                connectNulls: true,
+                marker:{
+                    enabled:false
+                },
                 name: '{$this->yAxis1Label}',
                 color: '#0e8042',
                 data: [$rad]
             }, {
+                connectNulls: true,
+                marker:{
+                    enabled:false
+                },
                 name: '{$this->yAxis2Label}',
                 color: '#ff891a',
                 data: [$dc]
             }, {
+                connectNulls: true,
+                marker:{
+                    enabled:false
+                },
                 name: '{$this->yAxis3Label}',
                 color: '#b00000',
                 data: [$hosp]
             }, {
+                connectNulls: true,
+                marker:{
+                    enabled:false
+                },
                 name: '{$this->yAxis4Label}',
                 // color: '#c70000',
                 data: [$rea]

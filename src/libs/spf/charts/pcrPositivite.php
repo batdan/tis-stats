@@ -212,15 +212,21 @@ class pcrPositivite
             },
 
             series: [{
+                connectNulls: true,
+                marker:{
+                    enabled:false
+                },
                 name: '{$this->yAxis1Label}',
                 color: '#106097',
-                // type: 'spline',
                 yAxis: 0,
                 data: [$positivite]
             }, {
+                connectNulls: true,
+                marker:{
+                    enabled:false
+                },
                 name: '{$this->yAxis2Label}',
                 color: '#c70000',
-                // type: 'spline',
                 yAxis: 1,
                 data: [$T]
             }],

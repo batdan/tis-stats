@@ -198,16 +198,20 @@ class pcrCumulTests
             },
 
             series: [{
+                connectNulls: true,
+                marker:{
+                    enabled:false
+                },
                 name: '{$this->yAxis1Label}',
                 color: '#106097',
-                // type: 'spline',
-                // yAxis: 0,
                 data: [$T]
             }, {
+                connectNulls: true,
+                marker:{
+                    enabled:false
+                },
                 name: '{$this->yAxis2Label}',
                 color: '#c70000',
-                // type: 'spline',
-                // yAxis: 0,
                 data: [$P]
             }],
 
