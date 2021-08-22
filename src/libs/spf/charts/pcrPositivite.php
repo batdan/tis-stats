@@ -34,7 +34,7 @@ class pcrPositivite
 
         $this->dbh = dbSingleton::getInstance();
 
-        $this->chartName = 'positivite';
+        $this->chartName = 'pcrPositivite';
 
         $this->title = 'Nb de testés covid-19 | Taux de positivité covid-19';
         $this->regTitle();

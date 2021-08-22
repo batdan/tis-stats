@@ -4,7 +4,7 @@ namespace spf\charts;
 use tools\dbSingleton;
 use main\highChartsCommon;
 
-class quotidienEntreesRea
+class pcrCumulTests
 {
     private $cache;
     private $dbh;
@@ -34,15 +34,15 @@ class quotidienEntreesRea
 
         $this->dbh = dbSingleton::getInstance();
 
-        $this->chartName = 'quotidienEntreesRea';
+        $this->chartName = 'pcrCumulTests';
 
-        $this->title    = 'Nombre d`entrées en soins critiques covid-19 | Taux de positivité covid-19';
+        $this->title = 'Nb de tests covid-19 réalisés | Nb de tests covid-19 positifs';
         $this->regTitle();
 
         $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours)';
 
-        $this->yAxis1Label = '% de positifs sur la population testée';
-        $this->yAxis2Label = 'Nb d`entrées en soins critiques';
+        $this->yAxis1Label = 'Nb de testés';
+        $this->yAxis2Label = 'Nb de positifs';
 
         $this->getData();
         $this->highChartsJs();
@@ -72,6 +72,14 @@ class quotidienEntreesRea
             $fileName .= '_interval_' . $_SESSION['spf_filterInterval'];
         }
 
+        $addReq .= " AND cl_age90 = :cl_age90";
+        if (!empty($_SESSION['spf_filterAge']) && $_SESSION['spf_filterAge'] != '0') {
+            $addReqValues[':cl_age90'] = $_SESSION['spf_filterAge'];
+            $fileName .= '_age_' . $_SESSION['spf_filterAge'];
+        } else {
+            $addReqValues[':cl_age90'] = 0;
+        }
+
         if ($this->cache && $this->data = \main\cache::getCache($fileName)) {
             return;
         }
@@ -79,10 +87,10 @@ class quotidienEntreesRea
         $this->data = [];
 
         $req = "SELECT      jour,
-                            SUM(T) AS sum_T,
-                            SUM(P) AS sum_P
+                            SUM(T)          AS sum_T,
+                            SUM(P)          AS sum_P
 
-                FROM        donnees_labo_pcr_covid19_calc_lisse7j
+                FROM        donnees_labo_pcr_covid19
 
                 WHERE       1 $addReq
 
@@ -92,36 +100,18 @@ class quotidienEntreesRea
         $sql = $this->dbh->prepare($req);
         $sql->execute($addReqValues);
 
+        $sum_T = 0;
+        $sum_P = 0;
+
         while ($res = $sql->fetch()) {
+
+            $sum_T += $res->sum_T;
+            $sum_P += $res->sum_P;
+
             $this->data[$res->jour] = [
-                'sum_T' => $res->sum_T,
-                'sum_P' => $res->sum_P,
+                'sum_T'      => $sum_T,
+                'sum_P'      => $sum_P,
             ];
-        }
-
-        $req = "SELECT      jour,
-                            SUM(rea) AS sum_rea
-
-                FROM        donnees_hp_quotidien_covid19_reg_calc_lisse7j
-
-                WHERE       1 $addReq
-
-                GROUP BY    jour
-                ORDER BY    jour ASC";
-
-        $sql = $this->dbh->prepare($req);
-        $sql->execute($addReqValues);
-
-        while ($res = $sql->fetch()) {
-            $this->data[$res->jour]['sum_rea'] = $res->sum_rea;
-        }
-
-        ksort($this->data);
-
-        foreach($this->data as $k => $v) {
-            $this->data[$k]['sum_T']    = (!isset($v['sum_T']))     ? null : $v['sum_T'];
-            $this->data[$k]['sum_P']    = (!isset($v['sum_P']))     ? null : $v['sum_P'];
-            $this->data[$k]['sum_rea']  = (!isset($v['sum_rea']))   ? null : $v['sum_rea'];
         }
 
         // createCache
@@ -135,20 +125,18 @@ class quotidienEntreesRea
     private function highChartsJs()
     {
         $jours      = [];
-        $rea        = [];
-        $positivite = [];
+        $T          = [];
+        $P          = [];
 
         foreach($this->data as $jour => $res) {
-            $jours[] = "'".$jour."'";
-            $rea[]  = round($res['sum_rea'], 2);
-
-            $positivite[]   = (empty($res['sum_T'])) ?
-                'null' : round((100 / $res['sum_T'] * $res['sum_P']), 2);
+            $jours[]    = "'".$jour."'";
+            $T[]        = round($res['sum_T'], 2);
+            $P[]        = round($res['sum_P'], 2);
         }
 
-        $jours      = implode(', ', $jours);
-        $rea        = implode(', ', $rea);
-        $positivite = implode(', ', $positivite);
+        $jours  = implode(', ', $jours);
+        $T      = implode(', ', $T);
+        $P      = implode(', ', $P);
 
         $event = highChartsCommon::exportImgLogo(true);
 
@@ -173,26 +161,9 @@ class quotidienEntreesRea
                 text: '{$this->subTitle}'
             },
 
-            yAxis: [{ // Primary yAxis
+            yAxis: [{
                 title: {
                     text: '{$this->yAxis1Label}',
-                    style: {
-                        color: '#106097',
-                        fontSize: 14
-                    }
-                },
-                labels: {
-                    format: '{value:.2f}%',
-                    allowDecimals: 2,
-                    style: {
-                        color: '#106097',
-                        fontSize: 14
-                    }
-                }
-
-            }, { // Secondary yAxis
-                title: {
-                    text: '{$this->yAxis2Label}',
                     style: {
                         color: '#c70000',
                         fontSize: 14
@@ -230,14 +201,14 @@ class quotidienEntreesRea
                 name: '{$this->yAxis1Label}',
                 color: '#106097',
                 // type: 'spline',
-                yAxis: 0,
-                data: [$positivite]
+                // yAxis: 0,
+                data: [$T]
             }, {
                 name: '{$this->yAxis2Label}',
                 color: '#c70000',
                 // type: 'spline',
-                yAxis: 1,
-                data: [$rea]
+                // yAxis: 0,
+                data: [$P]
             }],
 
             responsive: {
@@ -275,6 +246,7 @@ class quotidienEntreesRea
         $filterActiv = [
             'region'    => true,
             'interval'  => true,
+            'age'       => true,
         ];
 
         echo render::html(

@@ -82,7 +82,7 @@ class quotidienEntreesHp
                             SUM(T) AS sum_T,
                             SUM(P) AS sum_P
 
-                FROM        donnees_labo_pcr_covid19_reg_calc_lisse7j
+                FROM        donnees_labo_pcr_covid19_calc_lisse7j
 
                 WHERE       1 $addReq
 

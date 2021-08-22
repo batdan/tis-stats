@@ -125,7 +125,8 @@ eof;
 
         $chartCollections = [
             'item-1'                                    => 'Tests PCR',
-            'spf\charts\pcrPositivite'                  => 'PCR : Taux de positivité',
+            'spf\charts\pcrPositivite'                  => 'PCR : taux de positivité',
+            'spf\charts\pcrCumulTests'                  => 'PCR : nb de tests réalisés',
             'closeItem-1'                               => '',
 
             'item-2'                                    => 'Chiffres quotidiens',
