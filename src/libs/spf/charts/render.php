@@ -320,7 +320,7 @@ eof;
         $filterRegion .= '<select id="filter-age" class="form-select">';
 
         $chartInterval = [
-            '0'     => 'Tous les ages',
+            '0'     => 'Tous les âges',
             '09'    => '0 à 9 ans',
             '19'    => '10 à 19 ans',
             '29'    => '20 à 29 ans',
@@ -372,7 +372,7 @@ eof;
         $filterRegion .= '<select id="filter-age2" class="form-select">';
 
         $chartInterval = [
-            '0'  => 'Tous les ages',
+            '0'  => 'Tous les âges',
             '04' => '0 à 4 ans',
             '09' => '5 à 9 ans',
             '11' => '10 à 11 ans',

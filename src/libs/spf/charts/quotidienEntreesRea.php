@@ -35,14 +35,15 @@ class quotidienEntreesRea
         $this->dbh = dbSingleton::getInstance();
 
         $this->chartName = 'quotidienEntreesRea';
-
-        $this->title    = 'Nombre d`entrées en soins critiques covid-19 | Taux de positivité covid-19';
+        $this->title    = "Nombre quotidien d'entrées en soins critiques covid-19 | Taux de positivité covid-19";
+        $this->title    = highChartsCommon::chartText($this->title);
         $this->regTitle();
 
         $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours)';
 
         $this->yAxis1Label = '% de positifs sur la population testée';
-        $this->yAxis2Label = 'Nb d`entrées en soins critiques';
+        $this->yAxis2Label = "Nb quotidien d'entrées en soins critiques";
+        $this->yAxis2Label = highChartsCommon::chartText($this->yAxis2Label);
 
         $this->getData();
         $this->highChartsJs();
@@ -267,7 +268,9 @@ class quotidienEntreesRea
 
     private function regTitle()
     {
-        $this->title .= ($_SESSION['spf_filterRegionId'] == 0) ? ' | ' . $_SESSION['spf_filterRegionName'] : ' | Région : ' . $_SESSION['spf_filterRegionName'];
+        $this->title .= ($_SESSION['spf_filterRegionId'] == 0)
+                            ? ' | ' . $_SESSION['spf_filterRegionName']
+                            : ' | Région : ' . highChartsCommon::chartText($_SESSION['spf_filterRegionName']);
     }
 
 

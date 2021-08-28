@@ -38,10 +38,13 @@ class pcrNewTestsPerThousand
 
         $this->chartName = 'newTestsPerThousand';
 
-        $this->title    = 'Nb quotidien de tests PCR covid-19 par millier d`habitants';
+        $this->title    = "Nb quotidien de tests PCR covid-19 par millier d'habitants";
+        $this->title    = highChartsCommon::chartText($this->title);
+
         $this->subTitle = 'Source: Our World in Data';
 
-        $this->yAxis1Label = 'Nb quotidien de tests PCR pour un millier d`habitants';
+        $this->yAxis1Label = "Nb quotidien de tests PCR pour un millier d'habitants";
+        $this->yAxis1Label = highChartsCommon::chartText($this->yAxis1Label);
 
         $this->getCountries();
 

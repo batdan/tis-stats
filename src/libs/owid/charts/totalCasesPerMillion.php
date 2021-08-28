@@ -38,10 +38,13 @@ class totalCasesPerMillion
 
         $this->chartName = 'totalCasesPerMillion';
 
-        $this->title    = 'Nb cumulé de cas covid-19 par million d`habitants';
+        $this->title    = "Nb cumulé de cas covid-19 par million d'habitants";
+        $this->title    = highChartsCommon::chartText($this->title);
+
         $this->subTitle = 'Source: Our World in Data';
 
-        $this->yAxis1Label = 'Nb cumulé de cas covid-19 pour un million d`habitants';
+        $this->yAxis1Label = "Nb cumulé de cas covid-19 pour un million d'habitants";
+        $this->yAxis1Label = highChartsCommon::chartText($this->yAxis1Label);
 
         $this->getCountries();
 

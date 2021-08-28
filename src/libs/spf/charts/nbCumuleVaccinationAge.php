@@ -39,7 +39,7 @@ class nbCumuleVaccinationAge
 
         $this->chartName = 'nbCumuleVaccinationAge';
 
-        $this->title    = 'Nb cumulé de vaccinés covid-19 par age';
+        $this->title    = 'Nb cumulé de vaccinés covid-19 par âge';
         $this->regTitle();
 
         $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours)';
@@ -234,7 +234,9 @@ class nbCumuleVaccinationAge
 
     private function regTitle()
     {
-        $this->title .= ($_SESSION['spf_filterRegionId'] == 0) ? ' | ' . $_SESSION['spf_filterRegionName'] : ' | Région : ' . $_SESSION['spf_filterRegionName'];
+        $this->title .= ($_SESSION['spf_filterRegionId'] == 0)
+                            ? ' | ' . $_SESSION['spf_filterRegionName']
+                            : ' | Région : ' . highChartsCommon::chartText($_SESSION['spf_filterRegionName']);
     }
 
 

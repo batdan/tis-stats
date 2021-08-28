@@ -35,7 +35,7 @@ class nbCumuleDecesAge
 
         $this->chartName = 'nbCumuleDecesAge';
 
-        $this->title    = 'Nb cumulé de décès par ages Covid19';
+        $this->title    = 'Nb cumulé de décès par âge covid-19';
         $this->regTitle();
 
         $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours)';
@@ -236,7 +236,9 @@ eof;
 
     private function regTitle()
     {
-        $this->title .= ($_SESSION['spf_filterRegionId'] == 0) ? ' | ' . $_SESSION['spf_filterRegionName'] : ' | Région : ' . $_SESSION['spf_filterRegionName'];
+        $this->title .= ($_SESSION['spf_filterRegionId'] == 0)
+                            ? ' | ' . $_SESSION['spf_filterRegionName']
+                            : ' | Région : ' . highChartsCommon::chartText($_SESSION['spf_filterRegionName']);
     }
 
 

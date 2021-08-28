@@ -67,4 +67,10 @@ eof;
 
         return $jsEvent;
     }
+
+
+    public static function chartText($text)
+    {
+        return str_replace("'", '&#39;', $text);
+    }
 }

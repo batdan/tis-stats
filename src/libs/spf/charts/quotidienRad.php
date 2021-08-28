@@ -252,7 +252,9 @@ class quotidienRad
 
     private function regTitle()
     {
-        $this->title .= ($_SESSION['spf_filterRegionId'] == 0) ? ' | ' . $_SESSION['spf_filterRegionName'] : ' | Région : ' . $_SESSION['spf_filterRegionName'];
+        $this->title .= ($_SESSION['spf_filterRegionId'] == 0)
+                            ? ' | ' . $_SESSION['spf_filterRegionName']
+                            : ' | Région : ' . highChartsCommon::chartText($_SESSION['spf_filterRegionName']);
     }
 
 

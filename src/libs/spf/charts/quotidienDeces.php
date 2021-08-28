@@ -36,13 +36,13 @@ class quotidienDeces
 
         $this->chartName = 'quotidienDeces';
 
-        $this->title    = 'Nombre de décès covid-19 | Taux de positivité covid-19';
+        $this->title    = 'Nombre quotidien de décès covid-19 | Taux de positivité covid-19';
         $this->regTitle();
 
         $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours)';
 
         $this->yAxis1Label = '% de positifs sur la population testée';
-        $this->yAxis2Label = 'Décès';
+        $this->yAxis2Label = 'Nombre quotidien de décès';
 
         $this->getData();
         $this->highChartsJs();
@@ -267,7 +267,9 @@ class quotidienDeces
 
     private function regTitle()
     {
-        $this->title .= ($_SESSION['spf_filterRegionId'] == 0) ? ' | ' . $_SESSION['spf_filterRegionName'] : ' | Région : ' . $_SESSION['spf_filterRegionName'];
+        $this->title .= ($_SESSION['spf_filterRegionId'] == 0)
+                            ? ' | ' . $_SESSION['spf_filterRegionName']
+                            : ' | Région : ' . highChartsCommon::chartText($_SESSION['spf_filterRegionName']);
     }
 
 

@@ -41,7 +41,7 @@ class pcrPositivite
         $this->title    = 'Taux de positivité tests PCR covid-19';
         $this->subTitle = 'Source: Our World in Data';
 
-        $this->yAxis1Label = 'Taux de positivité tests PCR covid-19';
+        $this->yAxis1Label = '% de positifs sur la population testée';
 
         $this->getCountries();
 

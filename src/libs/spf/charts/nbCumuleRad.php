@@ -36,7 +36,7 @@ class nbCumuleRad
 
         $this->chartName = 'nbCumuleRad';
 
-        $this->title    = 'Nb cumulé des retours à domicile Covid19 | Nb cumulé de décès covid-19';
+        $this->title    = 'Nb cumulé des retours à domicile covid-19 | Nb cumulé de décès covid-19';
         $this->regTitle();
 
         $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours)';
@@ -227,7 +227,9 @@ class nbCumuleRad
 
     private function regTitle()
     {
-        $this->title .= ($_SESSION['spf_filterRegionId'] == 0) ? ' | ' . $_SESSION['spf_filterRegionName'] : ' | Région : ' . $_SESSION['spf_filterRegionName'];
+        $this->title .= ($_SESSION['spf_filterRegionId'] == 0)
+                            ? ' | ' . $_SESSION['spf_filterRegionName']
+                            : ' | Région : ' . highChartsCommon::chartText($_SESSION['spf_filterRegionName']);
     }
 
 

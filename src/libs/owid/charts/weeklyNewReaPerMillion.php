@@ -38,10 +38,13 @@ class weeklyNewReaPerMillion
 
         $this->chartName = 'weeklyNewReaPerMillion';
 
-        $this->title    = 'Nb hebdomataire d`entrées en soins critiques covid-19 par million d`habitants';
+        $this->title    = "Nb hebdomataire d'entrées en soins critiques covid-19 par million d'habitants";
+        $this->title    = highChartsCommon::chartText($this->title);
+
         $this->subTitle = 'Source: Our World in Data';
 
-        $this->yAxis1Label = 'Nb hebdomataire d`entrées en soins critiques pour un million d`habitants';
+        $this->yAxis1Label = "Nb hebdomataire d'entrées en soins critiques pour un million d'habitants";
+        $this->yAxis1Label = highChartsCommon::chartText($this->yAxis1Label);
 
         $this->getCountries();
 

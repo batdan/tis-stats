@@ -36,13 +36,14 @@ class pcrPositivite
 
         $this->chartName = 'pcrPositivite';
 
-        $this->title = 'Nb de testés covid-19 | Taux de positivité covid-19';
+        $this->title = 'Nb de testés | Nb de testés positifs | Taux de positivité (covid-19)';
         $this->regTitle();
 
         $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours)';
 
         $this->yAxis1Label = '% de positifs sur la population testée';
         $this->yAxis2Label = 'Nb de testés';
+        $this->yAxis3Label = 'Nb de testés positifs';
 
         $this->getData();
         $this->highChartsJs();
@@ -122,17 +123,20 @@ class pcrPositivite
     {
         $jours      = [];
         $T          = [];
+        $P          = [];
         $positivite = [];
 
         foreach($this->data as $jour => $res) {
             $jours[]        = "'".$jour."'";
             $T[]            = round($res['sum_T'], 2);
+            $P[]            = round($res['sum_P'], 2);
             $positivite[]   = (empty($res['sum_T'])) ?
                 'null' : round((100 / $res['sum_T'] * $res['sum_P']), 2);
         }
 
         $jours      = implode(', ', $jours);
         $T          = implode(', ', $T);
+        $P          = implode(', ', $P);
         $positivite = implode(', ', $positivite);
 
         $event = highChartsCommon::exportImgLogo(true);
@@ -226,9 +230,18 @@ class pcrPositivite
                     enabled:false
                 },
                 name: '{$this->yAxis2Label}',
-                color: '#c70000',
+                color: '#800000',
                 yAxis: 1,
                 data: [$T]
+            }, {
+                connectNulls: true,
+                marker:{
+                    enabled:false
+                },
+                name: '{$this->yAxis3Label}',
+                color: '#c70000',
+                yAxis: 1,
+                data: [$P]
             }],
 
             responsive: {
@@ -252,7 +265,9 @@ class pcrPositivite
 
     private function regTitle()
     {
-        $this->title .= ($_SESSION['spf_filterRegionId'] == 0) ? ' | ' . $_SESSION['spf_filterRegionName'] : ' | Région : ' . $_SESSION['spf_filterRegionName'];
+        $this->title .= ($_SESSION['spf_filterRegionId'] == 0)
+                            ? ' | ' . $_SESSION['spf_filterRegionName']
+                            : ' | Région : ' . highChartsCommon::chartText($_SESSION['spf_filterRegionName']);
     }
 
 

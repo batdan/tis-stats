@@ -38,10 +38,13 @@ class nbOccupationRea
 
         $this->chartName = 'nbOccupationRea';
 
-        $this->title    = 'Nb actuel de patients covid-19 en soins critiques par million d`habitants';
+        $this->title    = "Nb actuel de patients covid-19 en soins critiques par million d'habitants";
+        $this->title    = highChartsCommon::chartText($this->title);
+
         $this->subTitle = 'Source: Our World in Data';
 
-        $this->yAxis1Label = 'Nb actuel de patients en soins critiques pour un million d`habitants';
+        $this->yAxis1Label = "Nb actuel de patients en soins critiques pour un million d'habitants";
+        $this->yAxis1Label = highChartsCommon::chartText($this->yAxis1Label);
 
         $this->getCountries();
 
