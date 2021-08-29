@@ -4,7 +4,7 @@ namespace owid\maps;
 use tools\dbSingleton;
 use main\highChartsCommon;
 
-class deathsPerMillion
+class nbOccupationHp
 {
     private $cache;
     private $dbh;
@@ -33,15 +33,15 @@ class deathsPerMillion
 
         $this->dbh = dbSingleton::getInstance();
 
-        $this->chartName = 'deathsPerMillion';
+        $this->chartName = 'nbOccupationHp';
 
-        $this->title    = "Nb actuel de décès covid-19 par million d'habitants";
+        $this->title    = "Nb actuel d'hospitalisations covid-19 par million d'habitants";
         $this->title    = highChartsCommon::chartText($this->title);
 
-        $this->legend   = "Décès par million d'habitant";
+        $this->legend   = "Hospitalisations par million d'habitant";
         $this->legend   = highChartsCommon::chartText($this->legend);
 
-        $this->legend2  = "Décès par million";
+        $this->legend2  = "Hospitalisations par million";
 
         $this->subTitle = 'Source: Our World in Data';
     }
@@ -83,8 +83,11 @@ class deathsPerMillion
 
             $tableCountry = 'owid_covid19_' . $iso;
 
-            $req = "SELECT      MAX(total_deaths_per_million) AS myVal
-                    FROM        $tableCountry";
+            $req = "SELECT      hosp_patients_per_million AS myVal
+                    FROM        $tableCountry
+                    WHERE       hosp_patients_per_million > 0
+                    ORDER BY    jour DESC
+                    LIMIT       0,1";
 
             $sql = $this->dbh->query($req);
 
@@ -173,8 +176,8 @@ class deathsPerMillion
                     },
 
                     colorAxis: {
-                        min: 200,
-                        max: 3000,
+                        min: 1,
+                        max: 1000,
                         type: 'logarithmic'
                     },
 

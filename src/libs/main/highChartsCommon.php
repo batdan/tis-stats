@@ -13,7 +13,7 @@ class highChartsCommon
     {
         $jsEvent = <<<eof
             exporting: {
-                sourceWidth: 1200,
+                sourceWidth: 1500,
                 sourceHeight: 600,
                 scale: 1
             },
@@ -115,7 +115,35 @@ eof;
             },
             style: {
                 color: '#ccc',
-                fontSize: '22px',
+                fontSize: '18px',
+            }
+        },
+eof;
+
+        return $jsEvent;
+    }
+
+
+    /**
+     * Utilisation du crédit pour afficher le domaine LCH
+     * @return string
+     */
+    public static function creditMapsLCH()
+    {
+        $jsEvent = <<<eof
+
+        credits: {
+            text: 'www.lachainehumaine.com',
+            href: 'https://www.lachainehumaine.com',
+            position: {
+                align: 'right',
+                verticalAlign: 'bottom',
+                x: 0,
+                y: -44
+            },
+            style: {
+                color: '#0F9900',
+                fontSize: '16px',
             }
         },
 eof;

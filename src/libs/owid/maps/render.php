@@ -42,10 +42,6 @@ class render
                 margin: 0 auto;
             }
 
-            .highcharts-series {
-                width: 100%;
-            }
-
             .highcharts-tooltip>span {
                 padding: 10px;
                 white-space: normal !important;
@@ -130,38 +126,38 @@ eof;
     private static function chartSelect()
     {
         $filterChart  = '<div class="form-group col-lg-3">';
-        $filterChart .= '<label class="form-label" for="filter-chart">Sélection de la carte C19</label>';
-        $filterChart .= '<select id="filter-chart" class="form-select">';
+        $filterChart .= '<label class="form-label" for="filter-map">Sélection de la carte C19</label>';
+        $filterChart .= '<select id="filter-map" class="form-select">';
 
         $chartCollections = [
             // 'item-1'                                    => 'Tests PCR',
-            // 'spf\charts\pcrPositivite'                  => 'PCR : taux de positivité',
-            // 'spf\charts\pcrCumulTests'                  => 'PCR : nb de tests réalisés',
+            // 'owid\maps\pcrPositivite'                  => 'PCR : taux de positivité',
+            // 'owid\maps\pcrCumulTests'                  => 'PCR : nb de tests réalisés',
             // 'closeItem-1'                               => '',
             //
             // 'item-2'                                    => 'Chiffres quotidiens',
-            // 'spf\charts\quotidienEntreesHp'             => 'Quotidien : hospitalisations',
-            // 'spf\charts\quotidienEntreesRea'            => 'Quotidien : soins critiques',
-            // 'spf\charts\quotidienDeces'                 => 'Quotidien : décès',
-            // 'spf\charts\quotidienRad'                   => 'Quotidien : retours à domicile',
+            // 'owid\maps\quotidienEntreesHp'             => 'Quotidien : hospitalisations',
+            // 'owid\maps\quotidienEntreesRea'            => 'Quotidien : soins critiques',
+            // 'owid\maps\quotidienDeces'                 => 'Quotidien : décès',
+            // 'owid\maps\quotidienRad'                   => 'Quotidien : retours à domicile',
             // 'closeItem-2'                               => '',
             //
-            // 'item-3'                                    => 'Occupation des hôpitaux',
-            // 'spf\charts\nbOccupationHp'                 => 'Occupation : hospitalisations',
-            // 'spf\charts\nbOccupationRea'                => 'Occupation : soins critiques',
-            // 'closeItem-3'                               => '',
+            'item-3'                                        => 'Occupation des hôpitaux',
+            'owid\maps\nbOccupationHp'                      => 'Occupation : hospitalisations',
+            'owid\maps\nbOccupationRea'                     => 'Occupation : soins critiques',
+            'closeItem-3'                                   => '',
 
-            'item-4'                                    => 'Chiffres cumulés',
-            'spf\charts\nbCumuleDeces'                  => 'Cumulé : décès',
-            // 'spf\charts\nbCumuleDecesAge'               => 'Cumulé : décès par âge',
-            // 'spf\charts\nbCumuleRad'                    => 'Cumulé : retours à domicile',
-            'closeItem-4'                               => '',
+            'item-4'                                        => 'Chiffres cumulés',
+            'owid\maps\deathsPerMillion'                    => 'Cumulé : décès par million',
+            // 'owid\maps\nbCumuleDecesAge'                 => 'Cumulé : décès par âge',
+            // 'owid\maps\nbCumuleRad'                      => 'Cumulé : retours à domicile',
+            'closeItem-4'                                   => '',
 
             // 'item-5'                                    => 'Chiffres sur la vaccinations',
-            // 'spf\charts\quotidienVaccinationAge'        => 'Quotidien : vaccinations par âge',
-            // 'spf\charts\quotidienVaccinationVaccin'     => 'Quotidien : vaccinations par vaccin',
-            // 'spf\charts\nbCumuleVaccinationAge'         => 'Cumulé : vaccinations par âge',
-            // 'spf\charts\nbCumuleVaccinationVaccin'      => 'Cumulé : vaccinations par vaccin',
+            // 'owid\maps\quotidienVaccinationAge'        => 'Quotidien : vaccinations par âge',
+            // 'owid\maps\quotidienVaccinationVaccin'     => 'Quotidien : vaccinations par vaccin',
+            // 'owid\maps\nbCumuleVaccinationAge'         => 'Cumulé : vaccinations par âge',
+            // 'owid\maps\nbCumuleVaccinationVaccin'      => 'Cumulé : vaccinations par vaccin',
             // 'closeItem-5'                               => '',
         ];
 
@@ -174,7 +170,7 @@ eof;
             } else {
 
                 $selected = '';
-                if ($_SESSION['spf_filterChart'] == $key) {
+                if ($_SESSION['owid_filterMap'] == $key) {
                     $selected = ' selected="selected"';
                 }
 
@@ -187,10 +183,10 @@ eof;
 
         $filterChart .= <<<eof
         <script type="text/javascript">
-            $("#filter-chart").change( function() {
-                $.post("/ajax/spf/filterChart.php",
+            $("#filter-map").change( function() {
+                $.post("/ajax/owid/filterMap.php",
                 {
-                    filterChart : $(this).find(":selected").val()
+                    filterMap : $(this).find(":selected").val()
                 },
                 function success(data)
                 {

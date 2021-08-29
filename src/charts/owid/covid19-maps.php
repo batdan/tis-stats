@@ -2,8 +2,6 @@
 // Chargement des classes
 include ( __DIR__ . '/../../bootstrap.php' );
 
-$cache = true;
-
 // echo '<pre>';
 // print_r($_SESSION);
 // echo '<pre>';
@@ -13,8 +11,8 @@ $cache = true;
 // }
 
 // Initialisation des filtres
-$_SESSION['owid_maps_filterChart'] = (isset($_SESSION['owid_maps_filterChart'])) ? $_SESSION['owid_maps_filterChart'] : 'owid\maps\deathsPerMillion';
+$_SESSION['owid_filterMap'] = (isset($_SESSION['owid_filterMap'])) ? $_SESSION['owid_filterMap'] : 'owid\maps\deathsPerMillion';
 
 // Affichage du graphique
-$class = new $_SESSION['owid_maps_filterChart']($cache);
+$class = new $_SESSION['owid_filterMap']();
 $class->render();
