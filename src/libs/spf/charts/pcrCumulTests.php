@@ -138,7 +138,7 @@ class pcrCumulTests
         $T      = implode(', ', $T);
         $P      = implode(', ', $P);
 
-        $credit = highChartsCommon::imgLogo();
+        $credit = highChartsCommon::creditLCH();
         $event  = highChartsCommon::exportImgLogo();
 
         $this->highChartsJs = <<<eof

@@ -152,7 +152,7 @@ class quotidienEntreesHp
         $hosp       = implode(', ', $hosp);
         $positivite = implode(', ', $positivite);
 
-        $credit = highChartsCommon::imgLogo();
+        $credit = highChartsCommon::creditLCH();
         $event  = highChartsCommon::exportImgLogo(true);
 
         $this->highChartsJs = <<<eof

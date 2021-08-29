@@ -123,7 +123,7 @@ class nbOccupationRea
         $jours      = implode(', ', $jours);
         $rea       = implode(', ', $rea);
 
-        $credit = highChartsCommon::imgLogo();
+        $credit = highChartsCommon::creditLCH();
         $event  = highChartsCommon::exportImgLogo();
 
         $this->highChartsJs = <<<eof

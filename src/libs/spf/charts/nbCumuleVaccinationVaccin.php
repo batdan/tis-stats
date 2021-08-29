@@ -134,7 +134,7 @@ class nbCumuleVaccinationVaccin
         $n_cum_dose1 = implode(', ', $n_cum_dose1);
         $n_cum_dose2 = implode(', ', $n_cum_dose2);
 
-        $credit = highChartsCommon::imgLogo();
+        $credit = highChartsCommon::creditLCH();
         $event  = highChartsCommon::exportImgLogo();
 
         $this->highChartsJs = <<<eof

@@ -2,8 +2,8 @@
 // Chargement des classes
 include ( __DIR__ . '/../../bootstrap.php' );
 
-$cache              = true;
-$defaultCountries   = ['FRA', 'ISR'];
+$cache = true;
+$defaultCountries = ['FRA', 'ISR'];
 
 // echo '<pre>';
 // print_r($_SESSION);

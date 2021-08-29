@@ -125,7 +125,7 @@ class nbOccupationHp
         $jours      = implode(', ', $jours);
         $hosp       = implode(', ', $hosp);
 
-        $credit = highChartsCommon::imgLogo();
+        $credit = highChartsCommon::creditLCH();
         $event  = highChartsCommon::exportImgLogo();
 
         $this->highChartsJs = <<<eof

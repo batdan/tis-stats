@@ -100,7 +100,7 @@ eof;
      * Utilisation du crédit pour afficher le domaine LCH
      * @return string
      */
-    public static function imgLogo()
+    public static function creditLCH()
     {
         $jsEvent = <<<eof
 

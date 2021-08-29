@@ -129,7 +129,7 @@ class nbCumuleRad
         $rad    = implode(', ', $rad);
         $dc     = implode(', ', $dc);
 
-        $credit = highChartsCommon::imgLogo();
+        $credit = highChartsCommon::creditLCH();
         $event  = highChartsCommon::exportImgLogo();
 
         $this->highChartsJs = <<<eof

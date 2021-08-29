@@ -150,7 +150,7 @@ class quotidienDeces
         $dc         = implode(', ', $dc);
         $positivite = implode(', ', $positivite);
 
-        $credit = highChartsCommon::imgLogo();
+        $credit = highChartsCommon::creditLCH();
         $event  = highChartsCommon::exportImgLogo(true);
 
         $this->highChartsJs = <<<eof

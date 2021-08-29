@@ -154,7 +154,7 @@ eof;
         $series = implode(',', $series);
         $series = 'series: [' . $series . '],' . chr(10);
 
-        $credit = highChartsCommon::imgLogo();
+        $credit = highChartsCommon::creditLCH();
         $event  = highChartsCommon::exportImgLogo();
 
         $this->highChartsJs = <<<eof
