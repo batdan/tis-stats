@@ -4,7 +4,7 @@ namespace owid\maps;
 use tools\dbSingleton;
 use main\highChartsCommon;
 
-class nbOccupationRea
+class pcrPositivite
 {
     private $cache;
     private $dbh;
@@ -33,15 +33,13 @@ class nbOccupationRea
 
         $this->dbh = dbSingleton::getInstance();
 
-        $this->chartName = 'nbOccupationRea';
+        $this->chartName = 'pcrPositivite';
 
-        $this->title    = "Nb actuel de patients covid-19 en soins critiques par million d'habitants";
-        $this->title    = highChartsCommon::chartText($this->title);
+        $this->title    = "Taux de positivité tests PCR covid-19";
 
-        $this->legend   = "Patients en soins critiques par million d'habitant";
-        $this->legend   = highChartsCommon::chartText($this->legend);
+        $this->legend   = "% de positifs sur la population testée";
 
-        $this->legend2  = "Nb soins critiques par million";
+        $this->legend2  = "Taux de positivité";
 
         $this->subTitle = 'Source: Our World in Data';
     }
@@ -72,10 +70,9 @@ class nbOccupationRea
         $className = str_replace('\\', '_', get_class($this));
         $fileName  = date('Y-m-d_') . $className;
 
-
-        if ($this->cache && $this->data = \main\cache::getCache($fileName)) {
-            return json_encode($this->data);
-        }
+        // if ($this->cache && $this->data = \main\cache::getCache($fileName)) {
+        //     return json_encode($this->data);
+        // }
 
         $this->data = [];
 
@@ -83,9 +80,9 @@ class nbOccupationRea
 
             $tableCountry = 'owid_covid19_' . $iso;
 
-            $req = "SELECT      icu_patients_per_million AS myVal
+            $req = "SELECT      (positive_rate * 100) AS myVal
                     FROM        $tableCountry
-                    WHERE       icu_patients_per_million > 0
+                    WHERE       positive_rate > 0
                     ORDER BY    jour DESC
                     LIMIT       0,1";
 
@@ -95,7 +92,7 @@ class nbOccupationRea
                 $this->data[] = [
                     'code3' => $iso,
                     'name'  => $country,
-                    'value' => round($res->myVal)
+                    'value' => floatval($res->myVal)
                 ];
             }
         }
@@ -169,7 +166,7 @@ class nbOccupationRea
                         padding: 0,
                         pointFormat: '<span class="f32"><span class="flag {point.properties.hc-key}">' +
                             '</span></span> {point.name}<br>' +
-                            '<span style="font-size:30px">{point.value}</span>',
+                            '<span style="font-size:30px">{point.value}%</span>',
                         positioner: function () {
                             return { x: 0, y: 250 };
                         }
@@ -177,7 +174,7 @@ class nbOccupationRea
 
                     colorAxis: {
                         min: 1,
-                        max: 100,
+                        max: 25,
                         // type: 'logarithmic'
                     },
 

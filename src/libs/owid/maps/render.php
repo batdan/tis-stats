@@ -130,18 +130,18 @@ eof;
         $filterChart .= '<select id="filter-map" class="form-select">';
 
         $chartCollections = [
-            // 'item-1'                                    => 'Tests PCR',
-            // 'owid\maps\pcrPositivite'                  => 'PCR : taux de positivité',
-            // 'owid\maps\pcrCumulTests'                  => 'PCR : nb de tests réalisés',
-            // 'closeItem-1'                               => '',
-            //
+            'item-1'                                        => 'Tests PCR',
+            'owid\maps\pcrPositivite'                       => 'PCR : taux de positivité',
+            // 'owid\maps\pcrCumulTests'                    => 'PCR : nb de tests réalisés',
+            'closeItem-1'                                   => '',
+
             // 'item-2'                                    => 'Chiffres quotidiens',
             // 'owid\maps\quotidienEntreesHp'             => 'Quotidien : hospitalisations',
             // 'owid\maps\quotidienEntreesRea'            => 'Quotidien : soins critiques',
             // 'owid\maps\quotidienDeces'                 => 'Quotidien : décès',
             // 'owid\maps\quotidienRad'                   => 'Quotidien : retours à domicile',
             // 'closeItem-2'                               => '',
-            //
+            
             'item-3'                                        => 'Occupation des hôpitaux',
             'owid\maps\nbOccupationHp'                      => 'Occupation : hospitalisations',
             'owid\maps\nbOccupationRea'                     => 'Occupation : soins critiques',

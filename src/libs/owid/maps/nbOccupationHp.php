@@ -177,8 +177,8 @@ class nbOccupationHp
 
                     colorAxis: {
                         min: 1,
-                        max: 1000,
-                        type: 'logarithmic'
+                        max: 400,
+                        // type: 'logarithmic'
                     },
 
                     series: [{

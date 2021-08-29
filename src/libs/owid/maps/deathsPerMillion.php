@@ -175,7 +175,7 @@ class deathsPerMillion
                     colorAxis: {
                         min: 200,
                         max: 3000,
-                        type: 'logarithmic'
+                        // type: 'logarithmic'
                     },
 
                     series: [{
