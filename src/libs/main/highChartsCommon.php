@@ -3,7 +3,34 @@ namespace main;
 
 class highChartsCommon
 {
-    public static function exportImgLogo($yAxisleft = false)
+    /**
+     * Permet de gérer la dimension des exports de graphiques
+     *
+     * @param   boolean     $yAxisleft      Paramètre inutile mais conservé pour la rétrocompatibilité
+     * @return  string
+     */
+    public static function exportImgLogo($yAxisleft)
+    {
+        $jsEvent = <<<eof
+            exporting: {
+                sourceWidth: 1200,
+                sourceHeight: 600,
+                scale: 1
+            },
+eof;
+
+        return $jsEvent;
+    }
+
+
+    /**
+     * Code permettant d'afficher une image dans les exports de graphique
+     * Méthode abandonnée au profit de l'affichage d'un credit avec le nom de domaine
+     *
+     * @param   boolean     $yAxisleft      gestion de l'espace à gauche pour les graphiques avec ordonnée à gauche
+     * @return  string
+     */
+    public static function exportImgLogoOld($yAxisleft = false)
     {
         $imgSrc     = 'https://stats.lachainehumaine.com/img/logo_complet_2_30pct_nb.png';
 
@@ -69,6 +96,10 @@ eof;
     }
 
 
+    /**
+     * Utilisation du crédit pour afficher le domaine LCH
+     * @return string
+     */
     public static function imgLogo()
     {
         $jsEvent = <<<eof
@@ -83,7 +114,7 @@ eof;
                 y: 95
             },
             style: {
-                color: '#dddddd',
+                color: '#ccc',
                 fontSize: '22px',
                 // backgroundImage: 'url($imgSrc)'
             }
