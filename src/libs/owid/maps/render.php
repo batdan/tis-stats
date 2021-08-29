@@ -132,33 +132,21 @@ eof;
         $chartCollections = [
             'item-1'                                        => 'Tests PCR',
             'owid\maps\pcrPositivite'                       => 'PCR : taux de positivité',
-            // 'owid\maps\pcrCumulTests'                    => 'PCR : nb de tests réalisés',
             'closeItem-1'                                   => '',
 
-            // 'item-2'                                    => 'Chiffres quotidiens',
-            // 'owid\maps\quotidienEntreesHp'             => 'Quotidien : hospitalisations',
-            // 'owid\maps\quotidienEntreesRea'            => 'Quotidien : soins critiques',
-            // 'owid\maps\quotidienDeces'                 => 'Quotidien : décès',
-            // 'owid\maps\quotidienRad'                   => 'Quotidien : retours à domicile',
-            // 'closeItem-2'                               => '',
-            
-            'item-3'                                        => 'Occupation des hôpitaux',
+            'item-2'                                        => 'Occupation des hôpitaux',
             'owid\maps\nbOccupationHp'                      => 'Occupation : hospitalisations',
             'owid\maps\nbOccupationRea'                     => 'Occupation : soins critiques',
+            'closeItem-2'                                   => '',
+
+            'item-3'                                        => 'Chiffres cumulés',
+            'owid\maps\deathsPerMillion'                    => 'Cumulé : décès par million',
             'closeItem-3'                                   => '',
 
-            'item-4'                                        => 'Chiffres cumulés',
-            'owid\maps\deathsPerMillion'                    => 'Cumulé : décès par million',
-            // 'owid\maps\nbCumuleDecesAge'                 => 'Cumulé : décès par âge',
-            // 'owid\maps\nbCumuleRad'                      => 'Cumulé : retours à domicile',
+            'item-4'                                        => 'Chiffres sur la vaccinations',
+            'owid\maps\totalFirstVaccinatedPerHundred'      => 'Cumulé : vaccinations 1 dose',
+            'owid\maps\totalVaccinatedPerHundred'           => 'Cumulé : vaccinations complètes',
             'closeItem-4'                                   => '',
-
-            // 'item-5'                                    => 'Chiffres sur la vaccinations',
-            // 'owid\maps\quotidienVaccinationAge'        => 'Quotidien : vaccinations par âge',
-            // 'owid\maps\quotidienVaccinationVaccin'     => 'Quotidien : vaccinations par vaccin',
-            // 'owid\maps\nbCumuleVaccinationAge'         => 'Cumulé : vaccinations par âge',
-            // 'owid\maps\nbCumuleVaccinationVaccin'      => 'Cumulé : vaccinations par vaccin',
-            // 'closeItem-5'                               => '',
         ];
 
         foreach ($chartCollections as $key => $text) {
