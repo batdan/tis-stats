@@ -9,7 +9,7 @@ class highChartsCommon
      * @param   boolean     $yAxisleft      Paramètre inutile mais conservé pour la rétrocompatibilité
      * @return  string
      */
-    public static function exportImgLogo($yAxisleft)
+    public static function exportImgLogo($yAxisleft = false)
     {
         $jsEvent = <<<eof
             exporting: {
@@ -116,7 +116,6 @@ eof;
             style: {
                 color: '#ccc',
                 fontSize: '22px',
-                // backgroundImage: 'url($imgSrc)'
             }
         },
 eof;
