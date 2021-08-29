@@ -154,13 +154,13 @@ eof;
         $series = implode(',', $series);
         $series = 'series: [' . $series . '],' . chr(10);
 
-        $event = highChartsCommon::exportImgLogo();
+        $credit = highChartsCommon::imgLogo();
+        $event  = highChartsCommon::exportImgLogo();
 
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {
-            credits: {
-                enabled: false
-            },
+
+            $credit
 
             $event
 

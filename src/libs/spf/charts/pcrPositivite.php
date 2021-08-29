@@ -139,13 +139,13 @@ class pcrPositivite
         $P          = implode(', ', $P);
         $positivite = implode(', ', $positivite);
 
-        $event = highChartsCommon::exportImgLogo(true);
+        $credit = highChartsCommon::imgLogo();
+        $event  = highChartsCommon::exportImgLogo(true);
 
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {
-            credits: {
-                enabled: false
-            },
+
+            $credit
 
             $event
 

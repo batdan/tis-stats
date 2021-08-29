@@ -129,13 +129,13 @@ class nbCumuleRad
         $rad    = implode(', ', $rad);
         $dc     = implode(', ', $dc);
 
-        $event = highChartsCommon::exportImgLogo();
+        $credit = highChartsCommon::imgLogo();
+        $event  = highChartsCommon::exportImgLogo();
 
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {
-            credits: {
-                enabled: false
-            },
+
+            $credit
 
             $event
 

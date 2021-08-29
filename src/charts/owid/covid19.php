@@ -3,7 +3,7 @@
 include ( __DIR__ . '/../../bootstrap.php' );
 
 $cache              = true;
-$defaultCountries   = ['FRA', 'SWE', 'ISR'];
+$defaultCountries   = ['FRA', 'ISR'];
 
 // echo '<pre>';
 // print_r($_SESSION);

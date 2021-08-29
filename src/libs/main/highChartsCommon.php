@@ -69,6 +69,31 @@ eof;
     }
 
 
+    public static function imgLogo()
+    {
+        $jsEvent = <<<eof
+
+        credits: {
+            text: 'www.lachainehumaine.com',
+            href: '',
+            position: {
+                align: 'center',
+                verticalAlign: 'top',
+                x: 0,
+                y: 95
+            },
+            style: {
+                color: '#dddddd',
+                fontSize: '22px',
+                // backgroundImage: 'url($imgSrc)'
+            }
+        },
+eof;
+
+        return $jsEvent;
+    }
+
+
     public static function chartText($text)
     {
         return str_replace("'", '&#39;', $text);
