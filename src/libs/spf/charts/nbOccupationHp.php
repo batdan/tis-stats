@@ -40,7 +40,7 @@ class nbOccupationHp
         $this->title    = highChartsCommon::chartText($this->title);
         $this->regTitle();
 
-        $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours)';
+        $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours) | Données hospitalières';
 
         $this->yAxis1Label = "Nb actuel d'hospitalisations covid-19";
         $this->yAxis1Label = highChartsCommon::chartText($this->yAxis1Label);

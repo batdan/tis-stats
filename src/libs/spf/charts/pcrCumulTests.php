@@ -39,7 +39,7 @@ class pcrCumulTests
         $this->title = 'Nb de tests covid-19 réalisés | Nb de tests covid-19 positifs';
         $this->regTitle();
 
-        $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours)';
+        $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours) | Données de laboratoires';
 
         $this->yAxis1Label = 'Nb de testés';
         $this->yAxis2Label = 'Nb de positifs';

@@ -1,4 +1,8 @@
 <?php
+/**
+ * Accès à la collection de cartes disponibles pour highcharts
+ * https://code.highcharts.com/mapdata/
+ */
 namespace owid\maps;
 
 use tools\dbSingleton;
@@ -38,12 +42,12 @@ class nbOccupationHp
         $this->title    = "Nb actuel d'hospitalisations covid-19 par million d'habitants";
         $this->title    = highChartsCommon::chartText($this->title);
 
+        $this->subTitle = 'Source: Our World in Data';
+        
         $this->legend   = "Hospitalisations par million d'habitant";
         $this->legend   = highChartsCommon::chartText($this->legend);
 
         $this->legend2  = "Hospitalisations par million";
-
-        $this->subTitle = 'Source: Our World in Data';
     }
 
 
@@ -83,7 +87,7 @@ class nbOccupationHp
 
             $tableCountry = 'owid_covid19_' . $iso;
 
-            $req = "SELECT      hosp_patients_per_million AS myVal
+            $req = "SELECT      jour, hosp_patients_per_million AS myVal
                     FROM        $tableCountry
                     WHERE       hosp_patients_per_million > 0
                     ORDER BY    jour DESC
@@ -95,7 +99,8 @@ class nbOccupationHp
                 $this->data[] = [
                     'code3' => $iso,
                     'name'  => $country,
-                    'value' => round($res->myVal)
+                    'value' => round($res->myVal),
+                    'jour'  => $res->jour
                 ];
             }
         }
@@ -169,7 +174,8 @@ class nbOccupationHp
                         padding: 0,
                         pointFormat: '<span class="f32"><span class="flag {point.properties.hc-key}">' +
                             '</span></span> {point.name}<br>' +
-                            '<span style="font-size:30px">{point.value}</span>',
+                            '<div style="font-size:14px; margin-top:10px;">Le {point.jour} :</div><br>' +
+                            '<span style="font-size:30px">{point.value}</span><br>',
                         positioner: function () {
                             return { x: 0, y: 250 };
                         }

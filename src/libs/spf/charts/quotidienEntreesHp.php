@@ -40,7 +40,7 @@ class quotidienEntreesHp
         $this->title    = highChartsCommon::chartText($this->title);
         $this->regTitle();
 
-        $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours)';
+        $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours) | Données hospitalières';
 
         $this->yAxis1Label = '% de positifs sur la population testée';
         $this->yAxis2Label = "Nb quotidien d'hospitalisations";

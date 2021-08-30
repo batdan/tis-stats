@@ -1,4 +1,8 @@
 <?php
+/**
+ * Accès à la collection de cartes disponibles pour highcharts
+ * https://code.highcharts.com/mapdata/
+ */
 namespace owid\maps;
 
 use tools\dbSingleton;
@@ -34,14 +38,10 @@ class totalVaccinatedPerHundred
         $this->dbh = dbSingleton::getInstance();
 
         $this->chartName = 'totalVaccinatedPerHundred';
-
-        $this->title    = "Pourcentage de la population totalement vaccinée covid-19";
-
-        $this->legend   = "Pourcentage totalement vaccinée";
-
-        $this->legend2  = "Pourcentage totalement vaccinée";
-
-        $this->subTitle = 'Source: Our World in Data';
+        $this->title     = "Pourcentage de la population totalement vaccinée covid-19";
+        $this->legend    = "Pourcentage totalement vaccinée";
+        $this->legend2   = "Pourcentage totalement vaccinée";
+        $this->subTitle  = 'Source: Our World in Data';
     }
 
 
@@ -81,7 +81,7 @@ class totalVaccinatedPerHundred
 
             $tableCountry = 'owid_covid19_' . $iso;
 
-            $req = "SELECT      people_fully_vaccinated_per_hundred AS myVal
+            $req = "SELECT      jour, people_fully_vaccinated_per_hundred AS myVal
                     FROM        $tableCountry
                     WHERE       people_fully_vaccinated_per_hundred > 0
                     ORDER BY    jour DESC
@@ -93,7 +93,8 @@ class totalVaccinatedPerHundred
                 $this->data[] = [
                     'code3' => $iso,
                     'name'  => $country,
-                    'value' => round($res->myVal, 2)
+                    'value' => round($res->myVal, 2),
+                    'jour'  => $res->jour
                 ];
             }
         }
@@ -167,7 +168,8 @@ class totalVaccinatedPerHundred
                         padding: 0,
                         pointFormat: '<span class="f32"><span class="flag {point.properties.hc-key}">' +
                             '</span></span> {point.name}<br>' +
-                            '<span style="font-size:30px">{point.value}%</span>',
+                            '<div style="font-size:14px; margin-top:10px;">Le {point.jour} :</div><br>' +
+                            '<span style="font-size:30px">{point.value}%</span><br>',
                         positioner: function () {
                             return { x: 0, y: 250 };
                         }

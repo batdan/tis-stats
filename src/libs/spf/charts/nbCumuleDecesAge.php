@@ -38,7 +38,7 @@ class nbCumuleDecesAge
         $this->title    = 'Nb cumulé de décès par âge covid-19';
         $this->regTitle();
 
-        $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours)';
+        $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours) | Données hospitalières';
 
         $this->ages = [
             '09' => 'De 0 à 9 ans',

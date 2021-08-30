@@ -1,4 +1,8 @@
 <?php
+/**
+ * Accès à la collection de cartes disponibles pour highcharts
+ * https://code.highcharts.com/mapdata/
+ */
 namespace owid\maps;
 
 use tools\dbSingleton;
@@ -83,7 +87,7 @@ class nbOccupationRea
 
             $tableCountry = 'owid_covid19_' . $iso;
 
-            $req = "SELECT      icu_patients_per_million AS myVal
+            $req = "SELECT      jour, icu_patients_per_million AS myVal
                     FROM        $tableCountry
                     WHERE       icu_patients_per_million > 0
                     ORDER BY    jour DESC
@@ -95,7 +99,8 @@ class nbOccupationRea
                 $this->data[] = [
                     'code3' => $iso,
                     'name'  => $country,
-                    'value' => round($res->myVal)
+                    'value' => round($res->myVal),
+                    'jour'  => $res->jour
                 ];
             }
         }
@@ -169,7 +174,8 @@ class nbOccupationRea
                         padding: 0,
                         pointFormat: '<span class="f32"><span class="flag {point.properties.hc-key}">' +
                             '</span></span> {point.name}<br>' +
-                            '<span style="font-size:30px">{point.value}</span>',
+                            '<div style="font-size:14px; margin-top:10px;">Le {point.jour} :</div><br>' +
+                            '<span style="font-size:30px">{point.value}</span><br>',
                         positioner: function () {
                             return { x: 0, y: 250 };
                         }

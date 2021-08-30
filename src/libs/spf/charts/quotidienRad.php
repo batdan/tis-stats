@@ -41,7 +41,7 @@ class quotidienRad
         $this->title    = 'Retours à domicile covid-19 | Décès covid-19 | Hospitalisations covid-19 | Entrées soins critiques covid-19';
         $this->regTitle();
 
-        $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours)';
+        $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours) | Données hospitalières';
 
         $this->yAxis1Label = 'Retours à domicile';
         $this->yAxis2Label = 'Décès';

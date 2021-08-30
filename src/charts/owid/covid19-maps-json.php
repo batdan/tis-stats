@@ -4,7 +4,9 @@ include ( __DIR__ . '/../../bootstrap.php' );
 
 $cache = true;
 
-// Affichage du graphique
+// Initialisation des filtres
+$_SESSION['owid_filterMap'] = (isset($_SESSION['owid_filterMap'])) ? $_SESSION['owid_filterMap'] : 'owid\maps\deathsPerMillion';
+
 $class = new $_SESSION['owid_filterMap']($cache);
 
 header('Content-Type: application/json');

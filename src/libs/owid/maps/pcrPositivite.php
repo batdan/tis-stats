@@ -1,4 +1,8 @@
 <?php
+/**
+ * Accès à la collection de cartes disponibles pour highcharts
+ * https://code.highcharts.com/mapdata/
+ */
 namespace owid\maps;
 
 use tools\dbSingleton;
@@ -34,14 +38,10 @@ class pcrPositivite
         $this->dbh = dbSingleton::getInstance();
 
         $this->chartName = 'pcrPositivite';
-
-        $this->title    = "Taux de positivité tests PCR covid-19";
-
-        $this->legend   = "% de positifs sur la population testée";
-
-        $this->legend2  = "Taux de positivité";
-
-        $this->subTitle = 'Source: Our World in Data';
+        $this->title     = "Taux de positivité tests PCR covid-19";
+        $this->legend    = "% de positifs sur la population testée";
+        $this->legend2   = "Taux de positivité";
+        $this->subTitle  = 'Source: Our World in Data';
     }
 
 
@@ -80,7 +80,7 @@ class pcrPositivite
 
             $tableCountry = 'owid_covid19_' . $iso;
 
-            $req = "SELECT      (positive_rate * 100) AS myVal
+            $req = "SELECT      jour, (positive_rate * 100) AS myVal
                     FROM        $tableCountry
                     WHERE       positive_rate > 0
                     ORDER BY    jour DESC
@@ -92,7 +92,8 @@ class pcrPositivite
                 $this->data[] = [
                     'code3' => $iso,
                     'name'  => $country,
-                    'value' => floatval($res->myVal)
+                    'value' => floatval($res->myVal),
+                    'jour'  => $res->jour
                 ];
             }
         }
@@ -166,7 +167,8 @@ class pcrPositivite
                         padding: 0,
                         pointFormat: '<span class="f32"><span class="flag {point.properties.hc-key}">' +
                             '</span></span> {point.name}<br>' +
-                            '<span style="font-size:30px">{point.value}%</span>',
+                            '<div style="font-size:14px; margin-top:10px;">Le {point.jour} :</div><br>' +
+                            '<span style="font-size:30px">{point.value}%</span><br>',
                         positioner: function () {
                             return { x: 0, y: 250 };
                         }

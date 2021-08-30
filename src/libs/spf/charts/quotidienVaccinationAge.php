@@ -42,7 +42,7 @@ class quotidienVaccinationAge
         $this->title    = 'Nombre quotidien de vaccinés covid-19 par âge';
         $this->regTitle();
 
-        $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours)';
+        $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours) | Vaccination';
 
         $this->yAxis1Label = 'Nombre quotidien de vaccinés 1ère dose';
         $this->yAxis2Label = 'Nombre quotidien de vaccinés 2ème dose';

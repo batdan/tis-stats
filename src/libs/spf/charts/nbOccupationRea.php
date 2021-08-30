@@ -39,7 +39,7 @@ class nbOccupationRea
         $this->title    = 'Nb actuel de patients covid-19 en soins critiques | Taux de positivité covid-19';
         $this->regTitle();
 
-        $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours)';
+        $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours) | Données hospitalières';
 
         $this->yAxis1Label = 'Nb actuel de patients covid-19 en soins critiques';
 

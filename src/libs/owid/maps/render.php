@@ -1,4 +1,8 @@
 <?php
+/**
+ * Accès à la collection de cartes disponibles pour highcharts
+ * https://code.highcharts.com/mapdata/
+ */
 namespace owid\maps;
 
 use tools\dbSingleton;

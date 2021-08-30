@@ -39,7 +39,7 @@ class pcrPositivite
         $this->title = 'Nb de testés | Nb de testés positifs | Taux de positivité (covid-19)';
         $this->regTitle();
 
-        $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours)';
+        $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours) | Données de laboratoires';
 
         $this->yAxis1Label = '% de positifs sur la population testée';
         $this->yAxis2Label = 'Nb de testés';

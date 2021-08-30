@@ -39,7 +39,7 @@ class nbCumuleRad
         $this->title    = 'Nb cumulé des retours à domicile covid-19 | Nb cumulé de décès covid-19';
         $this->regTitle();
 
-        $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours)';
+        $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours) | Données hospitalières';
 
         $this->yAxis1Label = 'Retours à domicile covid-19';
         $this->yAxis2Label = 'Décès covid-19';

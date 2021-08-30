@@ -42,7 +42,7 @@ class nbCumuleVaccinationVaccin
         $this->title    = 'Nb cumulé de vaccinés covid-19 par vaccin';
         $this->regTitle();
 
-        $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours)';
+        $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours) | Vaccination';
 
         $this->yAxis1Label = 'Nb cumulé de vaccinés 1ère dose';
         $this->yAxis2Label = 'Nb cumulé de vaccinés 2ème dose';
