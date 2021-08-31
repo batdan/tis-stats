@@ -20,6 +20,7 @@ class nbCumuleVaccinationAge
     private $yAxis1Label;
     private $yAxis2Label;
 
+    private $regions;
     private $data;
     private $highChartsJs;
 
@@ -39,16 +40,30 @@ class nbCumuleVaccinationAge
 
         $this->chartName = 'nbCumuleVaccinationAge';
 
-        $this->title    = 'Nb cumulé de vaccinés covid-19 par âge';
+        $this->title    = 'Pourcentage de vaccinés covid-19 par âge';
         $this->regTitle();
 
         $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours) | Vaccination';
 
-        $this->yAxis1Label = 'Nb cumulé de vaccinés 1ère dose';
-        $this->yAxis2Label = 'Nb cumulé de vaccinés 2ème dose';
+        $this->yAxis1Label = 'Pourcentage de vaccinés 1ère dose';
+        $this->yAxis2Label = 'Pourcentage de vaccinés 2ème dose';
 
+        $this->getRegions();
         $this->getData();
         $this->highChartsJs();
+    }
+
+
+    private function getRegions()
+    {
+        $req = "SELECT region, iso, population FROM geo_reg2018";
+        $sql = $this->dbh->query($req);
+
+        // Préenregistrement de la population en France
+        $this->regions = [0 => 67394862];
+        while ($res = $sql->fetch()) {
+            $this->regions[$res->region] = $res->population;
+        }
     }
 
 
@@ -125,9 +140,9 @@ class nbCumuleVaccinationAge
         $n_cum_dose2 = [];
 
         foreach($this->data as $jour => $res) {
-            $jours[] = "'".$jour."'";
-            $n_cum_dose1[] = $res['sum_n_cum_dose1'];
-            $n_cum_dose2[] = $res['sum_n_cum_dose2'];
+            $jours[]       = "'".$jour."'";
+            $n_cum_dose1[] = 100 / $this->regions[$_SESSION['spf_filterRegionId']] * $res['sum_n_cum_dose1'];
+            $n_cum_dose2[] = 100 / $this->regions[$_SESSION['spf_filterRegionId']] * $res['sum_n_cum_dose2'];
         }
 
         $jours       = implode(', ', $jours);
@@ -159,20 +174,18 @@ class nbCumuleVaccinationAge
 
             yAxis: [{ // Primary yAxis
                 title: {
-                    text: 'Nombre cumulé de vaccinés',
+                    text: 'Pourcentage de vaccinés',
                     style: {
                         color: '#c70000',
                         fontSize: 14
                     }
                 },
                 labels: {
-                    format: '{value}',
+                    format: '{value:.2f}%',
+                    allowDecimals: 2,
                     style: {
                         color: '#c70000',
                         fontSize: 14
-                    },
-                    formatter: function() {
-                        return Highcharts.numberFormat(this.value, 0, '.', ' ');
                     }
                 },
                 opposite: true
@@ -191,6 +204,11 @@ class nbCumuleVaccinationAge
                 layout: 'vertical',
                 align: 'right',
                 verticalAlign: 'middle'
+            },
+
+            tooltip: {
+                valueDecimals: 2,
+                valueSuffix: '%'
             },
 
             series: [{
