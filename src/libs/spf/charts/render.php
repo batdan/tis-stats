@@ -7,6 +7,8 @@ class render
 {
     private static $dbh;
 
+    private static $jsRender = '';
+
 
     public static function html($chartName, $title, $js, $backLink = true, $filterActiv)
     {
@@ -14,6 +16,8 @@ class render
 
         $backLinkLCH = self::backLink($backLink);
         $chartFilter = self::chartFilters($filterActiv);
+
+        $jsRender = self::$jsRender;
 
         return <<<eof
 <!DOCTYPE html>
@@ -47,8 +51,14 @@ class render
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
         <script type="text/javascript" src="//code.highcharts.com/highcharts.js"></script>
         <script type="text/javascript" src="//code.highcharts.com/modules/exporting.js"></script>
+
         <script type="text/javascript">
             $js
+            $jsRender
+
+            $(function() {
+                $('body').hide().fadeIn('slow');
+            });
         </script>
     </body>
 </html>
@@ -119,9 +129,9 @@ eof;
 
     private static function chartSelect()
     {
-        $filterChart  = '<div class="form-group col-lg-3">';
-        $filterChart .= '<label class="form-label" for="filter-chart">Sélection de graphiques C19</label>';
-        $filterChart .= '<select id="filter-chart" class="form-select">';
+        $filter  = '<div class="form-group col-lg-3">';
+        $filter .= '<label class="form-label" for="filter-chart">Sélection de graphiques C19</label>';
+        $filter .= '<select id="filter-chart" class="form-select">';
 
         $chartCollections = [
             'item-1'                                    => 'Tests PCR',
@@ -158,9 +168,9 @@ eof;
         foreach ($chartCollections as $key => $text) {
 
             if (strstr($key, 'item')) {
-                $filterChart .= '<optgroup label="' . $text . '">';
+                $filter .= '<optgroup label="' . $text . '">';
             } elseif (strstr($key, 'closeItem')) {
-                $filterChart .= '</optgroup>';
+                $filter .= '</optgroup>';
             } else {
 
                 $selected = '';
@@ -168,15 +178,14 @@ eof;
                     $selected = ' selected="selected"';
                 }
 
-                $filterChart .= '<option value="' . $key . '"' . $selected  . '>' . $text . '</option>';
+                $filter .= '<option value="' . $key . '"' . $selected  . '>' . $text . '</option>';
             }
         }
 
-        $filterChart .= '</select>';
-        $filterChart .= '</div>';
+        $filter .= '</select>';
+        $filter .= '</div>';
 
-        $filterChart .= <<<eof
-        <script type="text/javascript">
+        self::$jsRender .= <<<eof
             $("#filter-chart").change( function() {
                 $.post("/ajax/spf/filterChart.php",
                 {
@@ -188,20 +197,19 @@ eof;
                     history.go(0);
                 }, 'json');
             });
-        </script>
 eof;
 
-        return $filterChart;
+        return $filter;
     }
 
 
     private static function chartFilterRegion()
     {
-        $filterRegion  = '<div class="form-group col-lg-3">';
-        $filterRegion .= '<label class="form-label" for="filter-region">Région</label>';
-        $filterRegion .= '<select id="filter-region" class="form-select">';
+        $filter  = '<div class="form-group col-lg-3">';
+        $filter .= '<label class="form-label" for="filter-region">Région</label>';
+        $filter .= '<select id="filter-region" class="form-select">';
 
-        $req = "SELECT region, nccenr FROM geo_reg2018 ORDER BY id";
+        $req = "SELECT region, nccenr FROM geo_reg2018 ORDER BY nccenr";
         $sql = self::$dbh->query($req);
 
         $selected = '';
@@ -209,26 +217,25 @@ eof;
             $selected = ' selected="selected"';
         }
 
-        $filterRegion .= '<optgroup label="Pays">';
-        $filterRegion .= '<option value="0"' . $selected  . '>FRANCE</option>';
-        $filterRegion .= '</optgroup>';
+        $filter .= '<optgroup label="Pays">';
+        $filter .= '<option value="0"' . $selected  . '>FRANCE</option>';
+        $filter .= '</optgroup>';
 
-        $filterRegion .= '<optgroup label="Régions">';
+        $filter .= '<optgroup label="Régions">';
         while ($res = $sql->fetch()) {
             $selected = '';
             if ($_SESSION['spf_filterRegionId'] == $res->region) {
                 $selected = ' selected="selected"';
             }
 
-            $filterRegion .= '<option value="' . $res->region . '"' . $selected  . '>' . $res->nccenr . '</option>';
+            $filter .= '<option value="' . $res->region . '"' . $selected  . '>' . $res->nccenr . '</option>';
         }
-        $filterRegion .= '</optgroup>';
+        $filter .= '</optgroup>';
 
-        $filterRegion .= '</select>';
-        $filterRegion .= '</div>';
+        $filter .= '</select>';
+        $filter .= '</div>';
 
-        $filterRegion .= <<<eof
-        <script type="text/javascript">
+        self::$jsRender .= <<<eof
             $("#filter-region").change( function() {
                 $.post("/ajax/spf/filterRegion.php",
                 {
@@ -240,18 +247,17 @@ eof;
                     history.go(0);
                 }, 'json');
             });
-        </script>
 eof;
 
-        return $filterRegion;
+        return $filter;
     }
 
 
     private static function chartFilterInterval()
     {
-        $filterRegion  = '<div class="form-group col-lg-3">';
-        $filterRegion .= '<label class="form-label" for="filter-interval">Période</label>';
-        $filterRegion .= '<select id="filter-interval" class="form-select">';
+        $filter  = '<div class="form-group col-lg-3">';
+        $filter .= '<label class="form-label" for="filter-interval">Période</label>';
+        $filter .= '<select id="filter-interval" class="form-select">';
 
         $d = new \dateTime();
         $interval = new \DateInterval('P1M');
@@ -287,14 +293,13 @@ eof;
                 $selected = ' selected="selected"';
             }
 
-            $filterRegion .= '<option value="' . $chart . '"' . $selected  . '>' . $text . '</option>';
+            $filter .= '<option value="' . $chart . '"' . $selected  . '>' . $text . '</option>';
         }
 
-        $filterRegion .= '</select>';
-        $filterRegion .= '</div>';
+        $filter .= '</select>';
+        $filter .= '</div>';
 
-        $filterRegion .= <<<eof
-        <script type="text/javascript">
+        self::$jsRender .= <<<eof
             $("#filter-interval").change( function() {
                 $.post("/ajax/spf/filterInterval.php",
                 {
@@ -306,18 +311,17 @@ eof;
                     history.go(0);
                 }, 'json');
             });
-        </script>
 eof;
 
-        return $filterRegion;
+        return $filter;
     }
 
 
     private static function chartFilterAge()
     {
-        $filterRegion  = '<div class="form-group col-lg-3">';
-        $filterRegion .= '<label class="form-label" for="filter-age">Age</label>';
-        $filterRegion .= '<select id="filter-age" class="form-select">';
+        $filter  = '<div class="form-group col-lg-3">';
+        $filter .= '<label class="form-label" for="filter-age">Age</label>';
+        $filter .= '<select id="filter-age" class="form-select">';
 
         $chartInterval = [
             '0'     => 'Tous les âges',
@@ -339,14 +343,13 @@ eof;
                 $selected = ' selected="selected"';
             }
 
-            $filterRegion .= '<option value="' . $chart . '"' . $selected  . '>' . $text . '</option>';
+            $filter .= '<option value="' . $chart . '"' . $selected  . '>' . $text . '</option>';
         }
 
-        $filterRegion .= '</select>';
-        $filterRegion .= '</div>';
+        $filter .= '</select>';
+        $filter .= '</div>';
 
-        $filterRegion .= <<<eof
-        <script type="text/javascript">
+        self::$jsRender .= <<<eof
             $("#filter-age").change( function() {
                 $.post("/ajax/spf/filterAge.php",
                 {
@@ -358,18 +361,17 @@ eof;
                     history.go(0);
                 }, 'json');
             });
-        </script>
 eof;
 
-        return $filterRegion;
+        return $filter;
     }
 
 
     private static function chartFilterAge2()
     {
-        $filterRegion  = '<div class="form-group col-lg-3">';
-        $filterRegion .= '<label class="form-label" for="filter-age2">Age</label>';
-        $filterRegion .= '<select id="filter-age2" class="form-select">';
+        $filter  = '<div class="form-group col-lg-3">';
+        $filter .= '<label class="form-label" for="filter-age2">Age</label>';
+        $filter .= '<select id="filter-age2" class="form-select">';
 
         $chartInterval = [
             '0'  => 'Tous les âges',
@@ -394,14 +396,13 @@ eof;
                 $selected = ' selected="selected"';
             }
 
-            $filterRegion .= '<option value="' . $chart . '"' . $selected  . '>' . $text . '</option>';
+            $filter .= '<option value="' . $chart . '"' . $selected  . '>' . $text . '</option>';
         }
 
-        $filterRegion .= '</select>';
-        $filterRegion .= '</div>';
+        $filter .= '</select>';
+        $filter .= '</div>';
 
-        $filterRegion .= <<<eof
-        <script type="text/javascript">
+        self::$jsRender .= <<<eof
             $("#filter-age2").change( function() {
                 $.post("/ajax/spf/filterAge2.php",
                 {
@@ -413,18 +414,17 @@ eof;
                     history.go(0);
                 }, 'json');
             });
-        </script>
 eof;
 
-        return $filterRegion;
+        return $filter;
     }
 
 
     private static function chartFilterVaccin()
     {
-        $filterRegion  = '<div class="form-group col-lg-3">';
-        $filterRegion .= '<label class="form-label" for="filter-vaccin">Vaccin</label>';
-        $filterRegion .= '<select id="filter-vaccin" class="form-select">';
+        $filter  = '<div class="form-group col-lg-3">';
+        $filter .= '<label class="form-label" for="filter-vaccin">Vaccin</label>';
+        $filter .= '<select id="filter-vaccin" class="form-select">';
 
         $chartInterval = [
             0 => 'Tous Vaccins',
@@ -440,14 +440,13 @@ eof;
                 $selected = ' selected="selected"';
             }
 
-            $filterRegion .= '<option value="' . $chart . '"' . $selected  . '>' . $text . '</option>';
+            $filter .= '<option value="' . $chart . '"' . $selected  . '>' . $text . '</option>';
         }
 
-        $filterRegion .= '</select>';
-        $filterRegion .= '</div>';
+        $filter .= '</select>';
+        $filter .= '</div>';
 
-        $filterRegion .= <<<eof
-        <script type="text/javascript">
+        self::$jsRender .= <<<eof
             $("#filter-vaccin").change( function() {
                 $.post("/ajax/spf/filterVaccin.php",
                 {
@@ -459,9 +458,8 @@ eof;
                     history.go(0);
                 }, 'json');
             });
-        </script>
 eof;
 
-        return $filterRegion;
+        return $filter;
     }
 }

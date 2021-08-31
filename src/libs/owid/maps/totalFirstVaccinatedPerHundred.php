@@ -39,9 +39,9 @@ class totalFirstVaccinatedPerHundred
 
         $this->chartName = 'totalFirstVaccinatedPerHundred';
         $this->title     = "Pourcentage de la population partiellement vaccinée covid-19";
+        $this->subTitle  = 'Source: Our World in Data';
         $this->legend    = "Pourcentage partiellement vaccinée";
         $this->legend2   = "Pourcentage partiellement vaccinée";
-        $this->subTitle  = 'Source: Our World in Data';
     }
 
 

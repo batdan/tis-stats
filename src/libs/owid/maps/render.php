@@ -11,6 +11,8 @@ class render
 {
     private static $dbh;
 
+    private static $jsRender = '';
+
 
     public static function html($chartName, $title, $js, $backLink = true, $filterActiv)
     {
@@ -18,6 +20,8 @@ class render
 
         $backLinkLCH = self::backLink($backLink);
         $chartFilter = self::chartFilters($filterActiv);
+
+        $jsRender = self::$jsRender;
 
         return <<<eof
 <!DOCTYPE html>
@@ -86,6 +90,11 @@ class render
 
         <script type="text/javascript">
             $js
+            $jsRender
+
+            $(function() {
+                $('body').hide().fadeIn('slow');
+            });
         </script>
     </body>
 </html>
@@ -129,9 +138,9 @@ eof;
 
     private static function chartSelect()
     {
-        $filterChart  = '<div class="form-group col-lg-3">';
-        $filterChart .= '<label class="form-label" for="filter-map">Sélection de la carte C19</label>';
-        $filterChart .= '<select id="filter-map" class="form-select">';
+        $filter  = '<div class="form-group col-lg-3">';
+        $filter .= '<label class="form-label" for="filter-map">Sélection de la carte C19</label>';
+        $filter .= '<select id="filter-map" class="form-select">';
 
         $chartCollections = [
             'item-1'                                        => 'Tests PCR',
@@ -156,9 +165,9 @@ eof;
         foreach ($chartCollections as $key => $text) {
 
             if (strstr($key, 'item')) {
-                $filterChart .= '<optgroup label="' . $text . '">';
+                $filter .= '<optgroup label="' . $text . '">';
             } elseif (strstr($key, 'closeItem')) {
-                $filterChart .= '</optgroup>';
+                $filter .= '</optgroup>';
             } else {
 
                 $selected = '';
@@ -166,15 +175,14 @@ eof;
                     $selected = ' selected="selected"';
                 }
 
-                $filterChart .= '<option value="' . $key . '"' . $selected  . '>' . $text . '</option>';
+                $filter .= '<option value="' . $key . '"' . $selected  . '>' . $text . '</option>';
             }
         }
 
-        $filterChart .= '</select>';
-        $filterChart .= '</div>';
+        $filter .= '</select>';
+        $filter .= '</div>';
 
-        $filterChart .= <<<eof
-        <script type="text/javascript">
+        self::$jsRender .= <<<eof
             $("#filter-map").change( function() {
                 $.post("/ajax/owid/filterMap.php",
                 {
@@ -186,9 +194,8 @@ eof;
                     history.go(0);
                 }, 'json');
             });
-        </script>
 eof;
 
-        return $filterChart;
+        return $filter;
     }
 }

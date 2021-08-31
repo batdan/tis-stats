@@ -35,12 +35,18 @@ class nbOccupationRea
 
         $this->chartName = 'nbOccupationRea';
 
-        $this->title    = "Nb actuel de patients covid-19 en soins critiques par million d'habitants";
+        $this->title    = "Nb actuel de patients covid-19 en soins critiques";
+        if ($_SESSION['spf_filterMapRatio'] == 1) {
+            $this->title .= " par million d'habitants";
+        }
         $this->title    = highChartsCommon::chartText($this->title);
 
         $this->subTitle = 'Source: Santé publique France | Données hospitalières';
 
-        $this->legend   = "Soins critique par million";
+        $this->legend   = "Soins critiques";
+        if ($_SESSION['spf_filterMapRatio'] == 1) {
+            $this->legend .= " par million";
+        }
     }
 
 
@@ -72,7 +78,6 @@ class nbOccupationRea
 
         $addReq = "";
         $addReqValues = [];
-
         $addReq .= " AND cl_age90 = :cl_age90";
         if (!empty($_SESSION['spf_filterMapAge']) && $_SESSION['spf_filterMapAge'] != '0') {
             $addReqValues[':cl_age90'] = $_SESSION['spf_filterMapAge'];
@@ -81,17 +86,27 @@ class nbOccupationRea
             $addReqValues[':cl_age90'] = 0;
         }
 
-        // if ($this->cache && $this->data = \main\cache::getCache($fileName)) {
-        //     return json_encode($this->data);
-        // }
+        switch ($_SESSION['spf_filterMapRatio']) {
+            case 0 : $fileName .= '_total';     break;
+            case 1 : $fileName .= '_million';   break;
+        }
+
+        if ($this->cache && $this->data = \main\cache::getCache($fileName)) {
+            return json_encode($this->data);
+        }
 
         $this->data = [];
 
-        $req = "SELECT      reg, SUM(rea) AS sum_rea
+        $req = "SELECT      reg, SUM(rea) AS mySum
 
                 FROM        donnees_hp_cumule_age_covid19_reg_calc
 
-                WHERE       jour = (SELECT jour FROM donnees_hp_cumule_age_covid19_reg_calc ORDER BY jour DESC LIMIT 1)
+                WHERE       jour = (
+                                SELECT      jour
+                                FROM        donnees_hp_cumule_age_covid19_reg_calc
+                                ORDER BY    jour DESC
+                                LIMIT       1
+                            )
                 $addReq
 
                 GROUP BY    reg
@@ -99,14 +114,22 @@ class nbOccupationRea
 
         $sql = $this->dbh->prepare($req);
         $sql->execute($addReqValues);
-        $resEnd = $sql->fetchAll();
+        $results = $sql->fetchAll();
 
-        $dataEnd = [];
+        foreach ($results as $res) {
+            switch ($_SESSION['spf_filterMapRatio']) {
+                case 0 :
+                    $mySum = $res->mySum;
+                    break;
 
-        foreach ($resEnd as $res) {
+                case 1 :
+                    $mySum = round((1000000 / $this->regions[$res->reg]['population'] * $res->mySum));
+                    break;
+            }
+
             $this->data[] = [
                 $this->regions[$res->reg]['iso'],
-                round((1000000 / $this->regions[$res->reg]['population']) * $res->sum_rea),
+                floatval($mySum)
             ];
         }
 
@@ -200,6 +223,7 @@ eof;
 
         $filterActiv = [
             'age'       => true,
+            'ratio'     => true,
         ];
 
         echo render::html(

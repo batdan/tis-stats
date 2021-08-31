@@ -69,6 +69,10 @@ class render
         <script type="text/javascript">
             $jsHightcharts
             $jsRender
+
+            $(function() {
+                $('body').hide().fadeIn('slow');
+            });
         </script>
     </body>
 </html>
@@ -124,9 +128,9 @@ eof;
 
     private static function chartSelect()
     {
-        $filterChart  = '<div class="form-group col-lg-3">';
-        $filterChart .= '<label class="form-label" for="filter-chart">Sélection de graphiques C19</label>';
-        $filterChart .= '<select id="filter-chart" class="custom-select">';
+        $filter  = '<div class="form-group col-lg-3">';
+        $filter .= '<label class="form-label" for="filter-chart">Sélection de graphiques C19</label>';
+        $filter .= '<select id="filter-chart" class="custom-select">';
 
         $chartCollections = [
             'item-1'                                    => 'Tests PCR',
@@ -162,9 +166,9 @@ eof;
         foreach ($chartCollections as $key => $text) {
 
             if (strstr($key, 'item')) {
-                $filterChart .= '<optgroup label="' . $text . '">';
+                $filter .= '<optgroup label="' . $text . '">';
             } elseif (strstr($key, 'closeItem')) {
-                $filterChart .= '</optgroup>';
+                $filter .= '</optgroup>';
             } else {
 
                 $selected = '';
@@ -172,12 +176,12 @@ eof;
                     $selected = ' selected="selected"';
                 }
 
-                $filterChart .= '<option value="' . $key . '"' . $selected  . '>' . $text . '</option>';
+                $filter .= '<option value="' . $key . '"' . $selected  . '>' . $text . '</option>';
             }
         }
 
-        $filterChart .= '</select>';
-        $filterChart .= '</div>';
+        $filter .= '</select>';
+        $filter .= '</div>';
 
         self::$jsRender .= <<<eof
 
@@ -194,7 +198,7 @@ eof;
             });
 eof;
 
-        return $filterChart;
+        return $filter;
     }
 
 
@@ -210,9 +214,9 @@ eof;
 
         $_SESSION['owid_filterCountry'];
 
-        $filterCountry  = '<div class="form-group col-lg-3" style="padding-left:0; padding-right:0;">';
-        $filterCountry .= '<label class="form-label col-lg-12" for="filter-country">Pays</label>';
-        $filterCountry .= '<select id="filter-country" class="selectpicker col-10" data-style="btn-default" multiple="multiple" data-live-search="true">';
+        $filter  = '<div class="form-group col-lg-3" style="padding-left:0; padding-right:0;">';
+        $filter .= '<label class="form-label col-lg-12" for="filter-country">Pays</label>';
+        $filter .= '<select id="filter-country" class="selectpicker col-10" data-style="btn-default" multiple="multiple" data-live-search="true">';
 
         foreach ($countries as $iso => $location) {
             $selected = '';
@@ -220,13 +224,13 @@ eof;
                 $selected = ' selected';
             }
 
-            $filterCountry .= '<option value="' . $iso . '"' . $selected  . '>' . $location . '</option>';
+            $filter .= '<option value="' . $iso . '"' . $selected  . '>' . $location . '</option>';
         }
 
-        $filterCountry .= '</select>';
-        $filterCountry .= '<button id="country-search" type="submit" class="col-2 btn btn-primary" style="border-radius:0 5px 5px 0; position:relative; left:-15px;">';
-        $filterCountry .= '<i class="fas fa-search" style="position:relative; left:-2px;"></i></button>';
-        $filterCountry .= '</div>';
+        $filter .= '</select>';
+        $filter .= '<button id="country-search" type="submit" class="col-2 btn btn-primary" style="border-radius:0 5px 5px 0; position:relative; left:-15px;">';
+        $filter .= '<i class="fas fa-search" style="position:relative; left:-2px;"></i></button>';
+        $filter .= '</div>';
 
         self::$jsRender .= <<<eof
 
@@ -246,15 +250,15 @@ eof;
             });
 eof;
 
-        return $filterCountry;
+        return $filter;
     }
 
 
     private static function chartFilterInterval()
     {
-        $filterInterval  = '<div class="form-group col-lg-3">';
-        $filterInterval .= '<label class="form-label" for="filter-interval">Période</label>';
-        $filterInterval .= '<select id="filter-interval" class="custom-select">';
+        $filter  = '<div class="form-group col-lg-3">';
+        $filter .= '<label class="form-label" for="filter-interval">Période</label>';
+        $filter .= '<select id="filter-interval" class="custom-select">';
 
         $d = new \dateTime();
         $interval = new \DateInterval('P1M');
@@ -290,11 +294,11 @@ eof;
                 $selected = ' selected="selected"';
             }
 
-            $filterInterval .= '<option value="' . $chart . '"' . $selected  . '>' . $text . '</option>';
+            $filter .= '<option value="' . $chart . '"' . $selected  . '>' . $text . '</option>';
         }
 
-        $filterInterval .= '</select>';
-        $filterInterval .= '</div>';
+        $filter .= '</select>';
+        $filter .= '</div>';
 
         self::$jsRender .= <<<eof
 
@@ -311,6 +315,6 @@ eof;
             });
 eof;
 
-        return $filterInterval;
+        return $filter;
     }
 }

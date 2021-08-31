@@ -4,7 +4,7 @@ namespace spf\maps;
 use tools\dbSingleton;
 use main\highChartsCommon;
 
-class nbOccupationHp
+class totalVaccinatedPerHundred
 {
     private $cache;
     private $dbh;
@@ -33,20 +33,10 @@ class nbOccupationHp
 
         $this->dbh = dbSingleton::getInstance();
 
-        $this->chartName = 'nbOccupationHp';
-
-        $this->title    = "Nb actuel d'hospitalisations covid-19";
-        if ($_SESSION['spf_filterMapRatio'] == 1) {
-            $this->title .= " par million d'habitants";
-        }
-        $this->title    = highChartsCommon::chartText($this->title);
-
-        $this->subTitle = 'Source: Santé publique France | Données hospitalières';
-
-        $this->legend   = "Hospitalisations";
-        if ($_SESSION['spf_filterMapRatio'] == 1) {
-            $this->legend .= " par million";
-        }
+        $this->chartName = 'totalVaccinatedPerHundred';
+        $this->title     = "Pourcentage de la population totalement vaccinée covid-19";
+        $this->subTitle  = 'Source: Santé Publique France | Vaccination';
+        $this->legend    = "Pourcentage totalement vaccinée";
     }
 
 
@@ -78,35 +68,31 @@ class nbOccupationHp
 
         $addReq = "";
         $addReqValues = [];
-        $addReq .= " AND cl_age90 = :cl_age90";
-        if (!empty($_SESSION['spf_filterMapAge']) && $_SESSION['spf_filterMapAge'] != '0') {
-            $addReqValues[':cl_age90'] = $_SESSION['spf_filterMapAge'];
-            $fileName .= '_age_' . $_SESSION['spf_filterMapAge'];
+        $addReq .= " AND clage_vacsi = :clage_vacsi";
+        if (!empty($_SESSION['spf_filterMapAge2']) && $_SESSION['spf_filterMapAge2'] != '0') {
+            $addReqValues[':clage_vacsi'] = $_SESSION['spf_filterMapAge2'];
+            $fileName .= '_age_' . $_SESSION['spf_filterMapAge2'];
         } else {
-            $addReqValues[':cl_age90'] = 0;
+            $addReqValues[':clage_vacsi'] = 0;
         }
 
-        switch ($_SESSION['spf_filterMapRatio']) {
-            case 0 : $fileName .= '_total';     break;
-            case 1 : $fileName .= '_million';   break;
-        }
-
-        if ($this->cache && $this->data = \main\cache::getCache($fileName)) {
-            return json_encode($this->data);
-        }
+        // if ($this->cache && $this->data = \main\cache::getCache($fileName)) {
+        //     return json_encode($this->data);
+        // }
 
         $this->data = [];
 
-        $req = "SELECT      reg, SUM(hosp) AS mySum
+        $req = "SELECT      reg, SUM(n_cum_dose2) AS mySum
 
-                FROM        donnees_hp_cumule_age_covid19_reg_calc
+                FROM        donnees_vaccination_age_covid19
 
                 WHERE       jour = (
                                 SELECT      jour
-                                FROM        donnees_hp_cumule_age_covid19_reg_calc
+                                FROM        donnees_vaccination_age_covid19
                                 ORDER BY    jour DESC
                                 LIMIT       1
                             )
+
                 $addReq
 
                 GROUP BY    reg
@@ -117,20 +103,12 @@ class nbOccupationHp
         $results = $sql->fetchAll();
 
         foreach ($results as $res) {
-            switch ($_SESSION['spf_filterMapRatio']) {
-                case 0 :
-                    $mySum = $res->mySum;
-                    break;
-
-                case 1 :
-                    $mySum = round((1000000 / $this->regions[$res->reg]['population'] * $res->mySum));
-                    break;
+            if (isset($this->regions[$res->reg]['iso'])) {
+                $this->data[] = [
+                    $this->regions[$res->reg]['iso'],
+                    (100 / intval($this->regions[$res->reg]['population']) * floatval($res->mySum))
+                ];
             }
-
-            $this->data[] = [
-                $this->regions[$res->reg]['iso'],
-                floatval($mySum)
-            ];
         }
 
         // createCache
@@ -184,6 +162,11 @@ class nbOccupationHp
                         // type: 'logarithmic'
                     },
 
+                    tooltip: {
+                        valueDecimals: 2,
+                        valueSuffix: '%'
+                    },
+
                     series: [{
                         data: data,
                         name: '{$this->legend}',
@@ -222,8 +205,7 @@ eof;
         $backLink = (isset($_GET['internal'])) ? false : true;
 
         $filterActiv = [
-            'age'       => true,
-            'ratio'     => true,
+            'age2'      => true,
         ];
 
         echo render::html(

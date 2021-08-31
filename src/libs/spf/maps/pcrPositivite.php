@@ -4,7 +4,7 @@ namespace spf\maps;
 use tools\dbSingleton;
 use main\highChartsCommon;
 
-class nbOccupationHp
+class pcrPositivite
 {
     private $cache;
     private $dbh;
@@ -33,20 +33,10 @@ class nbOccupationHp
 
         $this->dbh = dbSingleton::getInstance();
 
-        $this->chartName = 'nbOccupationHp';
-
-        $this->title    = "Nb actuel d'hospitalisations covid-19";
-        if ($_SESSION['spf_filterMapRatio'] == 1) {
-            $this->title .= " par million d'habitants";
-        }
-        $this->title    = highChartsCommon::chartText($this->title);
-
-        $this->subTitle = 'Source: Santé publique France | Données hospitalières';
-
-        $this->legend   = "Hospitalisations";
-        if ($_SESSION['spf_filterMapRatio'] == 1) {
-            $this->legend .= " par million";
-        }
+        $this->chartName = 'pcrPositivite';
+        $this->title     = "Taux de positivité - Test PCR (covid-19)";
+        $this->subTitle  = 'Source: Santé publique France | Données de laboratoires';
+        $this->legend    = "% de positifs sur la population testée";
     }
 
 
@@ -86,24 +76,19 @@ class nbOccupationHp
             $addReqValues[':cl_age90'] = 0;
         }
 
-        switch ($_SESSION['spf_filterMapRatio']) {
-            case 0 : $fileName .= '_total';     break;
-            case 1 : $fileName .= '_million';   break;
-        }
-
         if ($this->cache && $this->data = \main\cache::getCache($fileName)) {
             return json_encode($this->data);
         }
 
-        $this->data = [];
+        $req = "SELECT      reg,
+                            SUM(T) AS sum_T,
+                            SUM(P) AS sum_P
 
-        $req = "SELECT      reg, SUM(hosp) AS mySum
-
-                FROM        donnees_hp_cumule_age_covid19_reg_calc
+                FROM        donnees_labo_pcr_covid19_calc_lisse7j
 
                 WHERE       jour = (
                                 SELECT      jour
-                                FROM        donnees_hp_cumule_age_covid19_reg_calc
+                                FROM        donnees_labo_pcr_covid19_calc_lisse7j
                                 ORDER BY    jour DESC
                                 LIMIT       1
                             )
@@ -116,21 +101,15 @@ class nbOccupationHp
         $sql->execute($addReqValues);
         $results = $sql->fetchAll();
 
+        $this->data = [];
+
         foreach ($results as $res) {
-            switch ($_SESSION['spf_filterMapRatio']) {
-                case 0 :
-                    $mySum = $res->mySum;
-                    break;
-
-                case 1 :
-                    $mySum = round((1000000 / $this->regions[$res->reg]['population'] * $res->mySum));
-                    break;
+            if (isset($this->regions[$res->reg]['iso'])) {
+                $this->data[] = [
+                    $this->regions[$res->reg]['iso'],
+                    floatval(round((100 / $res->sum_T * $res->sum_P), 2)),
+                ];
             }
-
-            $this->data[] = [
-                $this->regions[$res->reg]['iso'],
-                floatval($mySum)
-            ];
         }
 
         // createCache
@@ -179,9 +158,14 @@ class nbOccupationHp
                     },
 
                     colorAxis: {
-                        // min: 1,
-                        // max: 200
+                        // min: 0,
+                        // max: 1000
                         // type: 'logarithmic'
+                    },
+
+                    tooltip: {
+                        valueDecimals: 2,
+                        valueSuffix: '%'
                     },
 
                     series: [{
@@ -223,7 +207,6 @@ eof;
 
         $filterActiv = [
             'age'       => true,
-            'ratio'     => true,
         ];
 
         echo render::html(

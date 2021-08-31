@@ -82,7 +82,6 @@ class deathsPerMillion
 
         $addReq = "";
         $addReqValues = [];
-
         $addReq .= " AND cl_age90 = :cl_age90";
         if (!empty($_SESSION['spf_filterMapAge']) && $_SESSION['spf_filterMapAge'] != '0') {
             $addReqValues[':cl_age90'] = $_SESSION['spf_filterMapAge'];
