@@ -134,6 +134,7 @@ eof;
 
         $chartCollections = [
             'item-1'                                    => 'Tests PCR',
+            'owid\charts\pcrCasesPerMillion'            => 'PCR : Cas positifs par million',
             'owid\charts\pcrPositivite'                 => 'PCR : taux de positivité',
             'owid\charts\pcrNewTestsPerThousand'        => 'PCR : tests quotidiens',
             'closeItem-1'                               => '',

@@ -101,11 +101,11 @@ class totalFirstVaccinatedPerHundred
             $req = "SELECT      jour,
                                 people_vaccinated_per_hundred AS myVal
 
-            FROM        $tableCountry
+                    FROM        $tableCountry
 
-            WHERE       1 $addReq
+                    WHERE       1 $addReq
 
-            ORDER BY    jour ASC";
+                    ORDER BY    jour ASC";
 
             $sql = $this->dbh->prepare($req);
             $sql->execute($addReqValues);

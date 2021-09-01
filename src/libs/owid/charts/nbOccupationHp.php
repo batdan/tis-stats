@@ -104,11 +104,11 @@ class nbOccupationHp
             $req = "SELECT      jour,
                                 hosp_patients_per_million AS myVal
 
-            FROM        $tableCountry
+                    FROM        $tableCountry
 
-            WHERE       1 $addReq
+                    WHERE       1 $addReq
 
-            ORDER BY    jour ASC";
+                    ORDER BY    jour ASC";
 
             $sql = $this->dbh->prepare($req);
             $sql->execute($addReqValues);

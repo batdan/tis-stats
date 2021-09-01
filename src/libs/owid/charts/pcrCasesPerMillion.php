@@ -4,7 +4,7 @@ namespace owid\charts;
 use tools\dbSingleton;
 use main\highChartsCommon;
 
-class weeklyNewHpPerMillion
+class pcrCasesPerMillion
 {
     private $cache;
     private $dbh;
@@ -36,15 +36,14 @@ class weeklyNewHpPerMillion
 
         $this->dbh = dbSingleton::getInstance();
 
-        $this->chartName = 'weeklyNewHpPerMillion';
+        $this->chartName    = 'pcrCasesPerMillion';
 
-        $this->title    = "Nb hebdomataire d'hospitalisations covid-19 par million d'habitants";
-        $this->title    = highChartsCommon::chartText($this->title);
+        $this->title        = "Nombre de cas covid-19 par million d'habitants | tests PCR";
+        $this->title        = highChartsCommon::chartText($this->title);
+        $this->subTitle     = 'Source: Our World in Data';
 
-        $this->subTitle = 'Source: Our World in Data';
-
-        $this->yAxis1Label = "Nb hebdomataire d'hospitalisations pour un million d'habitants";
-        $this->yAxis1Label = highChartsCommon::chartText($this->yAxis1Label);
+        $this->yAxis1Label  = "Nombre de cas par million d'habitants";
+        $this->yAxis1Label  = highChartsCommon::chartText($this->yAxis1Label);
 
         $this->getCountries();
 
@@ -102,7 +101,7 @@ class weeklyNewHpPerMillion
             $tableCountry = 'owid_covid19_' . $iso;
 
             $req = "SELECT      jour,
-                                weekly_hosp_admissions_per_million AS myVal
+                                ROUND(new_cases_smoothed_per_million) AS myVal
 
                     FROM        $tableCountry
 
@@ -206,6 +205,7 @@ eof;
                     formatter: function() {
                         return Highcharts.numberFormat(this.value, 0, '.', ' ');
                     }
+
                 },
                 opposite: true
             }],

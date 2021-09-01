@@ -104,11 +104,11 @@ class weeklyNewReaPerMillion
             $req = "SELECT      jour,
                                 weekly_icu_admissions_per_million AS myVal
 
-            FROM        $tableCountry
+                    FROM        $tableCountry
 
-            WHERE       1 $addReq
+                    WHERE       1 $addReq
 
-            ORDER BY    jour ASC";
+                    ORDER BY    jour ASC";
 
             $sql = $this->dbh->prepare($req);
             $sql->execute($addReqValues);

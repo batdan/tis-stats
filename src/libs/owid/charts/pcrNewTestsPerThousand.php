@@ -104,11 +104,11 @@ class pcrNewTestsPerThousand
             $req = "SELECT      jour,
                                 new_tests_smoothed_per_thousand AS myVal
 
-            FROM        $tableCountry
+                    FROM        $tableCountry
 
-            WHERE       1 $addReq
+                    WHERE       1 $addReq
 
-            ORDER BY    jour ASC";
+                    ORDER BY    jour ASC";
 
             $sql = $this->dbh->prepare($req);
             $sql->execute($addReqValues);
