@@ -130,25 +130,76 @@ eof;
      */
     public static function creditMapsLCH()
     {
-        $jsEvent = <<<eof
-
-        credits: {
-            text: 'www.lachainehumaine.com',
-            href: 'https://www.lachainehumaine.com',
-            position: {
-                align: 'right',
-                verticalAlign: 'bottom',
-                x: 0,
-                y: -44
+        return <<<eof
+            credits: {
+                text: 'www.lachainehumaine.com',
+                href: 'https://www.lachainehumaine.com',
+                position: {
+                    align: 'right',
+                    verticalAlign: 'bottom',
+                    x: 0,
+                    y: -44
+                },
+                style: {
+                    color: '#0F9900',
+                    fontSize: '16px',
+                }
             },
-            style: {
-                color: '#0F9900',
-                fontSize: '16px',
-            }
-        },
 eof;
+    }
 
-        return $jsEvent;
+
+    public static function xAxis($jours)
+    {
+        return <<<eof
+            xAxis: {
+                categories: [$jours],
+                type: 'datetime',
+                dateTimeLabelFormats: {
+                    week: '%e of %b'
+                },
+                labels: {
+                    format: '{value:%Y-%m-%d}',
+                    rotation: -45,
+                    style: {
+                        fontSize: 12
+                    }
+                }
+            },
+eof;
+    }
+
+
+    public static function legend()
+    {
+        return <<<eof
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle'
+            },
+eof;
+    }
+
+
+    public static function responsive()
+    {
+        return <<<eof
+            responsive: {
+                rules: [{
+                    condition: {
+                        maxWidth: 1900
+                    },
+                    chartOptions: {
+                        legend: {
+                            layout: 'horizontal',
+                            align: 'center',
+                            verticalAlign: 'bottom'
+                        }
+                    }
+                }]
+            }
+eof;
     }
 
 

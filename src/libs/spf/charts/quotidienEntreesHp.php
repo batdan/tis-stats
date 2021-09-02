@@ -152,8 +152,11 @@ class quotidienEntreesHp
         $hosp       = implode(', ', $hosp);
         $positivite = implode(', ', $positivite);
 
-        $credit = highChartsCommon::creditLCH();
-        $event  = highChartsCommon::exportImgLogo(true);
+        $credit     = highChartsCommon::creditLCH();
+        $event      = highChartsCommon::exportImgLogo(true);
+        $xAxis      = highChartsCommon::xAxis($jours);
+        $legend     = highChartsCommon::legend();
+        $responsive = highChartsCommon::responsive();
 
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {
@@ -213,26 +216,9 @@ class quotidienEntreesHp
                 opposite: true
             }],
 
-            xAxis: {
-                categories: [$jours],
-                type: 'datetime',
-                dateTimeLabelFormats: {
-                    week: '%e of %b'
-                },
-                labels: {
-                    format: '{value:%Y-%m-%d}',
-                    rotation: -45,
-                    style: {
-                        fontSize: 12
-                    }
-                }
-            },
+            $xAxis
 
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'middle'
-            },
+            $legend
 
             series: [{
                 connectNulls: true,
@@ -254,20 +240,7 @@ class quotidienEntreesHp
                 data: [$hosp]
             }],
 
-            responsive: {
-                rules: [{
-                    condition: {
-                        maxWidth: 1900
-                    },
-                    chartOptions: {
-                        legend: {
-                            layout: 'horizontal',
-                            align: 'center',
-                            verticalAlign: 'bottom'
-                        }
-                    }
-                }]
-            }
+            $responsive
         });
         eof;
     }
