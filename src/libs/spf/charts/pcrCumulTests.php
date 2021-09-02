@@ -184,7 +184,13 @@ class pcrCumulTests
 
             xAxis: {
                 categories: [$jours],
+                type: 'datetime',
+                dateTimeLabelFormats: {
+                    week: '%e of %b'
+                },
                 labels: {
+                    format: '{value:%Y-%m-%d}',
+                    rotation: -45,
                     style: {
                         fontSize: 12
                     }

@@ -136,11 +136,16 @@ class nbCumuleDecesAge
         $series = [];
 
         foreach ($this->ages as $k => $v) {
+            $serieCountry = implode(',', $countriesSerie[$iso]);
 
-            $dcSeries = implode(', ', $dc[$k]);
+            $colorCrountry = '';
+            if ($country == 'France') {
+                $colorCrountry = "color: '#c70000',";
+            }
 
             $series[] = <<<eof
             {
+                $colorCrountry
                 connectNulls: true,
                 marker:{
                     enabled:false
@@ -200,7 +205,13 @@ eof;
 
             xAxis: {
                 categories: [$jours],
+                type: 'datetime',
+                dateTimeLabelFormats: {
+                    week: '%e of %b'
+                },
                 labels: {
+                    format: '{value:%Y-%m-%d}',
+                    rotation: -45,
                     style: {
                         fontSize: 12
                     }
