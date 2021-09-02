@@ -136,6 +136,8 @@ class nbCumuleDecesAge
         $series = [];
 
         foreach ($this->ages as $k => $v) {
+            $dcSeries = implode(', ', $dc[$k]);
+
             $series[] = <<<eof
             {
                 connectNulls: true,
