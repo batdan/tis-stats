@@ -203,6 +203,15 @@ eof;
     }
 
 
+    public static function colorCrountryFra()
+    {
+        return <<<eof
+        color: '#000',
+        dashStyle: 'ShortDash',
+eof;
+    }
+
+
     public static function chartText($text)
     {
         return str_replace("'", '&#39;', $text);

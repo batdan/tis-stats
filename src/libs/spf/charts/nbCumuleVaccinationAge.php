@@ -17,8 +17,9 @@ class nbCumuleVaccinationAge
     private $title;
     private $subTitle;
 
-    private $yAxis1Label;
-    private $yAxis2Label;
+    private $curve1;
+    private $curve2;
+    private $yAxisLabel;
 
     private $regions;
     private $data;
@@ -45,8 +46,12 @@ class nbCumuleVaccinationAge
 
         $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours) | Vaccination';
 
-        $this->yAxis1Label = 'Pourcentage de vaccinés 1ère dose';
-        $this->yAxis2Label = 'Pourcentage de vaccinés 2ème dose';
+        $unite = ($_SESSION['spf_filterUnite'] == 'quantity') ? 'Nombre' : 'Pourcentage';
+
+        $this->curve1   = $unite . ' de vaccinés 1ère dose';
+        $this->curve2   = $unite . ' de vaccinés 2ème dose';
+
+        $this->yAxisLabel = $unite . ' de vaccinés';
 
         $this->getRegions();
         $this->getData();
@@ -98,6 +103,10 @@ class nbCumuleVaccinationAge
             $addReqValues[':clage_vacsi'] = 0;
         }
 
+        if (!empty($_SESSION['spf_filterUnite'])) {
+            $fileName .= '_' . $_SESSION['spf_filterUnite'];
+        }
+
         if ($this->cache && $this->data = \main\cache::getCache($fileName)) {
             return;
         }
@@ -141,8 +150,13 @@ class nbCumuleVaccinationAge
 
         foreach($this->data as $jour => $res) {
             $jours[]       = "'".$jour."'";
-            $n_cum_dose1[] = 100 / $this->regions[$_SESSION['spf_filterRegionId']] * $res['sum_n_cum_dose1'];
-            $n_cum_dose2[] = 100 / $this->regions[$_SESSION['spf_filterRegionId']] * $res['sum_n_cum_dose2'];
+            if ($_SESSION['spf_filterUnite'] == 'quantity') {
+                $n_cum_dose1[] = $res['sum_n_cum_dose1'];
+                $n_cum_dose2[] = $res['sum_n_cum_dose2'];
+            } else {
+                $n_cum_dose1[] = 100 / $this->regions[$_SESSION['spf_filterRegionId']] * $res['sum_n_cum_dose1'];
+                $n_cum_dose2[] = 100 / $this->regions[$_SESSION['spf_filterRegionId']] * $res['sum_n_cum_dose2'];
+            }
         }
 
         $jours       = implode(', ', $jours);
@@ -154,6 +168,20 @@ class nbCumuleVaccinationAge
         $xAxis      = highChartsCommon::xAxis($jours);
         $legend     = highChartsCommon::legend();
         $responsive = highChartsCommon::responsive();
+
+        switch ($_SESSION['spf_filterUnite'])
+        {
+            case 'quantity' :
+                $tooltip    = '';
+                $format     = '{value}';
+                $formatter  = "formatter: function() {return Highcharts.numberFormat(this.value, 0, '.', ' ');},";
+                break;
+            case 'percent' :
+                $tooltip    = "tooltip: {valueDecimals:2, valueSuffix:'%'},";
+                $format     = '{value:.2f}%';
+                $formatter  = '';
+                break;
+        }
 
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {
@@ -177,19 +205,21 @@ class nbCumuleVaccinationAge
 
             yAxis: [{ // Primary yAxis
                 title: {
-                    text: 'Pourcentage de vaccinés',
+                    text: '{$this->yAxisLabel}',
                     style: {
                         color: '#c70000',
                         fontSize: 14
                     }
                 },
                 labels: {
-                    format: '{value:.2f}%',
+                    format: '$format',
                     allowDecimals: 2,
+                    $formatter
                     style: {
                         color: '#c70000',
                         fontSize: 14
                     }
+
                 },
                 opposite: true
             }],
@@ -198,17 +228,14 @@ class nbCumuleVaccinationAge
 
             $legend
 
-            tooltip: {
-                valueDecimals: 2,
-                valueSuffix: '%'
-            },
+            $tooltip
 
             series: [{
                 connectNulls: true,
                 marker:{
                     enabled:false
                 },
-                name: '{$this->yAxis1Label}',
+                name: '{$this->curve1}',
                 color: '#106097',
                 yAxis: 0,
                 data: [$n_cum_dose1]
@@ -217,7 +244,7 @@ class nbCumuleVaccinationAge
                 marker:{
                     enabled:false
                 },
-                name: '{$this->yAxis2Label}',
+                name: '{$this->curve2}',
                 color: '#c70000',
                 yAxis: 0,
                 data: [$n_cum_dose2]
@@ -248,6 +275,7 @@ class nbCumuleVaccinationAge
             'region'    => true,
             'interval'  => true,
             'age2'      => true,
+            'unite'     => true,
         ];
 
         echo render::html(

@@ -93,9 +93,17 @@ eof;
             'age'       => false,
             'age2'      => false,
             'vaccin'    => false,
+            'unite'     => false,
         ];
 
         $filterActiv = array_merge($filterActivDefault, $filterActiv);
+
+        $countFilter=1;
+        foreach ($filterActiv as $filter) {
+            if ($filter) $countFilter++;
+        }
+
+        $classFilter = ($countFilter > 4) ? 'col-lg-2' : 'col-lg-3';
 
         $chartFilters = '<div class="row" style="margin-bottom:10px;">';
 
@@ -106,19 +114,23 @@ eof;
         }
 
         if ($filterActiv['interval']) {
-            $chartFilters .= self::chartFilterInterval();
+            $chartFilters .= self::chartFilterInterval($classFilter);
         }
 
         if ($filterActiv['age']) {
-            $chartFilters .= self::chartFilterAge();
+            $chartFilters .= self::chartFilterAge($classFilter);
         }
 
         if ($filterActiv['age2']) {
-            $chartFilters .= self::chartFilterAge2();
+            $chartFilters .= self::chartFilterAge2($classFilter);
         }
 
         if ($filterActiv['vaccin']) {
-            $chartFilters .= self::chartFilterVaccin();
+            $chartFilters .= self::chartFilterVaccin($classFilter);
+        }
+
+        if ($filterActiv['unite']) {
+            $chartFilters .= self::chartFilterUnite($classFilter);
         }
 
         $chartFilters .= '</div>';
@@ -253,9 +265,9 @@ eof;
     }
 
 
-    private static function chartFilterInterval()
+    private static function chartFilterInterval($classFilter)
     {
-        $filter  = '<div class="form-group col-lg-3">';
+        $filter  = '<div class="form-group ' . $classFilter . '">';
         $filter .= '<label class="form-label" for="filter-interval">Période</label>';
         $filter .= '<select id="filter-interval" class="form-select">';
 
@@ -279,7 +291,7 @@ eof;
         $d->sub($interval);
         $p12m = $d->format('Y-m-d');
 
-        $chartInterval = [
+        $select = [
             'all'   => 'Depuis le début',
             $p1m    => 'Depuis 1 mois',
             $p3m    => 'Depuis 3 mois',
@@ -287,13 +299,13 @@ eof;
             $p12m   => 'Depuis 12 mois',
         ];
 
-        foreach ($chartInterval as $chart => $text) {
+        foreach ($select as $key  => $text) {
             $selected = '';
-            if ($_SESSION['spf_filterInterval'] == $chart) {
+            if ($_SESSION['spf_filterInterval'] == $key) {
                 $selected = ' selected="selected"';
             }
 
-            $filter .= '<option value="' . $chart . '"' . $selected  . '>' . $text . '</option>';
+            $filter .= '<option value="' . $key . '"' . $selected  . '>' . $text . '</option>';
         }
 
         $filter .= '</select>';
@@ -317,13 +329,13 @@ eof;
     }
 
 
-    private static function chartFilterAge()
+    private static function chartFilterAge($classFilter)
     {
-        $filter  = '<div class="form-group col-lg-3">';
+        $filter  = '<div class="form-group ' . $classFilter . '">';
         $filter .= '<label class="form-label" for="filter-age">Age</label>';
         $filter .= '<select id="filter-age" class="form-select">';
 
-        $chartInterval = [
+        $select = [
             '0'     => 'Tous les âges',
             '09'    => '0 à 9 ans',
             '19'    => '10 à 19 ans',
@@ -337,13 +349,13 @@ eof;
             '90'    => '90 ans et plus',
         ];
 
-        foreach ($chartInterval as $chart => $text) {
+        foreach ($select as $key  => $text) {
             $selected = '';
-            if ($_SESSION['spf_filterAge'] == $chart) {
+            if ($_SESSION['spf_filterAge'] == $key) {
                 $selected = ' selected="selected"';
             }
 
-            $filter .= '<option value="' . $chart . '"' . $selected  . '>' . $text . '</option>';
+            $filter .= '<option value="' . $key . '"' . $selected  . '>' . $text . '</option>';
         }
 
         $filter .= '</select>';
@@ -367,13 +379,13 @@ eof;
     }
 
 
-    private static function chartFilterAge2()
+    private static function chartFilterAge2($classFilter)
     {
-        $filter  = '<div class="form-group col-lg-3">';
+        $filter  = '<div class="form-group ' . $classFilter . '">';
         $filter .= '<label class="form-label" for="filter-age2">Age</label>';
         $filter .= '<select id="filter-age2" class="form-select">';
 
-        $chartInterval = [
+        $select = [
             '0'  => 'Tous les âges',
             '04' => '0 à 4 ans',
             '09' => '5 à 9 ans',
@@ -390,13 +402,13 @@ eof;
             '80' => '80 ans et plus',
         ];
 
-        foreach ($chartInterval as $chart => $text) {
+        foreach ($select as $key  => $text) {
             $selected = '';
-            if ($_SESSION['spf_filterAge2'] == $chart) {
+            if ($_SESSION['spf_filterAge2'] == $key) {
                 $selected = ' selected="selected"';
             }
 
-            $filter .= '<option value="' . $chart . '"' . $selected  . '>' . $text . '</option>';
+            $filter .= '<option value="' . $key . '"' . $selected  . '>' . $text . '</option>';
         }
 
         $filter .= '</select>';
@@ -420,13 +432,13 @@ eof;
     }
 
 
-    private static function chartFilterVaccin()
+    private static function chartFilterVaccin($classFilter)
     {
-        $filter  = '<div class="form-group col-lg-3">';
+        $filter  = '<div class="form-group ' . $classFilter . '">';
         $filter .= '<label class="form-label" for="filter-vaccin">Vaccin</label>';
         $filter .= '<select id="filter-vaccin" class="form-select">';
 
-        $chartInterval = [
+        $select = [
             0 => 'Tous Vaccins',
             1 => 'Pfizer',
             2 => 'Moderna',
@@ -434,13 +446,13 @@ eof;
             4 => 'Janssen',
         ];
 
-        foreach ($chartInterval as $chart => $text) {
+        foreach ($select as $key  => $text) {
             $selected = '';
-            if ($_SESSION['spf_filterVaccin'] == $chart) {
+            if ($_SESSION['spf_filterVaccin'] == $key) {
                 $selected = ' selected="selected"';
             }
 
-            $filter .= '<option value="' . $chart . '"' . $selected  . '>' . $text . '</option>';
+            $filter .= '<option value="' . $key . '"' . $selected  . '>' . $text . '</option>';
         }
 
         $filter .= '</select>';
@@ -451,6 +463,47 @@ eof;
                 $.post("/ajax/spf/filterVaccin.php",
                 {
                     filterVaccin : $(this).find(":selected").val()
+                },
+                function success(data)
+                {
+                    console.log(data);
+                    history.go(0);
+                }, 'json');
+            });
+eof;
+
+        return $filter;
+    }
+
+
+    private static function chartFilterUnite($classFilter)
+    {
+        $filter  = '<div class="form-group ' . $classFilter . '">';
+        $filter .= '<label class="form-label" for="filter-unite">Unité</label>';
+        $filter .= '<select id="filter-unite" class="form-select">';
+
+        $select = [
+            'quantity'  => 'Nombre',
+            'percent'   => 'pourcentage',
+        ];
+
+        foreach ($select as $key  => $text) {
+            $selected = '';
+            if ($_SESSION['spf_filterUnite'] == $key) {
+                $selected = ' selected="selected"';
+            }
+
+            $filter .= '<option value="' . $key . '"' . $selected  . '>' . $text . '</option>';
+        }
+
+        $filter .= '</select>';
+        $filter .= '</div>';
+
+        self::$jsRender .= <<<eof
+            $("#filter-unite").change( function() {
+                $.post("/ajax/spf/filterUnite.php",
+                {
+                    filterUnite : $(this).find(":selected").val()
                 },
                 function success(data)
                 {

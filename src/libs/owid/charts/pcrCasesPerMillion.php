@@ -154,7 +154,7 @@ class pcrCasesPerMillion
 
             $colorCrountry = '';
             if ($country == 'France') {
-                $colorCrountry = "color: '#c70000',";
+                $colorCrountry = highChartsCommon::colorCrountryFra();
             }
 
             $series[] = <<<eof

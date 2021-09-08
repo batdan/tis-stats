@@ -403,7 +403,7 @@ class getOwidData
           `new_vaccinations`                        bigint          NULL,
           `new_vaccinations_smoothed`               bigint          NULL,
           `new_vaccinations_smoothed_per_million`   int             NULL,
-          `people_fully_vaccinated`                 int             NULL,
+          `people_fully_vaccinated`                 BIGINT          NULL,
           `people_fully_vaccinated_per_hundred`     decimal(6,3)    NULL
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
         $this->dbh->query($req);
