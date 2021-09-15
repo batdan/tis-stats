@@ -164,7 +164,10 @@ eof;
                     style: {
                         fontSize: 12
                     }
-                }
+                },
+                tickWidth: 1,
+                tickLength: 7,
+                tickInterval: 2
             },
 eof;
     }
