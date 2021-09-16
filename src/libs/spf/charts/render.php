@@ -10,7 +10,7 @@ class render
     private static $jsRender = '';
 
 
-    public static function html($chartName, $title, $js, $backLink = true, $filterActiv)
+    public static function html($chartName, $title, $js, $backLink = true, $filterActiv, $warning = '')
     {
         self::$dbh = dbSingleton::getInstance();
 
@@ -38,8 +38,13 @@ class render
 
     <body style="margin:0;">
         <div class="container-fluid">
+
             <div id="form">
                 $chartFilter
+            </div>
+
+            <div class="warning">
+                $warning
             </div>
 
             <figure class="highcharts-figure">
