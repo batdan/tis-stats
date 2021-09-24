@@ -34,7 +34,7 @@ class cache
     {
         $cdir = scandir(self::$pathCache);
 
-        foreach($cdir as $file) {
+        foreach ($cdir as $file) {
             if ($file == '.' || $file == '..') {
                 continue;
             }
