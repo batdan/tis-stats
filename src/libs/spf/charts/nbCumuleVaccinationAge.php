@@ -147,7 +147,7 @@ class nbCumuleVaccinationAge
                             SUM(n_cum_dose1) AS sum_n_cum_dose1,
                             SUM(n_cum_dose2) AS sum_n_cum_dose2
 
-                FROM        donnees_vaccination_age_covid19_calc_lisse7j
+                FROM        donnees_vaccination_age_covid19
 
                 WHERE       1 $addReq
 
