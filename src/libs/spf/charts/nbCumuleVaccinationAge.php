@@ -83,7 +83,8 @@ class nbCumuleVaccinationAge
                 case '39' : $req = "SELECT SUM(total) AS sum_total FROM pyramide_age_france_2021 WHERE age >= 30 AND age <= 39";    break;
                 case '49' : $req = "SELECT SUM(total) AS sum_total FROM pyramide_age_france_2021 WHERE age >= 40 AND age <= 49";    break;
                 case '59' : $req = "SELECT SUM(total) AS sum_total FROM pyramide_age_france_2021 WHERE age >= 50 AND age <= 59";    break;
-                case '69' : $req = "SELECT SUM(total) AS sum_total FROM pyramide_age_france_2021 WHERE age >= 60 AND age <= 69";    break;
+                case '64' : $req = "SELECT SUM(total) AS sum_total FROM pyramide_age_france_2021 WHERE age >= 60 AND age <= 64";    break;
+                case '69' : $req = "SELECT SUM(total) AS sum_total FROM pyramide_age_france_2021 WHERE age >= 65 AND age <= 69";    break;
                 case '74' : $req = "SELECT SUM(total) AS sum_total FROM pyramide_age_france_2021 WHERE age >= 70 AND age <= 74";    break;
                 case '79' : $req = "SELECT SUM(total) AS sum_total FROM pyramide_age_france_2021 WHERE age >= 75 AND age <= 79";    break;
                 case '80' : $req = "SELECT SUM(total) AS sum_total FROM pyramide_age_france_2021 WHERE age >= 80";                  break;
