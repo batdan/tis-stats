@@ -50,14 +50,23 @@ class downloadFile
                 $date = $this->cleanString($parent->getElementsByTagName('td')->item(3)->nodeValue);
                 $date = $this->formatDate($date);
 
-                $gzFile = $entry->getAttribute('href');
+                $linkFile = $entry->getAttribute('href');
+
+                // Récupération du fichier dans un tableau
+                $handle = gzopen($linkFile, "r");
+                $file = [];
+                while (!gzeof($handle)) {
+                   $buffer = gzgets($handle, 100000);
+                   $file[] = $buffer;
+                }
+                gzclose($handle);
 
                 return [
                     'name'  => $name,
                     'size'  => $size,
                     'type'  => $type,
                     'date'  => $date,
-                    'file'  => gzfile($gzFile),
+                    'file'  => $file,
                 ];
             }
         } catch(\Exception $e) {

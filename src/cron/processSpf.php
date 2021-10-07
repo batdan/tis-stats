@@ -1,11 +1,10 @@
 <?php
 // Chargement des classes
-include ( __DIR__ . '/vendor/autoload.php' );
+include ( __DIR__ . '/../vendor/autoload.php' );
 
 if (php_sapi_name() != "cli") {
     die('Hello World !');
 }
-
 
 // Santé publique France
 new main\process([
@@ -30,14 +29,4 @@ new main\process([
     'statsVaccinationAge',
     'statsVaccinationAgeCalcLisse7j',
 
-    // // Statistique de la DREES, test PCR
-    // 'Z_statsDreesPcr',
-
 ], 'spf');
-
-
-// Our World in Data
-new main\process([
-    'getOwidData',
-
-], 'owid');

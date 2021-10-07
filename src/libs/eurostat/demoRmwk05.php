@@ -6,14 +6,14 @@ use tools\dbSingleton;
 /**
  * Récupéraiton et traiement du jeu de données demo_pjan
  */
-class demoPjan
+class demoRmwk05
 {
     private $schema = 'tis_stats';
 
-    private $datasetName = 'demo_pjan';
+    private $datasetName = 'demo_r_mwk_05';
     private $dataset;
 
-    private $year;
+    private $yearWeek;
 
     public function __construct()
     {
@@ -99,13 +99,13 @@ class demoPjan
           `sex`         varchar(1)  COLLATE utf8mb4_unicode_ci NOT NULL,
           `age`         varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
           `geotime`     varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-          `year`        int(4)      NOT NULL,
+          `year_week`   varchar(7)  NOT NULL,
           `value`       int         NULL
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
 
-        $this->year = [];
+        $this->yearWeek = [];
         for ($i=1; $i<count($line); $i++) {
-            $this->year[] = preg_replace('/[^0-9]/', '', $line[$i]);
+            $this->yearWeek[] = preg_replace('/[^W0-9]/', '', $line[$i]);
         }
 
         $this->dbh->query($req);
@@ -124,9 +124,6 @@ class demoPjan
 
         $req = "ALTER TABLE `$tmpTable` ADD INDEX(`geotime`)";
         $this->dbh->query($req);
-
-        $req = "ALTER TABLE `$tmpTable` ADD INDEX(`year`)";
-        $this->dbh->query($req);
     }
 
 
@@ -140,31 +137,31 @@ class demoPjan
         $line = explode(chr(9), $line);
         $cats = explode(',', $line[0]);
 
-        $yearsInLine = [];
+        $yearWeekInLine = [];
 
-        // year / value
-        for ($i=1; $i<=count($this->year); $i++) {
+        // yearWeek / value
+        for ($i=1; $i<=count($this->yearWeek); $i++) {
 
             $addLine = [];
-            $addLine[] = "'" . trim($cats[0]) . "'";  // unit
-            $addLine[] = "'" . trim($cats[2]) . "'";  // sex
-            $addLine[] = "'" . trim($cats[1]) . "'";  // age
+            $addLine[] = "'" . trim($cats[2]) . "'";  // unit
+            $addLine[] = "'" . trim($cats[1]) . "'";  // sex
+            $addLine[] = "'" . trim($cats[0]) . "'";  // age
             $addLine[] = "'" . trim($cats[3]) . "'";  // geotime
 
-            $addLine[] = $this->year[$i-1];
+            $addLine[] = "'" . $this->yearWeek[$i-1] . "'";
 
             $val = preg_replace('/[^:0-9]/', '', $line[$i]);
             $val = str_replace(':', 'NULL', $val);
             $val = empty($val) ? 'NULL' : $val;
             $addLine[] = $val;
 
-            $yearsInLine[] = "(" . implode(', ', $addLine) . ")";
+            $yearWeekInLine[] = "(" . implode(', ', $addLine) . ")";
         }
 
         try {
-            if (count($this->year)) {
-                $req  = "INSERT INTO $tmpTable (`unit`, `sex`, `age`, `geotime`, `year`, `value`) VALUES " . chr(10);
-                $req .= implode(',', $yearsInLine);
+            if (count($this->yearWeek)) {
+                $req  = "INSERT INTO $tmpTable (`unit`, `sex`, `age`, `geotime`, `year_week`, `value`) VALUES " . chr(10);
+                $req .= implode(',', $yearWeekInLine);
 
                 $this->dbh->query($req);
             }
@@ -172,5 +169,13 @@ class demoPjan
         } catch (\Exception $e) {
             echo chr(10) . $e->getMessage() . chr(10);
         }
+
+        // Years
+        for ($i=1; $i<=count($this->yearWeek); $i++) {
+            $val = preg_replace('/[^:0-9]/', '', $line[$i]);
+            $addLine[] = str_replace(':', 'NULL', $val);
+        }
+
+        return "(" . implode(', ', $addLine) . ")";
     }
 }

@@ -6,11 +6,11 @@ use tools\dbSingleton;
 /**
  * Récupéraiton et traiement du jeu de données demo_pjan
  */
-class demoPjan
+class demoMajec
 {
     private $schema = 'tis_stats';
 
-    private $datasetName = 'demo_pjan';
+    private $datasetName = 'demo_magec';
     private $dataset;
 
     private $year;
@@ -124,9 +124,6 @@ class demoPjan
 
         $req = "ALTER TABLE `$tmpTable` ADD INDEX(`geotime`)";
         $this->dbh->query($req);
-
-        $req = "ALTER TABLE `$tmpTable` ADD INDEX(`year`)";
-        $this->dbh->query($req);
     }
 
 
@@ -147,8 +144,8 @@ class demoPjan
 
             $addLine = [];
             $addLine[] = "'" . trim($cats[0]) . "'";  // unit
-            $addLine[] = "'" . trim($cats[2]) . "'";  // sex
-            $addLine[] = "'" . trim($cats[1]) . "'";  // age
+            $addLine[] = "'" . trim($cats[1]) . "'";  // sex
+            $addLine[] = "'" . trim($cats[2]) . "'";  // age
             $addLine[] = "'" . trim($cats[3]) . "'";  // geotime
 
             $addLine[] = $this->year[$i-1];
