@@ -16,7 +16,7 @@ class process
         // Delete old caches
         cache::removeCache();
 
-        echo 'Start :' . date('Y-m-d H:i:s') . chr(10) . chr(10);
+        echo 'Start : ' . date('Y-m-d H:i:s') . chr(10) . chr(10);
 
         foreach ($classList as $class) {
 
@@ -27,6 +27,6 @@ class process
         }
 
         echo chr(10);
-        echo 'End :' . date('Y-m-d H:i:s') . chr(10) . chr(10);
+        echo 'End : ' . date('Y-m-d H:i:s') . chr(10) . chr(10);
     }
 }
