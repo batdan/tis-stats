@@ -124,6 +124,9 @@ class demoMajec
 
         $req = "ALTER TABLE `$tmpTable` ADD INDEX(`geotime`)";
         $this->dbh->query($req);
+
+        $req = "ALTER TABLE `$tmpTable` ADD INDEX(`year`)";
+        $this->dbh->query($req);
     }
 
 
