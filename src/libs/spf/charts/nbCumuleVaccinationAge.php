@@ -74,20 +74,20 @@ class nbCumuleVaccinationAge
 
         if ($_SESSION['spf_filterRegionId'] == '0' && $_SESSION['spf_filterUnite'] == 'percent' && $_SESSION['spf_filterAge2'] != '0') {
             switch($_SESSION['spf_filterAge2']) {
-                case '04' : $req = "SELECT SUM(total) AS sum_total FROM pyramide_age_france_2021 WHERE age <= 4";                   break;
-                case '09' : $req = "SELECT SUM(total) AS sum_total FROM pyramide_age_france_2021 WHERE age >= 5  AND age <= 9";     break;
-                case '11' : $req = "SELECT SUM(total) AS sum_total FROM pyramide_age_france_2021 WHERE age >= 10 AND age <= 11";    break;
-                case '17' : $req = "SELECT SUM(total) AS sum_total FROM pyramide_age_france_2021 WHERE age >= 12 AND age <= 17";    break;
-                case '24' : $req = "SELECT SUM(total) AS sum_total FROM pyramide_age_france_2021 WHERE age >= 18 AND age <= 24";    break;
-                case '29' : $req = "SELECT SUM(total) AS sum_total FROM pyramide_age_france_2021 WHERE age >= 25 AND age <= 29";    break;
-                case '39' : $req = "SELECT SUM(total) AS sum_total FROM pyramide_age_france_2021 WHERE age >= 30 AND age <= 39";    break;
-                case '49' : $req = "SELECT SUM(total) AS sum_total FROM pyramide_age_france_2021 WHERE age >= 40 AND age <= 49";    break;
-                case '59' : $req = "SELECT SUM(total) AS sum_total FROM pyramide_age_france_2021 WHERE age >= 50 AND age <= 59";    break;
-                case '64' : $req = "SELECT SUM(total) AS sum_total FROM pyramide_age_france_2021 WHERE age >= 60 AND age <= 64";    break;
-                case '69' : $req = "SELECT SUM(total) AS sum_total FROM pyramide_age_france_2021 WHERE age >= 65 AND age <= 69";    break;
-                case '74' : $req = "SELECT SUM(total) AS sum_total FROM pyramide_age_france_2021 WHERE age >= 70 AND age <= 74";    break;
-                case '79' : $req = "SELECT SUM(total) AS sum_total FROM pyramide_age_france_2021 WHERE age >= 75 AND age <= 79";    break;
-                case '80' : $req = "SELECT SUM(total) AS sum_total FROM pyramide_age_france_2021 WHERE age >= 80";                  break;
+                case '04' : $req = "SELECT SUM(total) AS sum_total FROM insee_pyramide_age_france_2021 WHERE age <= 4";                   break;
+                case '09' : $req = "SELECT SUM(total) AS sum_total FROM insee_pyramide_age_france_2021 WHERE age >= 5  AND age <= 9";     break;
+                case '11' : $req = "SELECT SUM(total) AS sum_total FROM insee_pyramide_age_france_2021 WHERE age >= 10 AND age <= 11";    break;
+                case '17' : $req = "SELECT SUM(total) AS sum_total FROM insee_pyramide_age_france_2021 WHERE age >= 12 AND age <= 17";    break;
+                case '24' : $req = "SELECT SUM(total) AS sum_total FROM insee_pyramide_age_france_2021 WHERE age >= 18 AND age <= 24";    break;
+                case '29' : $req = "SELECT SUM(total) AS sum_total FROM insee_pyramide_age_france_2021 WHERE age >= 25 AND age <= 29";    break;
+                case '39' : $req = "SELECT SUM(total) AS sum_total FROM insee_pyramide_age_france_2021 WHERE age >= 30 AND age <= 39";    break;
+                case '49' : $req = "SELECT SUM(total) AS sum_total FROM insee_pyramide_age_france_2021 WHERE age >= 40 AND age <= 49";    break;
+                case '59' : $req = "SELECT SUM(total) AS sum_total FROM insee_pyramide_age_france_2021 WHERE age >= 50 AND age <= 59";    break;
+                case '64' : $req = "SELECT SUM(total) AS sum_total FROM insee_pyramide_age_france_2021 WHERE age >= 60 AND age <= 64";    break;
+                case '69' : $req = "SELECT SUM(total) AS sum_total FROM insee_pyramide_age_france_2021 WHERE age >= 65 AND age <= 69";    break;
+                case '74' : $req = "SELECT SUM(total) AS sum_total FROM insee_pyramide_age_france_2021 WHERE age >= 70 AND age <= 74";    break;
+                case '79' : $req = "SELECT SUM(total) AS sum_total FROM insee_pyramide_age_france_2021 WHERE age >= 75 AND age <= 79";    break;
+                case '80' : $req = "SELECT SUM(total) AS sum_total FROM insee_pyramide_age_france_2021 WHERE age >= 80";                  break;
             }
 
             $sql = $this->dbh->query($req);
