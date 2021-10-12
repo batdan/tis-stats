@@ -15,6 +15,7 @@ class demoPjan
 
     private $year;
 
+
     public function __construct()
     {
         // Instance PDO
