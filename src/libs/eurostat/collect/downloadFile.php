@@ -112,4 +112,20 @@ class downloadFile
 
         return $date . ' ' . $time;
     }
+
+
+    /**
+     * Conversion pour ramener les code Pays Eurostat à la norme ISO 3166-1 alpha-2
+     * 
+     * @param   string $iso               Code Eurostat
+     * @return  string                    Code ISO 3166-1 alpha-2
+     */
+    public static function convertIsoCodeAlpha2($iso)
+    {
+        return str_replace(
+            ['EL', 'UK'],
+            ['GR', 'GB'],
+            $iso
+        );
+    }
 }

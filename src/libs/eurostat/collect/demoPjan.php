@@ -145,11 +145,17 @@ class demoPjan
 
         // year / value
         for ($i = 1; $i <= count($this->year); $i++) {
+            
+            $unit       = trim($cats[0]);
+            $sex        = trim($cats[2]);
+            $age        = trim($cats[1]);
+            $geotime    = downloadFile::convertIsoCodeAlpha2(trim($cats[3]));            
+            
             $addLine = [];
-            $addLine[] = "'" . trim($cats[0]) . "'";  // unit
-            $addLine[] = "'" . trim($cats[2]) . "'";  // sex
-            $addLine[] = "'" . trim($cats[1]) . "'";  // age
-            $addLine[] = "'" . trim($cats[3]) . "'";  // geotime
+            $addLine[] = "'" . $unit . "'";
+            $addLine[] = "'" . $sex . "'";
+            $addLine[] = "'" . $age . "'";
+            $addLine[] = "'" . $geotime . "'";
 
             $addLine[] = $this->year[$i - 1];
 

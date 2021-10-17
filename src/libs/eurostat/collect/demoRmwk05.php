@@ -144,12 +144,17 @@ class demoRmwk05
 
         // yearWeek / value
         for ($i=1; $i<=count($this->yearWeek); $i++) {
+            
+            $unit       = trim($cats[2]);
+            $sex        = trim($cats[1]);
+            $age        = trim($cats[0]);
+            $geotime    = downloadFile::convertIsoCodeAlpha2(trim($cats[3]));       
 
             $addLine = [];
-            $addLine[] = "'" . trim($cats[2]) . "'";  // unit
-            $addLine[] = "'" . trim($cats[1]) . "'";  // sex
-            $addLine[] = "'" . trim($cats[0]) . "'";  // age
-            $addLine[] = "'" . trim($cats[3]) . "'";  // geotime
+            $addLine[] = "'" . $unit . "'";
+            $addLine[] = "'" . $sex . "'";
+            $addLine[] = "'" . $age . "'";
+            $addLine[] = "'" . $geotime . "'";
 
             $addLine[] = "'" . $this->yearWeek[$i-1] . "'";
 
