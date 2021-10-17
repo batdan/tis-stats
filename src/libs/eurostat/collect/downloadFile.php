@@ -116,7 +116,7 @@ class downloadFile
 
     /**
      * Conversion pour ramener les code Pays Eurostat à la norme ISO 3166-1 alpha-2
-     * 
+     *
      * @param   string $iso               Code Eurostat
      * @return  string                    Code ISO 3166-1 alpha-2
      */
