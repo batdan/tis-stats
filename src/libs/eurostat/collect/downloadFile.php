@@ -1,5 +1,5 @@
 <?php
-namespace eurostat;
+namespace collect\eurostat;
 
 /**
  * Classe de récupération des jeux de données Eurostats

@@ -1,5 +1,5 @@
 <?php
-namespace eurostat;
+namespace collect\eurostat;
 
 use tools\dbSingleton;
 

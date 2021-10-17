@@ -1,19 +1,21 @@
 <?php
-namespace eurostat;
+
+namespace collect\eurostat;
 
 use tools\dbSingleton;
 
 /**
  * Récupéraiton et traiement du jeu de données demo_pjan
  */
-class demoMajec
+class demoPjan
 {
     private $schema = 'tis_stats';
 
-    private $datasetName = 'demo_magec';
+    private $datasetName = 'demo_pjan';
     private $dataset;
 
     private $year;
+
 
     public function __construct()
     {
@@ -38,11 +40,10 @@ class demoMajec
         $table = 'eurostat_' . $this->datasetName;
         $tmpTable = $table . '_tmp';
 
-        $i=0;
+        $i = 0;
         foreach ($file as $line) {
-
             // Libelle
-            if ($i==0) {
+            if ($i == 0) {
                 $this->createTable($line, $tmpTable);
 
             // Req insert
@@ -104,7 +105,7 @@ class demoMajec
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
 
         $this->year = [];
-        for ($i=1; $i<count($line); $i++) {
+        for ($i = 1; $i < count($line); $i++) {
             $this->year[] = preg_replace('/[^0-9]/', '', $line[$i]);
         }
 
@@ -143,15 +144,14 @@ class demoMajec
         $yearsInLine = [];
 
         // year / value
-        for ($i=1; $i<=count($this->year); $i++) {
-
+        for ($i = 1; $i <= count($this->year); $i++) {
             $addLine = [];
             $addLine[] = "'" . trim($cats[0]) . "'";  // unit
-            $addLine[] = "'" . trim($cats[1]) . "'";  // sex
-            $addLine[] = "'" . trim($cats[2]) . "'";  // age
+            $addLine[] = "'" . trim($cats[2]) . "'";  // sex
+            $addLine[] = "'" . trim($cats[1]) . "'";  // age
             $addLine[] = "'" . trim($cats[3]) . "'";  // geotime
 
-            $addLine[] = $this->year[$i-1];
+            $addLine[] = $this->year[$i - 1];
 
             $val = preg_replace('/[^:0-9]/', '', $line[$i]);
             $val = str_replace(':', 'NULL', $val);
@@ -168,7 +168,6 @@ class demoMajec
 
                 $this->dbh->query($req);
             }
-
         } catch (\Exception $e) {
             echo chr(10) . $e->getMessage() . chr(10);
         }

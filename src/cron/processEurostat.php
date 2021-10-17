@@ -14,4 +14,4 @@ new main\process([
     'demoMajec',
     'demoRmwk05',
 
-], 'eurostat');
+], 'collect\eurostat');
