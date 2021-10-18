@@ -149,6 +149,11 @@ eof;
     }
 
 
+    /**
+     * Abcisse de dates
+     * @param    array   $jours      Liste des jours
+     * @return   string
+     */
     public static function xAxis($jours)
     {
         return <<<eof
@@ -168,6 +173,30 @@ eof;
                 tickWidth: 1,
                 tickLength: 7,
                 tickInterval: 2
+            },
+eof;
+    }
+
+
+    /**
+     * Abcisse libre
+     * @param    array   $xAxys      Information de l'axe des abcisse
+     * @return   string
+     */
+    public static function xAxisYears($xAxys)
+    {
+        return <<<eof
+            xAxis: {
+                categories: [$xAxys],
+                labels: {
+                    rotation: -45,
+                    style: {
+                        fontSize: 14
+                    }
+                },
+                tickWidth: 1,
+                tickLength: 7,
+                tickInterval: 1
             },
 eof;
     }

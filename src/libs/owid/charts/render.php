@@ -42,7 +42,7 @@ class render
         <link href="/css/styles.css" rel="stylesheet" type="text/css">
     </head>
 
-    <body style="margin:0;">
+    <body>
         <div class="container-fluid">
             <div id="form">
                 $chartFilter

@@ -2,7 +2,7 @@
 // Chargement des classes
 include ( __DIR__ . '/../../bootstrap.php' );
 
-$cache = false;
+$cache = true;
 $defaultCountries = 'FR';
 
 // echo '<pre>';

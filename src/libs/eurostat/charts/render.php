@@ -36,7 +36,7 @@ class render
         <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
     </head>
 
-    <body style="margin:0;">
+    <body>
         <div class="container-fluid">
 
             <div id="form">
@@ -136,7 +136,7 @@ eof;
     private static function chartSelect($class)
     {
         $filter  = '<div class="form-group ' . $class .'">';
-        $filter .= '<label class="form-label" for="filter-chart">Sélection de graphiques C19</label>';
+        $filter .= '<label class="form-label" for="filter-chart">Sélection de graphiques</label>';
         $filter .= '<select id="filter-chart" class="form-select">';
 
         $chartCollections = [
@@ -368,7 +368,7 @@ eof;
         $filter .= '<select id="filter-sex" class="form-select">';
 
         $select = [
-            'T' => 'Femmes & hommes',
+            'T' => 'Tous',
             'F' => 'Femmes',
             'M' => 'Hommes',
         ];
