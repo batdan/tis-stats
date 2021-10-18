@@ -122,7 +122,9 @@ class pcrCasesPerMillion
         $this->cleanData();
 
         // createCache
-        \main\cache::createCache($fileName, $this->data);
+        if ($this->cache) {
+            \main\cache::createCache($fileName, $this->data);
+        }
     }
 
 

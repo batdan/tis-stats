@@ -93,37 +93,38 @@ eof;
     public static function chartFilters($filterActiv)
     {
         $filterActivDefault = [
-            'countries' => false,
-            'year1'     => false,
-            'year2'     => false,
-            'sex'       => false,
-            'age'       => false,
+            'charts'    => [true,  'col-lg-3'],
+            'countries' => [false, 'col-lg-3'],
+            'year1'     => [false, 'col-lg-3'],
+            'year2'     => [false, 'col-lg-3'],
+            'sex'       => [false, 'col-lg-3'],
+            'age'       => [false, 'col-lg-3'],
         ];
 
         $filterActiv = array_merge($filterActivDefault, $filterActiv);
 
         $chartFilters = '<div class="row" style="margin-bottom:10px;">';
 
-        $chartFilters .= self::chartSelect();
+        $chartFilters .= self::chartSelect($filterActiv['charts'][1]);
 
-        if ($filterActiv['countries']) {
-            $chartFilters .= self::chartFilterCountries();
+        if ($filterActiv['countries'][0]) {
+            $chartFilters .= self::chartFilterCountries($filterActiv['countries'][1]);
         }
 
-        if ($filterActiv['year1']) {
-            $chartFilters .= self::chartFilterYear1();
+        if ($filterActiv['year1'][0]) {
+            $chartFilters .= self::chartFilterYear1($filterActiv['year1'][1]);
         }
 
-        if ($filterActiv['year2']) {
-            $chartFilters .= self::chartFilterYear2();
+        if ($filterActiv['year2'][0]) {
+            $chartFilters .= self::chartFilterYear2($filterActiv['year2'][1]);
         }
 
-        if ($filterActiv['sex']) {
-            $chartFilters .= self::chartFilterSex();
+        if ($filterActiv['sex'][0]) {
+            $chartFilters .= self::chartFilterSex($filterActiv['sex'][1]);
         }
 
-        if ($filterActiv['age']) {
-            $chartFilters .= self::chartFilterAge();
+        if ($filterActiv['age'][0]) {
+            $chartFilters .= self::chartFilterAge($filterActiv['age'][1]);
         }
 
         $chartFilters .= '</div>';
@@ -132,9 +133,9 @@ eof;
     }
 
 
-    private static function chartSelect()
+    private static function chartSelect($class)
     {
-        $filter  = '<div class="form-group col-lg-4">';
+        $filter  = '<div class="form-group ' . $class .'">';
         $filter .= '<label class="form-label" for="filter-chart">Sélection de graphiques C19</label>';
         $filter .= '<select id="filter-chart" class="form-select">';
 
@@ -187,9 +188,9 @@ eof;
     }
 
 
-    private static function chartFilterCountries()
+    private static function chartFilterCountries($class)
     {
-        $filter  = '<div class="form-group col-lg-2">';
+        $filter  = '<div class="form-group ' . $class .'">';
         $filter .= '<label class="form-label" for="filter-country">Pays</label>';
         $filter .= '<select id="filter-country" class="form-select">';
 
@@ -229,9 +230,9 @@ eof;
     }
 
 
-    private static function chartFilterYear1()
+    private static function chartFilterYear1($class)
     {
-        $filter  = '<div class="form-group col-lg-2">';
+        $filter  = '<div class="form-group ' . $class .'">';
         $filter .= '<label class="form-label" for="filter-year1">Année</label>';
         $filter .= '<select id="filter-year1" class="form-select">';
 
@@ -265,7 +266,7 @@ eof;
         $yearsRange = range($years['min'], $years['max']);
         rsort($yearsRange);
 
-        foreach ($yearsRange as $year) {            
+        foreach ($yearsRange as $year) {
             $selected = '';
             if ($_SESSION['eurostat_filterYear1'] == $year) {
                 $selected = ' selected="selected"';
@@ -295,9 +296,9 @@ eof;
     }
 
 
-    private static function chartFilterYear2()
+    private static function chartFilterYear2($class)
     {
-        $filter  = '<div class="form-group  col-lg-2">';
+        $filter  = '<div class="form-group ' . $class .'">';
         $filter .= '<label class="form-label" for="filter-year2">Année</label>';
         $filter .= '<select id="filter-year2" class="form-select">';
 
@@ -360,16 +361,16 @@ eof;
     }
 
 
-    private static function chartFilterSex()
+    private static function chartFilterSex($class)
     {
-        $filter  = '<div class="form-group col-lg-2">';
+        $filter  = '<div class="form-group ' . $class .'">';
         $filter .= '<label class="form-label" for="filter-sex">Sexe</label>';
         $filter .= '<select id="filter-sex" class="form-select">';
 
         $select = [
             'T' => 'Femmes & hommes',
             'F' => 'Femmes',
-            'H' => 'Hommes',
+            'M' => 'Hommes',
         ];
 
         foreach ($select as $key  => $text) {
@@ -402,12 +403,12 @@ eof;
     }
 
 
-    private static function chartFilterAge()
+    private static function chartFilterAge($class)
     {
-        $filter  = '<div class="form-group col-lg-2">';
+        $filter  = '<div class="form-group ' . $class .'">';
         $filter .= '<label class="form-label" for="filter-age">Age</label>';
         $filter .= '<select id="filter-age" class="form-select">';
-        
+
         // Y_LT5 : Less than 5 years | http://dd.eionet.europa.eu/vocabularyconcept/eurostat/agechild/Y_LT5/view
         // Y_GE90 : 90 years or over | http://dd.eionet.europa.eu/vocabularyconcept/eurostat/agechild/Y_GE90/view
         $select = [
