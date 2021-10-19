@@ -127,6 +127,8 @@ class deces
         $legend     = highChartsCommon::legend();
         $responsive = highChartsCommon::responsive();
 
+        $barsColor  = tools::getSexColor()[$_SESSION['eurostat_filterSex']];
+
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {
 
@@ -178,7 +180,7 @@ class deces
                     enabled:false
                 },
                 name: '{$this->yAxisLabel}',
-                color: '#106097',
+                color: '$barsColor',
                 yAxis: 0,
                 data: [$value]
             }],
@@ -191,13 +193,6 @@ class deces
 
     private function regTitle()
     {
-        // $_SESSION['eurostat_filterChart']       = (isset($_SESSION['eurostat_filterChart']))    ? $_SESSION['eurostat_filterChart']     : 'eurostat\charts\deces';
-        // $_SESSION['eurostat_filterCountry']     = (isset($_SESSION['eurostat_filterCountry']))  ? $_SESSION['eurostat_filterCountry']   : $defaultCountries;
-        // $_SESSION['eurostat_filterYear1']       = (isset($_SESSION['eurostat_filterYear1']))    ? $_SESSION['eurostat_filterYear1']     : 2019;
-        // $_SESSION['eurostat_filterYear2']       = (isset($_SESSION['eurostat_filterYear2']))    ? $_SESSION['eurostat_filterYear2']     : 2019;
-        // $_SESSION['eurostat_filterSex']         = (isset($_SESSION['eurostat_filterSex']))      ? $_SESSION['eurostat_filterSex']       : 'T';
-        // $_SESSION['eurostat_filterAge']         = (isset($_SESSION['eurostat_filterAge']))      ? $_SESSION['eurostat_filterAge']       : 'TOTAL';
-
         // Pays
         $this->title .= ' | ' . tools::getCountries()[$_SESSION['eurostat_filterCountry']];
 

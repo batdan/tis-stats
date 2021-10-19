@@ -4,7 +4,7 @@ namespace main;
 class cache
 {
     private static $pathCache   = __DIR__ . '/../../cache/';
-    private static $md5Cache    = false;
+    private static $md5Cache    = true;
 
 
     /**

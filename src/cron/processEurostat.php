@@ -10,8 +10,9 @@ if (php_sapi_name() != "cli") {
 new main\process([
 
     // dataset
-    'demoPjan',
-    'demoMajec',
-    'demoRmwk05',
+    // 'demoPjan',
+    // 'demoMajec',
+    // 'demoRmwk05',
+    'demoMajecAddYear',
 
 ], 'collect\eurostat');

@@ -4,7 +4,7 @@ namespace collect\eurostat;
 use tools\dbSingleton;
 
 /**
- * Récupéraiton et traiement du jeu de données demo_pjan
+ * Récupération et traiement du jeu de données demo_r_mwk_05
  */
 class demoRmwk05
 {
