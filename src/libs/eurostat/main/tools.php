@@ -121,7 +121,7 @@ class tools
         $dbh = dbSingleton::getInstance();
         $date = '';
 
-        $req = "SELECT date_crea FROM cron WHERE namespace = :namespace";
+        $req = "SELECT date_crea FROM cron WHERE namespace = :namespace ORDER BY id DESC LIMIT 1";
         $sql = $dbh->prepare($req);
         $sql->execute([':namespace' => 'collect\eurostat']);
 

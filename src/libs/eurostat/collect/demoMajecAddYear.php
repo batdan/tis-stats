@@ -2,6 +2,8 @@
 namespace collect\eurostat;
 
 use tools\dbSingleton;
+use tools\config;
+
 use eurostat\main\tools;
 
 /**
@@ -11,7 +13,7 @@ class demoMajecAddYear
 {
     private $schema = 'tis_stats';
 
-    private $year = 2020;       // Année à rattaper
+    private $year;              // Année à rattaper
     private $nbDaysWeek1;       // Nombre de jours dans la permière semaine de l'année
     private $nbDaysWeek53;      // Nombre de jours dans la permière semaine de l'année
 
@@ -23,6 +25,10 @@ class demoMajecAddYear
     {
         // Instance PDO
         $this->dbh = dbSingleton::getInstance();
+        
+        // Année à rattaper
+        $eurostat = config::getConfig('eurostat');
+        $this->year = $eurostat['catchYear'];
 
         $this->getKeysAges();
         $this->getKeysCountries();

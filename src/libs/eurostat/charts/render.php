@@ -144,7 +144,7 @@ eof;
         $chartCollections = [
             'item-1'                                    => 'Décès',
             'eurostat\charts\deces'                     => 'Décés toutes causes confondues',
-            // 'eurostat\charts\decesStandardises'         => 'Décés toutes causes confondues standardisés',
+            'eurostat\charts\decesStandardises'         => 'Décés toutes causes confondues (standardisés)',
             'closeItem-1'                               => '',
 
             'item-2'                                    => 'Population',
@@ -174,7 +174,7 @@ eof;
 
         self::$jsRender .= <<<eof
             $("#filter-chart").change( function() {
-                $.post("/ajax/eurostats/filterChart.php",
+                $.post("/ajax/eurostat/filterChart.php",
                 {
                     filterChart : $(this).find(":selected").val()
                 },
