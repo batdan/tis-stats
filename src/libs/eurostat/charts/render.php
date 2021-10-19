@@ -2,6 +2,7 @@
 namespace eurostat\charts;
 
 use tools\dbSingleton;
+use eurostat\main\tools;
 
 class render
 {
@@ -10,7 +11,7 @@ class render
     private static $jsRender = '';
 
 
-    public static function html($chartName, $title, $js, $backLink = true, $filterActiv, $warning = '')
+    public static function html($chartName, $title, $js, $backLink = true, $filterActiv = [], $warning = '')
     {
         self::$dbh = dbSingleton::getInstance();
 
@@ -194,19 +195,13 @@ eof;
         $filter .= '<label class="form-label" for="filter-country">Pays</label>';
         $filter .= '<select id="filter-country" class="form-select">';
 
-        $req = "SELECT      pays, iso_3166_1_alpha_2
-                FROM        base_countries
-                WHERE       eurostat_activ = 1
-                ORDER BY    pays";
-        $sql = self::$dbh->query($req);
-
-        while ($res = $sql->fetch()) {
+        foreach (tools::getCountries() as $iso2 => $country) {
             $selected = '';
-            if ($_SESSION['eurostat_filterCountry'] == $res->iso_3166_1_alpha_2) {
+            if ($_SESSION['eurostat_filterCountry'] == $iso2) {
                 $selected = ' selected="selected"';
             }
 
-            $filter .= '<option value="' . $res->iso_3166_1_alpha_2 . '"' . $selected  . '>' . $res->pays . '</option>';
+            $filter .= '<option value="' . $iso2 . '"' . $selected . '>' . $country . '</option>';
         }
 
         $filter .= '</select>';
@@ -367,13 +362,7 @@ eof;
         $filter .= '<label class="form-label" for="filter-sex">Sexe</label>';
         $filter .= '<select id="filter-sex" class="form-select">';
 
-        $select = [
-            'T' => 'Tous',
-            'F' => 'Femmes',
-            'M' => 'Hommes',
-        ];
-
-        foreach ($select as $key  => $text) {
+        foreach (tools::getSex() as $key  => $text) {
             $selected = '';
             if ($_SESSION['eurostat_filterSex'] == $key) {
                 $selected = ' selected="selected"';
@@ -409,32 +398,7 @@ eof;
         $filter .= '<label class="form-label" for="filter-age">Age</label>';
         $filter .= '<select id="filter-age" class="form-select">';
 
-        // Y_LT5 : Less than 5 years | http://dd.eionet.europa.eu/vocabularyconcept/eurostat/agechild/Y_LT5/view
-        // Y_GE90 : 90 years or over | http://dd.eionet.europa.eu/vocabularyconcept/eurostat/agechild/Y_GE90/view
-        $select = [
-            'TOTAL'  => 'Tous les âges',
-            'Y_LT5'  => '0 à 4 ans',
-            'Y5-9'   => '5 à 9 ans',
-            'Y10-14' => '10 à 14 ans',
-            'Y15-19' => '15 à 19 ans',
-            'Y20-24' => '20 à 24 ans',
-            'Y25-29' => '25 à 29 ans',
-            'Y30-34' => '30 à 34 ans',
-            'Y35-39' => '35 à 39 ans',
-            'Y40-44' => '40 à 44 ans',
-            'Y45-49' => '45 à 49 ans',
-            'Y50-54' => '50 à 54 ans',
-            'Y55-59' => '55 à 59 ans',
-            'Y60-64' => '60 à 64 ans',
-            'Y65-69' => '65 à 69 ans',
-            'Y70-74' => '70 à 74 ans',
-            'Y75-79' => '75 à 79 ans',
-            'Y80-84' => '80 à 84 ans',
-            'Y85-89' => '85 à 89 ans',
-            'Y_GE90' => '90 ans et plus',
-        ];
-
-        foreach ($select as $key => $text) {
+        foreach (tools::rangeFilterAge() as $key => $text) {
             $selected = '';
             if ($_SESSION['eurostat_filterAge'] == $key) {
                 $selected = ' selected="selected"';

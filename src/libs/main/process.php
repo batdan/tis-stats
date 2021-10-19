@@ -1,6 +1,8 @@
 <?php
 namespace main;
 
+use tools\dbSingleton;
+
 /**
  * Récupération des Collection de données
  */
@@ -28,5 +30,11 @@ class process
 
         echo chr(10);
         echo 'End : ' . date('Y-m-d H:i:s') . chr(10) . chr(10);
+
+        $dbh = dbSingleton::getInstance();
+
+        $req = "INSERT INTO cron (date_crea, namespace) VALUES (NOW(), :namespace)";
+        $sql = $dbh->prepare($req);
+        $sql->execute([':namespace' => $namespace]);
     }
 }
