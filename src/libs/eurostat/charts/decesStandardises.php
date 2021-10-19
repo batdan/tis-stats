@@ -22,7 +22,7 @@ class decesStandardises
 
     private $yAxisLabel;
 
-    private $data;
+    private $data = [];
     private $highChartsJs;
 
 
@@ -51,7 +51,7 @@ class decesStandardises
         $this->yAxisLabel = 'Nb cumulé de décès';
 
         $this->sandardYear();
-        $this->getData();
+        $this->getDataCache();
         $this->highChartsJs();
     }
 
@@ -109,39 +109,66 @@ class decesStandardises
     }
 
 
-    /**
-     * Récupération des données de la statistique
-     * en cache ou en BDD
-     */
-    public function getData()
+    public function getDataCache()
     {
         $className = str_replace('\\', '_', get_class($this));
         $fileName  = date('Y-m-d_') . $className;
 
-        $addReq = "";
+        $addReq = [];
         $addReqValues = [];
         if (!empty($_SESSION['eurostat_filterCountry'])) {
-            $addReq .= " AND geotime = :geotime";
+            $addReq['geotime'] = " AND geotime = :geotime";
             $addReqValues[':geotime'] = $_SESSION['eurostat_filterCountry'];
             $fileName .= '_country_' . $_SESSION['eurostat_filterCountry'];
         }
 
         if (!empty($_SESSION['eurostat_filterSex'])) {
-            $addReq .= " AND sex = :sex";
+            $addReq['sex'] = " AND sex = :sex";
             $addReqValues[':sex'] = $_SESSION['eurostat_filterSex'];
             $fileName .= '_sex_' . $_SESSION['eurostat_filterSex'];
         }
 
-        if (!empty($_SESSION['eurostat_filterAge'])) {
-            $addReq .= tools::magecFilterAge($_SESSION['eurostat_filterAge']);
-            $fileName .= '_age_' . $_SESSION['eurostat_filterAge'];
-        }
-
         if ($this->cache && $this->data = \main\cache::getCache($fileName)) {
             return;
-        }
+        } else {
+            // Pour toutes les tranches d'âge hors 'TOTAL'
+            if ($_SESSION['eurostat_filterAge'] != 'TOTAL') {
 
-        $this->data = [];
+                if (!empty($_SESSION['eurostat_filterAge'])) {
+                    $addReq['age'] = tools::magecFilterAge($_SESSION['eurostat_filterAge']);
+                    $fileName .= '_age_' . $_SESSION['eurostat_filterAge'];
+                }
+
+                $addReqStr = $addReq['geotime'] . ' ' . $addReq['sex'] . ' ' . $addReq['age'];
+                $this->getData($addReqStr, $addReqValues, $fileName, $_SESSION['eurostat_filterAge']);
+
+            // Pour la tranches d'âge 'TOTAL'
+            } else {
+
+                try {
+                    $keysFilterAge = array_keys(tools::rangeFilterAge());
+                    unset($keysFilterAge[0]);
+
+                    foreach ($keysFilterAge as $key) {
+                        $addReq['age'] = tools::magecFilterAge($key);
+                        $addReqStr = $addReq['geotime'] . ' ' . $addReq['sex'] . ' ' . $addReq['age'];
+
+                        $this->getData($addReqStr, $addReqValues, $fileName, $key);
+                    }
+                } catch(\Exception $e) {
+                    error_log($e->getMessage());
+                }
+            }
+        }
+    }
+
+
+    /**
+     * Récupération des données de la statistique
+     * en cache ou en BDD
+     */
+    public function getData($addReq, $addReqValues, $fileName, $rangeAge)
+    {
         $dataDeces  = [];
         $dataPop    = [];
 
@@ -164,21 +191,33 @@ class decesStandardises
         $years = array_keys($dataDeces);
         $addYears = implode(',', $years);
 
-        $req = "SELECT      year, value
+        $req = "SELECT      year, SUM(value) AS sumValue
                 FROM        eurostat_demo_pjan
                 WHERE       year IN ($addYears)
                 $addReq
+                GROUP BY    year
                 ORDER BY    year ASC";
 
         $sql = $this->dbh->prepare($req);
         $sql->execute($addReqValues);
 
         while ($res = $sql->fetch()) {
-            $dataPop[$res->year] = $res->value;
+            $dataPop[$res->year] = $res->sumValue;
         }
 
         foreach ($dataDeces as $year => $value) {
-            $this->data[$year] = round($value / $dataPop[$year] * $this->popStandard[$_SESSION['eurostat_filterAge']]);
+
+            if (empty($dataPop[$year])) {
+                continue;
+            }
+
+            $res = round($value / $dataPop[$year] * $this->popStandard[$rangeAge]);
+
+            if (isset($this->data[$year])) {
+                $this->data[$year] += $res;
+            } else {
+                $this->data[$year] = $res;
+            }
         }
 
         // createCache
@@ -232,19 +271,26 @@ class decesStandardises
                 text: '{$this->subTitle}'
             },
 
+            plotOptions: {
+                series: {
+                    groupPadding: 0,
+                    maxPointWidth: 55
+                }
+            },
+
             yAxis: [{
                 title: {
                     text: '{$this->yAxisLabel}',
                     style: {
                         color: '#106097',
-                        fontSize: 14
+                        fontSize: 16
                     }
                 },
                 labels: {
                     format: '{value}',
                     style: {
                         color: '#106097',
-                        fontSize: 14
+                        fontSize: 16
                     },
                     formatter: function() {
                         return Highcharts.numberFormat(this.value, 0, '.', ' ');

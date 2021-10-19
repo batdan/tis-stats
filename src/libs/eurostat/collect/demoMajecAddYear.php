@@ -25,7 +25,7 @@ class demoMajecAddYear
     {
         // Instance PDO
         $this->dbh = dbSingleton::getInstance();
-        
+
         // Année à rattaper
         $eurostat = config::getConfig('eurostat');
         $this->year = $eurostat['catchYear'];
@@ -107,7 +107,6 @@ class demoMajecAddYear
         // Boucle de compilation des données
         $data = [];
         while ($res = $sql->fetch()) {
-
             $val = $res->value;
 
             // Ratio au nb de jour de la semaine 1
@@ -120,7 +119,7 @@ class demoMajecAddYear
                 $val = $val / 7 * $this->nbDaysWeek53;
             }
 
-            $key = $res->sex . '_' . $res->age . '_' . $res->geotime;
+            $key = $res->sex.'|'.$res->age.'|'.$res->geotime;
             if (!isset($data[$key])) {
                 $data[$key]  = $val;
             } else {
@@ -135,7 +134,7 @@ class demoMajecAddYear
                 continue;
             }
 
-            $exp = explode('_', $key);
+            $exp = explode('|', $key);
 
             $sex     = $exp[0];
             $age     = $exp[1];
