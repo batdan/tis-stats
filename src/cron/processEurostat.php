@@ -10,11 +10,11 @@ if (php_sapi_name() != "cli") {
 new main\process([
 
     // dataset & optimisation
-    // 'demoPjan',
+    'demoPjan',
     'demoPjanOpti',
-    // 'demoMagec',
+    'demoMagec',
     'demoMagecOpti',
-    // 'demoRmwk05',
+    'demoRmwk05',
     'demoMagecAddYear',
 
 ], 'collect\eurostat');
