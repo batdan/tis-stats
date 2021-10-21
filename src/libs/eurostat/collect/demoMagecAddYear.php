@@ -9,17 +9,16 @@ use eurostat\main\tools;
 /**
  * Récupération de la dernière année pour le jeu de données "demo_magec" avec "demo_r_mwk_05"
  */
-class demoMajecAddYear
+class demoMagecAddYear
 {
     private $schema = 'tis_stats';
 
     private $year;              // Année à rattaper
     private $nbDaysWeek1;       // Nombre de jours dans la permière semaine de l'année
     private $nbDaysWeek53;      // Nombre de jours dans la permière semaine de l'année
-
+    
     private $keysAges;
     private $keysCountries;
-    private $magecExistYear;
 
     public function __construct()
     {
@@ -29,47 +28,53 @@ class demoMajecAddYear
         // Année à rattaper
         $eurostat = config::getConfig('eurostat');
         $this->year = $eurostat['catchYear'];
-
+        
+        // Source
+        $tableSource = 'eurostat_demo_r_mwk_05';
+        
+        // Table à compléter
+        $tableOpti = 'eurostat_demo_magec_opti';
+        
+        $this->cleanYear($tableOpti);
         $this->getKeysAges();
         $this->getKeysCountries();
-        $this->checkMagecExistYear();
         $this->nbDaysFirstLastWeek();
-        $this->processData();
+        $this->processData($tableSource, $tableOpti);
     }
 
-
+    
+    /**
+     * On supprime toutes les données de l'année en cours
+     * pour éviter les doublons
+     */
+    private function cleanYear($tableOpti)
+    {
+        $req = "DELETE FROM $tableOpti WHERE year = :year";
+        $sql = $this->dbh->prepare($req);
+        $sql->execute([':year' => $this->year]);
+    }
+    
+    
+    /**
+     * Récupération des tranches d'âge
+     */
     private function getKeysAges()
     {
         $this->keysAges = array_keys(tools::rangeFilterAge());
     }
 
 
+    /**
+     * Récupération des clés ISO-2 des pays à traiter
+     */
     private function getKeysCountries()
     {
         $this->keysCountries = array_keys(tools::getCountries());
     }
 
 
-    private function checkMagecExistYear()
+    private function processData($tableSource, $tableOpti)
     {
-        $this->magecExistYear = false;
-
-        $req = "SELECT geotime FROM eurostat_demo_magec WHERE year = :year";
-        $sql = $this->dbh->prepare($req);
-        $sql->execute([':year' => $this->year]);
-
-        if ($sql->rowCount() >= count($this->keysCountries)) {
-            $this->magecExistYear = true;
-        }
-    }
-
-
-    private function processData()
-    {
-        if ($this->magecExistYear) {
-            return;
-        }
-
         $geotime = [];
         foreach($this->keysCountries as $country) {
             $geotime[] = "'" . $country . "'";
@@ -78,7 +83,7 @@ class demoMajecAddYear
 
         // Récupération des données de la dernière années dans la table "eurostat_demo_r_mwk_05"
         $req = "SELECT  sex, age, geotime, year_week, value
-                FROM    eurostat_demo_r_mwk_05
+                FROM    $tableSource
                 WHERE   geotime IN ($geotime)
                 AND     age != :age
                 AND     year_week LIKE :yearMonth";
@@ -90,7 +95,7 @@ class demoMajecAddYear
 
         // Requête de vérification pour éviter en entrées en doublon
         $reqChk = " SELECT      id
-                    FROM        eurostat_demo_magec
+                    FROM        $tableOpti
                     WHERE       sex     = :sex
                     AND         age     = :age
                     AND         geotime = :geotime
@@ -98,7 +103,7 @@ class demoMajecAddYear
         $sqlChk = $this->dbh->prepare($reqChk);
 
         // Ajout de la dernière année dans "eurostat_demo_magec"
-        $reqUpd = " INSERT INTO eurostat_demo_magec
+        $reqUpd = " INSERT INTO $tableOpti
                     (unit, sex, age, geotime, year, value)
                     VALUES
                     (:unit, :sex, :age, :geotime, :year, :value)";

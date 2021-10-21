@@ -77,6 +77,43 @@ class tools
     }
 
 
+    /**
+     * Magec ajout des filtres d'age dans les requêtes
+     *
+     * @param  array    $range      Ajout filtre requête
+     * @return string
+     */
+    public static function magecFilterAge2($range)
+    {
+        switch ($range)
+        {
+            case 'TOTAL'  : return " AND age = 'TOTAL'";
+            case 'Y_LT5'  : return " AND (age='Y_LT1' OR age='Y1'  OR age='Y2'  OR age='Y3'  OR age='Y4')";
+            case 'Y5-9'   : return " AND (age='Y5'    OR age='Y6'  OR age='Y7'  OR age='Y8'  OR age='Y9')";
+            case 'Y10-14' : return " AND (age='Y10'   OR age='Y11' OR age='Y12' OR age='Y13' OR age='Y14')";
+            case 'Y15-19' : return " AND (age='Y15'   OR age='Y16' OR age='Y17' OR age='Y18' OR age='Y19')";
+            case 'Y20-24' : return " AND (age='Y20'   OR age='Y21' OR age='Y22' OR age='Y23' OR age='Y24')";
+            case 'Y25-29' : return " AND (age='Y25'   OR age='Y26' OR age='Y27' OR age='Y28' OR age='Y29')";
+            case 'Y30-34' : return " AND (age='Y30'   OR age='Y31' OR age='Y32' OR age='Y33' OR age='Y34')";
+            case 'Y35-39' : return " AND (age='Y35'   OR age='Y36' OR age='Y37' OR age='Y38' OR age='Y39')";
+            case 'Y40-44' : return " AND (age='Y40'   OR age='Y41' OR age='Y42' OR age='Y43' OR age='Y44')";
+            case 'Y45-49' : return " AND (age='Y45'   OR age='Y46' OR age='Y47' OR age='Y48' OR age='Y49')";
+            case 'Y50-54' : return " AND (age='Y50'   OR age='Y51' OR age='Y52' OR age='Y53' OR age='Y54')";
+            case 'Y55-59' : return " AND (age='Y55'   OR age='Y56' OR age='Y57' OR age='Y58' OR age='Y59')";
+            case 'Y60-64' : return " AND (age='Y60'   OR age='Y61' OR age='Y62' OR age='Y63' OR age='Y64')";
+            case 'Y65-69' : return " AND (age='Y65'   OR age='Y66' OR age='Y67' OR age='Y68' OR age='Y69')";
+            case 'Y70-74' : return " AND (age='Y70'   OR age='Y71' OR age='Y72' OR age='Y73' OR age='Y74')";
+            case 'Y75-79' : return " AND (age='Y75'   OR age='Y76' OR age='Y77' OR age='Y78' OR age='Y79')";
+            case 'Y80-84' : return " AND (age='Y80'   OR age='Y81' OR age='Y82' OR age='Y83' OR age='Y84')";
+            case 'Y85-89' : return " AND (age='Y85'   OR age='Y86' OR age='Y87' OR age='Y88' OR age='Y89')";
+            case 'Y_GE90' : return " AND (age='Y90'   OR age='Y91' OR age='Y92' OR age='Y93' OR age='Y94'
+                                     OR   age='Y95'   OR age='Y96' OR age='Y97' OR age='Y98' OR age='Y99'
+                                     OR   age='Y_OPEN' OR age='Y_GE90')";
+
+        }
+    }
+
+
     public static function getCountries()
     {
         $dbh = dbSingleton::getInstance();

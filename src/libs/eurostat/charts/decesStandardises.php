@@ -68,7 +68,7 @@ class decesStandardises
 
         // Gestion des caches
         $className = str_replace('\\', '_', get_class($this));
-        $fileName  = date('Y-m-d_') . $className . '_standardYear_' . $this->standardYear;
+        $fileName  = date('Y-m-d_') . $className . '_standardYear_' . $this->standardYear . '_sex_' . $_SESSION['eurostat_filterSex'];
 
         if ($this->cache && $this->popStandard = \main\cache::getCache($fileName)) {
             return;
@@ -80,20 +80,19 @@ class decesStandardises
 
         foreach ($keysFilterAge as $key) {
 
-            $addReq = tools::magecFilterAge($key);
-
             $req = "SELECT  SUM(value) AS sumValue
-                    FROM    eurostat_demo_pjan
+                    FROM    eurostat_demo_pjan_opti
                     WHERE   year    = :year
                     AND     geotime = :geotime
                     AND     sex     = :sex
-                    $addReq";
+                    AND     age     = :age";
 
             $sql = $this->dbh->prepare($req);
             $sql->execute([
                 ':year'     => $this->standardYear,
-                ':sex'      => 'T',
+                ':sex'      => $_SESSION['eurostat_filterSex'],
                 ':geotime'  => 'FR',
+                ':age'      => $key
             ]);
 
             if ($sql->rowCount()) {
@@ -135,7 +134,8 @@ class decesStandardises
             if ($_SESSION['eurostat_filterAge'] != 'TOTAL') {
 
                 if (!empty($_SESSION['eurostat_filterAge'])) {
-                    $addReq['age'] = tools::magecFilterAge($_SESSION['eurostat_filterAge']);
+                    $addReq['age'] = " AND age = :age";
+                    $addReqValues[':age'] = $_SESSION['eurostat_filterAge'];
                     $fileName .= '_age_' . $_SESSION['eurostat_filterAge'];
                 }
 
@@ -150,7 +150,8 @@ class decesStandardises
                     unset($keysFilterAge[0]);
 
                     foreach ($keysFilterAge as $key) {
-                        $addReq['age'] = tools::magecFilterAge($key);
+                        $addReq['age'] = " AND age = :age";
+                        $addReqValues[':age'] = $key;
                         $addReqStr = $addReq['geotime'] . ' ' . $addReq['sex'] . ' ' . $addReq['age'];
 
                         $this->getData($addReqStr, $addReqValues, $fileName, $key);
@@ -174,7 +175,7 @@ class decesStandardises
 
         // Récupération des décès
         $req = "SELECT      year, SUM(value) AS sumValue
-                FROM        eurostat_demo_magec
+                FROM        eurostat_demo_magec_opti
                 WHERE       value IS NOT NULL
                 $addReq
                 GROUP BY    year
@@ -192,7 +193,7 @@ class decesStandardises
         $addYears = implode(',', $years);
 
         $req = "SELECT      year, SUM(value) AS sumValue
-                FROM        eurostat_demo_pjan
+                FROM        eurostat_demo_pjan_opti
                 WHERE       year IN ($addYears)
                 $addReq
                 GROUP BY    year
@@ -218,6 +219,8 @@ class decesStandardises
             } else {
                 $this->data[$year] = $res;
             }
+
+            ksort($this->data);
         }
 
         // createCache
@@ -345,10 +348,10 @@ class decesStandardises
         $backLink = (isset($_GET['internal'])) ? false : true;
 
         $filterActiv = [
-            'charts'    => [true,  'col-lg-3'],
+            'charts'    => [true,  'col-lg-5'],
             'countries' => [true,  'col-lg-3'],
-            'sex'       => [true,  'col-lg-3'],
-            'age'       => [true,  'col-lg-3'],
+            'sex'       => [true,  'col-lg-2'],
+            'age'       => [true,  'col-lg-2'],
         ];
 
         echo render::html(

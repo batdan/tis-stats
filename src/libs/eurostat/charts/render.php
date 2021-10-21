@@ -148,7 +148,7 @@ eof;
             'closeItem-1'                               => '',
 
             'item-2'                                    => 'Population',
-            // 'eurostat\charts\pyramideAges'              => 'Pyramide des âges',
+            'eurostat\charts\pyramideAges'              => 'Pyramide des âges',
             'closeItem-2'                               => '',
         ];
 
@@ -243,12 +243,6 @@ eof;
             $res = $sql->fetch();
             $min = $res->minYear;
             $max = $res->maxYear;
-
-            $req = "SELECT MIN(year) AS minYear, MAX(year) AS maxYear FROM eurostat_demo_magec";
-            $sql = self::$dbh->query($req);
-            $res = $sql->fetch();
-            $min = ($res->minYear > $min) ? $res->minYear : $min;
-            $max = ($res->maxYear < $max) ? $res->maxYear : $max;
 
             $years = [
                 'min' => $min,

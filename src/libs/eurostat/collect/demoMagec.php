@@ -6,7 +6,7 @@ use tools\dbSingleton;
 /**
  * Récupération et traiement du jeu de données demo_magec
  */
-class demoMajec
+class demoMagec
 {
     private $schema = 'tis_stats';
 

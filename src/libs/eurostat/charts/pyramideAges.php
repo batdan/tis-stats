@@ -5,7 +5,7 @@ use tools\dbSingleton;
 use main\highChartsCommon;
 use eurostat\main\tools;
 
-class deces
+class pyramideAges
 {
     private $cache;
     private $dbh;
@@ -34,15 +34,15 @@ class deces
 
         $this->dbh = dbSingleton::getInstance();
 
-        $this->chartName = 'deces';
+        $this->chartName = 'pyramideAges';
 
-        $this->title    = 'Nb cumulé de décès toutes causes confondues';
+        $this->title    = 'Pyramide des âges';
         $this->regTitle();
 
         $maj = tools::lastMajData();
         $this->subTitle = (!empty($maj)) ? 'Source: Eurostats | ' . $maj : 'Source: Eurostats';
 
-        $this->yAxisLabel = 'Nb cumulé de décès';
+        $this->yAxisLabel = 'Population';
 
         $this->getData();
         $this->highChartsJs();
@@ -65,19 +65,23 @@ class deces
             $addReqValues[':geotime'] = $_SESSION['eurostat_filterCountry'];
             $fileName .= '_country_' . $_SESSION['eurostat_filterCountry'];
         }
-
-        if (!empty($_SESSION['eurostat_filterSex'])) {
-            $addReq .= " AND sex = :sex";
-            $addReqValues[':sex'] = $_SESSION['eurostat_filterSex'];
-            $fileName .= '_sex_' . $_SESSION['eurostat_filterSex'];
+        
+        if (!empty($_SESSION['eurostat_filterYear1'])) {
+            $addReq .= " AND geotime = :geotime";
+            $addReqValues[':year'] = $_SESSION['eurostat_filterYear1'];
+            $fileName .= '_year_' . $_SESSION['eurostat_filterYear1'];
         }
+        
+        $keysFilterAge = array_keys(tools::rangeFilterAge());
+        unset($keysFilterAge[0]);
 
-        if (!empty($_SESSION['eurostat_filterAge'])) {
-            $addReq .= " AND age = :age";
-            $addReqValues[':age'] = $_SESSION['eurostat_filterAge'];
-            $fileName .= '_age_' . $_SESSION['eurostat_filterAge'];
+        foreach ($keysFilterAge as $key) {
+            $addReq['age'] = tools::magecFilterAge($key);
+            $addReqStr = $addReq['geotime'] . ' ' . $addReq['sex'] . ' ' . $addReq['age'];
+
+            $this->getData($addReqStr, $addReqValues, $fileName, $key);
         }
-
+        
         if ($this->cache && $this->data = \main\cache::getCache($fileName)) {
             return;
         }
@@ -85,11 +89,12 @@ class deces
         $this->data = [];
 
         $req = "SELECT      year, SUM(value) AS sumValue
-                FROM        eurostat_demo_magec_opti
+                FROM        eurostat_demo_magec
                 WHERE       value IS NOT NULL
                 $addReq
                 GROUP BY    year
                 ORDER BY    year ASC";
+
 
         $sql = $this->dbh->prepare($req);
         $sql->execute($addReqValues);

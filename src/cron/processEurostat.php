@@ -9,10 +9,12 @@ if (php_sapi_name() != "cli") {
 // Santé publique France
 new main\process([
 
-    // dataset
-    'demoPjan',
-    'demoMajec',
-    'demoRmwk05',
-    'demoMajecAddYear',
+    // dataset & optimisation
+    // 'demoPjan',
+    'demoPjanOpti',
+    // 'demoMagec',
+    'demoMagecOpti',
+    // 'demoRmwk05',
+    'demoMagecAddYear',
 
 ], 'collect\eurostat');
