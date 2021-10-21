@@ -65,42 +65,64 @@ class pyramideAges
             $addReqValues[':geotime'] = $_SESSION['eurostat_filterCountry'];
             $fileName .= '_country_' . $_SESSION['eurostat_filterCountry'];
         }
-        
+
         if (!empty($_SESSION['eurostat_filterYear1'])) {
-            $addReq .= " AND geotime = :geotime";
+            $addReq .= " AND year = :year";
             $addReqValues[':year'] = $_SESSION['eurostat_filterYear1'];
             $fileName .= '_year_' . $_SESSION['eurostat_filterYear1'];
         }
-        
-        $keysFilterAge = array_keys(tools::rangeFilterAge());
-        unset($keysFilterAge[0]);
 
-        foreach ($keysFilterAge as $key) {
-            $addReq['age'] = tools::magecFilterAge($key);
-            $addReqStr = $addReq['geotime'] . ' ' . $addReq['sex'] . ' ' . $addReq['age'];
-
-            $this->getData($addReqStr, $addReqValues, $fileName, $key);
-        }
-        
         if ($this->cache && $this->data = \main\cache::getCache($fileName)) {
             return;
         }
 
         $this->data = [];
 
-        $req = "SELECT      year, SUM(value) AS sumValue
-                FROM        eurostat_demo_magec
-                WHERE       value IS NOT NULL
+        // Récupératation de la population du pays sur l'année analysée
+        $req = "SELECT      value
+                FROM        eurostat_demo_pjan_opti
+                WHERE       sex = 'T'
                 $addReq
-                GROUP BY    year
-                ORDER BY    year ASC";
+                AND         age = 'TOTAL'
+                GROUP BY    age";
+        $sql = $this->dbh->prepare($req);
+        $sql->execute($addReqValues);
+        $res = $sql->fetch();
+        $this->data['population'] = $res->value;
 
+        $req = "SELECT      age, value
+                FROM        eurostat_demo_pjan_opti
+                WHERE       sex = 'F'
+                $addReq
+                AND         age != 'TOTAL'
+                GROUP BY    age";
 
         $sql = $this->dbh->prepare($req);
         $sql->execute($addReqValues);
 
         while ($res = $sql->fetch()) {
-            $this->data[$res->year] = $res->sumValue;
+            $this->data['F_pre'][$res->age] = $res->value;
+        }
+
+        $req = "SELECT      age, value
+                FROM        eurostat_demo_pjan_opti
+                WHERE       sex = 'M'
+                $addReq
+                AND         age != 'TOTAL'
+                GROUP BY    age";
+
+        $sql = $this->dbh->prepare($req);
+        $sql->execute($addReqValues);
+
+        while ($res = $sql->fetch()) {
+            $this->data['M_pre'][$res->age] = $res->value;
+        }
+
+        $this->data['F'] = [];
+        $this->data['M'] = [];
+        foreach (array_keys(tools::rangeFilterAge2()) as $key) {
+            $this->data['F'][$key] = $this->data['F_pre'][$key];
+            $this->data['M'][$key] = $this->data['M_pre'][$key];
         }
 
         // createCache
@@ -115,26 +137,33 @@ class pyramideAges
      */
     private function highChartsJs()
     {
-        $years = [];
-        $value = [];
+        $ages = tools::rangeFilterAge2('format');
 
-        foreach($this->data as $year => $val) {
-            $years[] = "'" . $year . "'";
-            $value[] = $val;
+        $hommes = [];
+        $femmes = [];
+
+        foreach($this->data['M'] as $val) {
+            $hommes[] = 0 - (100 / $this->data['population'] * $val);
         }
+        $hommes = implode(',', $hommes);
 
-        $years = implode(', ', $years);
-        $value = implode(', ', $value);
+        foreach($this->data['F'] as $val) {
+            $femmes[] = 100 / $this->data['population'] * $val;
+        }
+        $femmes = implode(',', $femmes);
 
-        $credit     = highChartsCommon::creditLCH();
+        $credit     = highChartsCommon::creditLCH(-300, 70);
         $event      = highChartsCommon::exportImgLogo();
-        $xAxis      = highChartsCommon::xAxisYears($years);
-        $legend     = highChartsCommon::legend();
+        $legend     = highChartsCommon::legend('bottom');
         $responsive = highChartsCommon::responsive();
 
-        $barsColor  = tools::getSexColor()[$_SESSION['eurostat_filterSex']];
+        $barsColor  = tools::getSexColor();
+        $barsColorM = $barsColor['M'];
+        $barsColorF = $barsColor['F'];
 
         $this->highChartsJs = <<<eof
+        var categories = [$ages];
+
         Highcharts.chart('{$this->chartName}', {
 
             $credit
@@ -142,7 +171,7 @@ class pyramideAges
             $event
 
             chart: {
-                type: 'column',
+                type: 'bar',
                 height: 580
             },
 
@@ -154,43 +183,73 @@ class pyramideAges
                 text: '{$this->subTitle}'
             },
 
-            yAxis: [{
+            accessibility: {
+                point: {
+                    valueDescriptionFormat: '{index}. Age {xDescription}, {value}%.'
+                }
+            },
+
+            yAxis: {
                 title: {
-                    text: '{$this->yAxisLabel}',
-                    style: {
-                        color: '#106097',
-                        fontSize: 14
-                    }
+                    text: ''
                 },
                 labels: {
-                    format: '{value}',
-                    style: {
-                        color: '#106097',
-                        fontSize: 14
-                    },
-                    formatter: function() {
-                        return Highcharts.numberFormat(this.value, 0, '.', ' ');
+                    formatter: function () {
+                        return Math.abs(this.value) + '%';
                     }
                 },
-                opposite: true
+                accessibility: {
+                    description: 'Percentage population',
+                    rangeDescription: 'Range: 0 to 5%'
+                }
+            },
+
+            xAxis: [{
+                categories: categories,
+                reversed: false,
+                labels: {
+                    step: 1
+                },
+                accessibility: {
+                    description: 'Age (male)'
+                }
+            }, { // mirror axis on right side
+                opposite: true,
+                reversed: false,
+                categories: categories,
+                linkedTo: 0,
+                labels: {
+                    step: 1
+                },
+                accessibility: {
+                    description: 'Age (female)'
+                }
             }],
 
-            $xAxis
+            plotOptions: {
+                series: {
+                    stacking: 'normal'
+                }
+            },
+
+            tooltip: {
+                formatter: function () {
+                    return '<b>' + this.series.name + ', age ' + this.point.category + '</b><br/>' +
+                        'Population: ' + Highcharts.numberFormat(Math.abs(this.point.y), 1) + '%';
+                }
+            },
 
             $legend
 
             series: [{
-                connectNulls: true,
-                marker:{
-                    enabled:false
-                },
-                name: '{$this->yAxisLabel}',
-                color: '$barsColor',
-                yAxis: 0,
-                data: [$value]
-            }],
-
-            $responsive
+                name: 'Hommes',
+                color: '$barsColorM',
+                data: [$hommes]
+            }, {
+                name: 'Femmes',
+                color: '$barsColorF',
+                data: [$femmes]
+            }]
         });
         eof;
     }
@@ -223,8 +282,7 @@ class pyramideAges
         $filterActiv = [
             'charts'    => [true,  'col-lg-3'],
             'countries' => [true,  'col-lg-3'],
-            'sex'       => [true,  'col-lg-3'],
-            'age'       => [true,  'col-lg-3'],
+            'year1'     => [true,  'col-lg-3'],
         ];
 
         echo render::html(

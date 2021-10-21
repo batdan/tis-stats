@@ -100,7 +100,7 @@ eof;
      * Utilisation du crédit pour afficher le domaine LCH
      * @return string
      */
-    public static function creditLCH()
+    public static function creditLCH($x=0, $y=95)
     {
         $jsEvent = <<<eof
 
@@ -110,8 +110,8 @@ eof;
             position: {
                 align: 'center',
                 verticalAlign: 'top',
-                x: 0,
-                y: 95
+                x: $x,
+                y: $y
             },
             style: {
                 color: '#ccc',
@@ -202,15 +202,27 @@ eof;
     }
 
 
-    public static function legend()
+    public static function legend($where = 'right')
     {
-        return <<<eof
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'middle'
-            },
+        if ($where == 'right') {
+            $legend = <<<eof
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'middle'
+                },
 eof;
+        }
+
+        if ($where == 'bottom') {
+            $legend = <<<eof
+                legend: {
+                    layout: 'vertical',
+                    align: 'bottom',
+                    verticalAlign: 'middle'
+                },
+eof;
+        }
     }
 
 

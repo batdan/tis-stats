@@ -11,7 +11,7 @@ class tools
      * Y_LT5 : Less than 5 years | http://dd.eionet.europa.eu/vocabularyconcept/eurostat/agechild/Y_LT5/view
      * Y_GE90 : 90 years or over | http://dd.eionet.europa.eu/vocabularyconcept/eurostat/agechild/Y_GE90/view
      *
-     * @return [type] [description]
+     * @return array
      */
     public static function rangeFilterAge()
     {
@@ -37,6 +37,47 @@ class tools
             'Y85-89' => '85 à 89 ans',
             'Y_GE90' => '90 ans et plus',
         ];
+    }
+
+
+    /**
+     * rangeFilterAge descriptions
+     *
+     * @return array
+     */
+    public static function rangeFilterAge2($action = '')
+    {
+        $ages = [
+            'Y_LT5'  => '0-4',
+            'Y5-9'   => '5-9',
+            'Y10-14' => '10-14',
+            'Y15-19' => '15-19',
+            'Y20-24' => '20-24',
+            'Y25-29' => '25-29',
+            'Y30-34' => '30-34',
+            'Y35-39' => '35-39',
+            'Y40-44' => '40-44',
+            'Y45-49' => '45-49',
+            'Y50-54' => '50-54',
+            'Y55-59' => '55-59',
+            'Y60-64' => '60-64',
+            'Y65-69' => '65-69',
+            'Y70-74' => '70-74',
+            'Y75-79' => '75-79',
+            'Y80-84' => '80-84',
+            'Y85-89' => '85-89',
+            'Y_GE90' => '90 +',
+        ];
+
+        if ($action == 'format') {
+            $yRange = [];
+            foreach ($ages as $age) {
+                $yRange[] = "'" . $age . "'";
+            }
+            return implode(',', $yRange);
+        }
+
+        return $ages;
     }
 
 

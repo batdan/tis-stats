@@ -238,8 +238,21 @@ eof;
         if ($years = \main\cache::getCache($fileName)) {
             //
         } else {
-            $req = "SELECT MIN(year) AS minYear, MAX(year) AS maxYear FROM eurostat_demo_pjan";
-            $sql = self::$dbh->query($req);
+
+            $addReq = "";
+            $addReqValues = [];
+            if (!empty($_SESSION['eurostat_filterCountry'])) {
+                $addReq .= " AND geotime = :geotime";
+                $addReqValues[':geotime'] = $_SESSION['eurostat_filterCountry'];
+                $fileName .= '_country_' . $_SESSION['eurostat_filterCountry'];
+            }
+
+            $req = "SELECT  MIN(year) AS minYear, MAX(year) AS maxYear
+                    FROM    eurostat_demo_pjan_opti
+                    WHERE   age = 'Y_LT5'
+                    $addReq";
+            $sql = self::$dbh->prepare($req);
+            $sql->execute($addReqValues);
             $res = $sql->fetch();
             $min = $res->minYear;
             $max = $res->maxYear;
@@ -298,7 +311,7 @@ eof;
         if ($years = \main\cache::getCache($fileName)) {
             //
         } else {
-            $req = "SELECT MIN(year) AS minYear, MAX(year) AS maxYear FROM eurostat_demo_pjan";
+            $req = "SELECT MIN(year) AS minYear, MAX(year) AS maxYear FROM eurostat_demo_pjan_opti";
             $sql = self::$dbh->query($req);
             $res = $sql->fetch();
             $min = $res->minYear;
