@@ -127,6 +127,10 @@ class decesStandardises
             $fileName .= '_sex_' . $_SESSION['eurostat_filterSex'];
         }
 
+        if (!empty($_SESSION['eurostat_filterAge'])) {
+            $fileName .= '_age_' . $_SESSION['eurostat_filterAge'];
+        }
+
         if ($this->cache && $this->data = \main\cache::getCache($fileName)) {
             return;
         } else {
@@ -136,7 +140,6 @@ class decesStandardises
                 if (!empty($_SESSION['eurostat_filterAge'])) {
                     $addReq['age'] = " AND age = :age";
                     $addReqValues[':age'] = $_SESSION['eurostat_filterAge'];
-                    $fileName .= '_age_' . $_SESSION['eurostat_filterAge'];
                 }
 
                 $addReqStr = $addReq['geotime'] . ' ' . $addReq['sex'] . ' ' . $addReq['age'];
@@ -263,7 +266,7 @@ class decesStandardises
 
             chart: {
                 type: 'column',
-                height: 580
+                height: 680
             },
 
             title: {

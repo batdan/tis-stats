@@ -72,6 +72,10 @@ class pyramideAges
             $fileName .= '_year_' . $_SESSION['eurostat_filterYear1'];
         }
 
+        if (!empty($_SESSION['eurostat_filterUnit'])) {
+            $fileName .= '_unit_' . $_SESSION['eurostat_filterUnit'];
+        }
+
         if ($this->cache && $this->data = \main\cache::getCache($fileName)) {
             return;
         }
@@ -88,8 +92,9 @@ class pyramideAges
         $sql = $this->dbh->prepare($req);
         $sql->execute($addReqValues);
         $res = $sql->fetch();
-        $this->data['population'] = $res->value;
+        $population = $res->value;
 
+        // Données sur les femmes
         $req = "SELECT      age, value
                 FROM        eurostat_demo_pjan_opti
                 WHERE       sex = 'F'
@@ -104,6 +109,7 @@ class pyramideAges
             $this->data['F_pre'][$res->age] = $res->value;
         }
 
+        // Données sur les hommes
         $req = "SELECT      age, value
                 FROM        eurostat_demo_pjan_opti
                 WHERE       sex = 'M'
@@ -118,12 +124,22 @@ class pyramideAges
             $this->data['M_pre'][$res->age] = $res->value;
         }
 
+        // Remise du tableau dans l'ordre et Calculs
         $this->data['F'] = [];
         $this->data['M'] = [];
         foreach (array_keys(tools::rangeFilterAge2()) as $key) {
-            $this->data['F'][$key] = $this->data['F_pre'][$key];
-            $this->data['M'][$key] = $this->data['M_pre'][$key];
+            if ($_SESSION['eurostat_filterUnit'] == 'percent') {
+                $this->data['F'][$key] = 100 / $population * $this->data['F_pre'][$key];
+                $this->data['M'][$key] = 0 - (100 / $population * $this->data['M_pre'][$key]);
+            } else {
+                $this->data['F'][$key] = $this->data['F_pre'][$key];
+                $this->data['M'][$key] = 0 - $this->data['M_pre'][$key];
+            }
         }
+
+        // Clean result
+        unset($this->data['F_pre']);
+        unset($this->data['M_pre']);
 
         // createCache
         if ($this->cache) {
@@ -139,18 +155,18 @@ class pyramideAges
     {
         $ages = tools::rangeFilterAge2('format');
 
-        $hommes = [];
         $femmes = [];
-
-        foreach($this->data['M'] as $val) {
-            $hommes[] = 0 - (100 / $this->data['population'] * $val);
-        }
-        $hommes = implode(',', $hommes);
+        $hommes = [];
 
         foreach($this->data['F'] as $val) {
-            $femmes[] = 100 / $this->data['population'] * $val;
+            $femmes[] = $val;
         }
         $femmes = implode(',', $femmes);
+
+        foreach($this->data['M'] as $val) {
+            $hommes[] = $val;
+        }
+        $hommes = implode(',', $hommes);
 
         $credit     = highChartsCommon::creditLCH(-300, 70);
         $event      = highChartsCommon::exportImgLogo();
@@ -160,6 +176,20 @@ class pyramideAges
         $barsColor  = tools::getSexColor();
         $barsColorM = $barsColor['M'];
         $barsColorF = $barsColor['F'];
+
+        switch ($_SESSION['eurostat_filterUnit'])
+        {
+            case 'percent':
+                $labelFormatter = <<<eof
+                    return Math.abs(this.value) + '%';
+eof;
+                break;
+            default:
+                $labelFormatter = <<<eof
+                    var number = Math.abs(this.value);
+                    return Highcharts.numberFormat(number, 0, '.', ' ');
+eof;
+        }
 
         $this->highChartsJs = <<<eof
         var categories = [$ages];
@@ -172,7 +202,7 @@ class pyramideAges
 
             chart: {
                 type: 'bar',
-                height: 580
+                height: 680
             },
 
             title: {
@@ -194,8 +224,13 @@ class pyramideAges
                     text: ''
                 },
                 labels: {
-                    formatter: function () {
-                        return Math.abs(this.value) + '%';
+                    formatter: function() {
+                        $labelFormatter
+                    },
+                    rotation: -45,
+                    style: {
+                        fontSize: 12,
+                        color: '#222'
                     }
                 },
                 accessibility: {
@@ -208,7 +243,11 @@ class pyramideAges
                 categories: categories,
                 reversed: false,
                 labels: {
-                    step: 1
+                    step: 1,
+                    style: {
+                        fontSize: 13,
+                        color: '#222'
+                    }
                 },
                 accessibility: {
                     description: 'Age (male)'
@@ -219,7 +258,11 @@ class pyramideAges
                 categories: categories,
                 linkedTo: 0,
                 labels: {
-                    step: 1
+                    step: 1,
+                    style: {
+                        fontSize: 13,
+                        color: '#222'
+                    }
                 },
                 accessibility: {
                     description: 'Age (female)'
@@ -228,7 +271,9 @@ class pyramideAges
 
             plotOptions: {
                 series: {
-                    stacking: 'normal'
+                    stacking: 'normal',
+                    groupPadding: 0,
+                    maxPointWidth: 55
                 }
             },
 
@@ -242,10 +287,18 @@ class pyramideAges
             $legend
 
             series: [{
+                animation: {
+                    defer: 300,
+                    duration: 200
+                },
                 name: 'Hommes',
                 color: '$barsColorM',
                 data: [$hommes]
             }, {
+                animation: {
+                    defer: 300,
+                    duration: 200
+                },
                 name: 'Femmes',
                 color: '$barsColorF',
                 data: [$femmes]
@@ -280,9 +333,10 @@ class pyramideAges
         $backLink = (isset($_GET['internal'])) ? false : true;
 
         $filterActiv = [
-            'charts'    => [true,  'col-lg-3'],
+            'charts'    => [true,  'col-lg-5'],
             'countries' => [true,  'col-lg-3'],
-            'year1'     => [true,  'col-lg-3'],
+            'year1'     => [true,  'col-lg-2'],
+            'unit'      => [true,  'col-lg-2'],
         ];
 
         echo render::html(

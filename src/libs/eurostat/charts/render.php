@@ -101,6 +101,7 @@ eof;
             'year2'     => [false, 'col-lg-3'],
             'sex'       => [false, 'col-lg-3'],
             'age'       => [false, 'col-lg-3'],
+            'unit'      => [false, 'col-lg-3'],
         ];
 
         $filterActiv = array_merge($filterActivDefault, $filterActiv);
@@ -127,6 +128,10 @@ eof;
 
         if ($filterActiv['age'][0]) {
             $chartFilters .= self::chartFilterAge($filterActiv['age'][1]);
+        }
+
+        if ($filterActiv['unit'][0]) {
+            $chartFilters .= self::chartFilterUnit($filterActiv['unit'][1]);
         }
 
         $chartFilters .= '</div>';
@@ -423,6 +428,47 @@ eof;
                 $.post("/ajax/eurostat/filterAge.php",
                 {
                     filterAge : $(this).find(":selected").val()
+                },
+                function success(data)
+                {
+                    console.log(data);
+                    history.go(0);
+                }, 'json');
+            });
+eof;
+
+        return $filter;
+    }
+
+
+    private static function chartFilterUnit($class)
+    {
+        $filter  = '<div class="form-group ' . $class .'">';
+        $filter .= '<label class="form-label" for="filter-unit">Unité</label>';
+        $filter .= '<select id="filter-unit" class="form-select">';
+
+        $units = [
+            'percent' => 'Pourcentage',
+            'number'  => 'Nombre',
+        ];
+
+        foreach ($units as $key => $text) {
+            $selected = '';
+            if ($_SESSION['eurostat_filterUnit'] == $key) {
+                $selected = ' selected="selected"';
+            }
+
+            $filter .= '<option value="' . $key . '"' . $selected  . '>' . $text . '</option>';
+        }
+
+        $filter .= '</select>';
+        $filter .= '</div>';
+
+        self::$jsRender .= <<<eof
+            $("#filter-unit").change( function() {
+                $.post("/ajax/eurostat/filterUnit.php",
+                {
+                    filterUnit : $(this).find(":selected").val()
                 },
                 function success(data)
                 {

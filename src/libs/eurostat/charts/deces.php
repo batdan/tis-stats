@@ -138,7 +138,7 @@ class deces
 
             chart: {
                 type: 'column',
-                height: 580
+                height: 680
             },
 
             title: {
@@ -147,6 +147,13 @@ class deces
 
             subtitle: {
                 text: '{$this->subTitle}'
+            },
+            
+            plotOptions: {
+                series: {
+                    groupPadding: 0,
+                    maxPointWidth: 55
+                }
             },
 
             yAxis: [{
@@ -216,10 +223,10 @@ class deces
         $backLink = (isset($_GET['internal'])) ? false : true;
 
         $filterActiv = [
-            'charts'    => [true,  'col-lg-3'],
+            'charts'    => [true,  'col-lg-5'],
             'countries' => [true,  'col-lg-3'],
-            'sex'       => [true,  'col-lg-3'],
-            'age'       => [true,  'col-lg-3'],
+            'sex'       => [true,  'col-lg-2'],
+            'age'       => [true,  'col-lg-2'],
         ];
 
         echo render::html(

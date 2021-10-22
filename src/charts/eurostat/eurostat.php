@@ -20,6 +20,7 @@ $_SESSION['eurostat_filterYear1']       = (isset($_SESSION['eurostat_filterYear1
 $_SESSION['eurostat_filterYear2']       = (isset($_SESSION['eurostat_filterYear2']))    ? $_SESSION['eurostat_filterYear2']     : 2019;
 $_SESSION['eurostat_filterSex']         = (isset($_SESSION['eurostat_filterSex']))      ? $_SESSION['eurostat_filterSex']       : 'T';
 $_SESSION['eurostat_filterAge']         = (isset($_SESSION['eurostat_filterAge']))      ? $_SESSION['eurostat_filterAge']       : 'TOTAL';
+$_SESSION['eurostat_filterUnit']        = (isset($_SESSION['eurostat_filterUnit']))     ? $_SESSION['eurostat_filterUnit']      : 'percent';
 
 // Affichage du graphique
 $class = new $_SESSION['eurostat_filterChart']($cache);
