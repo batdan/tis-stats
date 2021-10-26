@@ -266,7 +266,7 @@ class decesStandardises
 
             chart: {
                 type: 'column',
-                height: 680
+                height: 580
             },
 
             title: {

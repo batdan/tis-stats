@@ -202,7 +202,7 @@ eof;
 
             chart: {
                 type: 'bar',
-                height: 680
+                height: 580
             },
 
             title: {
