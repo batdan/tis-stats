@@ -148,8 +148,8 @@ eof;
 
         $chartCollections = [
             'item-1'                                    => 'Décès',
-            'eurostat\charts\deces'                     => 'Décés toutes causes confondues',
             'eurostat\charts\decesStandardises'         => 'Décés toutes causes confondues (standardisés)',
+            'eurostat\charts\deces'                     => 'Décés toutes causes confondues',
             'closeItem-1'                               => '',
 
             'item-2'                                    => 'Population',

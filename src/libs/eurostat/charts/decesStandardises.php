@@ -46,7 +46,7 @@ class decesStandardises
 
         $maj = tools::lastMajData();
         $this->subTitle  = 'Selon la population de la France en 2020 | ';
-        $this->subTitle .= (!empty($maj)) ? 'Source: Eurostats | ' . $maj : 'Source: Eurostats';
+        $this->subTitle .= (!empty($maj)) ? 'Source: Eurostat | ' . $maj : 'Source: Eurostats';
 
         $this->yAxisLabel = 'Nb cumulé de décès';
 

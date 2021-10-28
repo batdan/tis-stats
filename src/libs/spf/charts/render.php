@@ -152,34 +152,34 @@ eof;
         $filter .= '<select id="filter-chart" class="form-select">';
 
         $chartCollections = [
-            'item-1'                                    => 'Tests PCR',
-            'spf\charts\pcrPositivite'                  => 'PCR : taux de positivité',
-            'spf\charts\pcrCumulTests'                  => 'PCR : nb de tests réalisés',
-            'closeItem-1'                               => '',
-
-            'item-2'                                    => 'Chiffres quotidiens',
+            'item-1'                                    => 'Chiffres quotidiens',
+            'spf\charts\quotidienDeces'                 => 'Quotidien : décès',
             'spf\charts\quotidienEntreesHp'             => 'Quotidien : hospitalisations',
             'spf\charts\quotidienEntreesRea'            => 'Quotidien : soins critiques',
-            'spf\charts\quotidienDeces'                 => 'Quotidien : décès',
             'spf\charts\quotidienRad'                   => 'Quotidien : retours à domicile',
-            'closeItem-2'                               => '',
-
-            'item-3'                                    => 'Occupation des hôpitaux',
+            'closeItem-1'                               => '',
+            
+            'item-2'                                    => 'Occupation des hôpitaux',
             'spf\charts\nbOccupationHp'                 => 'Occupation : hospitalisations',
             'spf\charts\nbOccupationRea'                => 'Occupation : soins critiques',
-            'closeItem-3'                               => '',
+            'closeItem-2'                               => '',
 
-            'item-4'                                    => 'Chiffres cumulés',
+            'item-3'                                    => 'Chiffres cumulés',
             'spf\charts\nbCumuleDeces'                  => 'Cumulé : décès',
             'spf\charts\nbCumuleDecesAge'               => 'Cumulé : décès par âge',
             'spf\charts\nbCumuleRad'                    => 'Cumulé : retours à domicile',
-            'closeItem-4'                               => '',
+            'closeItem-3'                               => '',
 
-            'item-5'                                    => 'Chiffres sur la vaccinations',
+            'item-4'                                    => 'Chiffres sur la vaccinations',
             'spf\charts\quotidienVaccinationAge'        => 'Quotidien : vaccinations par âge',
             'spf\charts\quotidienVaccinationVaccin'     => 'Quotidien : vaccinations par vaccin',
             'spf\charts\nbCumuleVaccinationAge'         => 'Cumulé : vaccinations par âge',
             'spf\charts\nbCumuleVaccinationVaccin'      => 'Cumulé : vaccinations par vaccin',
+            'closeItem-4'                               => '',
+            
+            'item-5'                                    => 'Tests PCR',
+            'spf\charts\pcrPositivite'                  => 'PCR : taux de positivité',
+            'spf\charts\pcrCumulTests'                  => 'PCR : nb de tests réalisés',
             'closeItem-5'                               => '',
         ];
 

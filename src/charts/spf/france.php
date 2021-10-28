@@ -13,7 +13,7 @@ $cache = true;
 // }
 
 // Initialisation des filtres
-$_SESSION['spf_filterChart']        = (isset($_SESSION['spf_filterChart']))     ? $_SESSION['spf_filterChart']      : 'spf\charts\pcrPositivite';
+$_SESSION['spf_filterChart']        = (isset($_SESSION['spf_filterChart']))     ? $_SESSION['spf_filterChart']      : 'spf\charts\quotidienDeces';
 $_SESSION['spf_filterRegionId']     = (isset($_SESSION['spf_filterRegionId']))  ? $_SESSION['spf_filterRegionId']   : 0;
 $_SESSION['spf_filterRegionName']   = (isset($_SESSION['spf_filterRegionName']))? $_SESSION['spf_filterRegionName'] : 'France';
 $_SESSION['spf_filterInterval']     = (isset($_SESSION['spf_filterInterval']))  ? $_SESSION['spf_filterInterval']   : 'all';

@@ -14,7 +14,7 @@ $defaultCountries = ['FRA', 'ISR'];
 // }
 
 // Initialisation des filtres
-$_SESSION['owid_filterChart']       = (isset($_SESSION['owid_filterChart']))    ? $_SESSION['owid_filterChart']     : 'owid\charts\pcrPositivite';
+$_SESSION['owid_filterChart']       = (isset($_SESSION['owid_filterChart']))    ? $_SESSION['owid_filterChart']     : 'owid\charts\newDeathsSmoothedPerMillion';
 $_SESSION['owid_filterCountry']     = (!empty($_SESSION['owid_filterCountry'])) ? $_SESSION['owid_filterCountry']   : $defaultCountries;
 $_SESSION['owid_filterInterval']    = (isset($_SESSION['owid_filterInterval'])) ? $_SESSION['owid_filterInterval']  : 'all';
 

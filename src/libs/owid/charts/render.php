@@ -128,29 +128,29 @@ eof;
         $filter .= '<select id="filter-chart" class="custom-select">';
 
         $chartCollections = [
-            'item-1'                                    => 'Tests PCR',
-            'owid\charts\pcrCasesPerMillion'            => 'PCR : Cas positifs par million',
-            'owid\charts\pcrPositivite'                 => 'PCR : taux de positivité',
-            'owid\charts\pcrNewTestsPerThousand'        => 'PCR : tests quotidiens',
-            'closeItem-1'                               => '',
-
-            'item-2'                                    => 'Chiffres quotidiens',
+            'item-1'                                    => 'Chiffres quotidiens',
             'owid\charts\newDeathsSmoothedPerMillion'   => 'Quotidien : décès',
-            'closeItem-2'                               => '',
-
-            'item-3'                                    => 'Chiffres hebdomadaires',
+            'closeItem-1'                               => '',
+            
+            'item-2'                                    => 'Chiffres hebdomadaires',
             'owid\charts\weeklyNewHpPerMillion'         => 'Hebdomadaire : hospitalisations',
             'owid\charts\weeklyNewReaPerMillion'        => 'Hebdomadaire : soins critiques',
+            'closeItem-2'                               => '',
+            
+            'item-3'                                    => 'Chiffres cumulés',
+            'owid\charts\totalDeathPerMillion'          => 'Cumulé : décès',
+            'owid\charts\totalCasesPerMillion'          => 'Cumulé : cas',
             'closeItem-3'                               => '',
-
+            
             'item-4'                                    => 'Occupation des hôpitaux',
             'owid\charts\nbOccupationHp'                => 'Occupation : hospitalisations',
             'owid\charts\nbOccupationRea'               => 'Occupation : soins critiques',
             'closeItem-4'                               => '',
-
-            'item-5'                                    => 'Chiffres cumulés',
-            'owid\charts\totalDeathPerMillion'          => 'Cumulé : décès',
-            'owid\charts\totalCasesPerMillion'          => 'Cumulé : cas',
+            
+            'item-5'                                    => 'Tests PCR',
+            'owid\charts\pcrCasesPerMillion'            => 'PCR : Cas positifs par million',
+            'owid\charts\pcrPositivite'                 => 'PCR : taux de positivité',
+            'owid\charts\pcrNewTestsPerThousand'        => 'PCR : tests quotidiens',
             'closeItem-5'                               => '',
 
             'item-6'                                    => 'Chiffres sur la vaccinations',

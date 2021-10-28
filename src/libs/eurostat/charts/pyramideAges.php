@@ -40,7 +40,7 @@ class pyramideAges
         $this->regTitle();
 
         $maj = tools::lastMajData();
-        $this->subTitle = (!empty($maj)) ? 'Source: Eurostats | ' . $maj : 'Source: Eurostats';
+        $this->subTitle = (!empty($maj)) ? 'Source: Eurostat | ' . $maj : 'Source: Eurostats';
 
         $this->yAxisLabel = 'Population';
 

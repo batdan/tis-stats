@@ -162,19 +162,19 @@ eof;
         $filter .= '<select id="filter-map" class="form-select">';
 
         $chartCollections = [
-            'item-1'                                        => 'Tests PCR',
-            'spf\maps\pcrPositivite'                        => 'PCR : taux de positivité',
-            'spf\maps\pcrNbTestes'                          => 'PCR : Nb de testés',
-            'spf\maps\pcrCas'                               => 'PCR : Nb de cas',
+            'item-1'                                        => 'Chiffres cumulés',
+            'spf\maps\deathsPerMillion'                     => 'Cumulé : décès',
             'closeItem-1'                                   => '',
-
+            
             'item-2'                                        => 'Occupation des hôpitaux',
             'spf\maps\nbOccupationHp'                       => 'Occupation : hospitalisations',
             'spf\maps\nbOccupationRea'                      => 'Occupation : soins critiques',
             'closeItem-2'                                   => '',
-
-            'item-3'                                        => 'Chiffres cumulés',
-            'spf\maps\deathsPerMillion'                     => 'Cumulé : décès',
+            
+            'item-3'                                        => 'Tests PCR',
+            'spf\maps\pcrPositivite'                        => 'PCR : taux de positivité',
+            'spf\maps\pcrNbTestes'                          => 'PCR : Nb de testés',
+            'spf\maps\pcrCas'                               => 'PCR : Nb de cas',
             'closeItem-3'                                   => '',
 
             'item-4'                                        => 'Chiffres sur la vaccinations',

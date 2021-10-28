@@ -40,7 +40,7 @@ class deces
         $this->regTitle();
 
         $maj = tools::lastMajData();
-        $this->subTitle = (!empty($maj)) ? 'Source: Eurostats | ' . $maj : 'Source: Eurostats';
+        $this->subTitle = (!empty($maj)) ? 'Source: Eurostat | ' . $maj : 'Source: Eurostats';
 
         $this->yAxisLabel = 'Nb cumulé de décès';
 
@@ -148,7 +148,7 @@ class deces
             subtitle: {
                 text: '{$this->subTitle}'
             },
-            
+
             plotOptions: {
                 series: {
                     groupPadding: 0,
