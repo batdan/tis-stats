@@ -199,15 +199,68 @@ class tools
         $dbh = dbSingleton::getInstance();
         $date = '';
 
-        $req = "SELECT date_crea FROM cron WHERE namespace = :namespace ORDER BY id DESC LIMIT 1";
+        $req = "SELECT DATE_FORMAT(date_crea, '%Y-%m-%d %H:%i') AS myDate FROM cron WHERE namespace = :namespace ORDER BY id DESC LIMIT 1";
         $sql = $dbh->prepare($req);
         $sql->execute([':namespace' => 'collect\eurostat']);
 
         if ($sql->rowCount()) {
-            $res = $sql->fetch();
-            $date = $res->date_crea;
+            $res  = $sql->fetch();
+            $date = $res->myDate;
         }
 
         return $date;
+    }
+
+
+    /**
+     * Calcul de la médiane
+     * @param   array       $numbers
+     * @return  integer
+     */
+    public static function median(array $numbers=[])
+    {
+        rsort($numbers);
+        $mid = (int)(count($numbers) / 2);
+        return ($mid % 2 != 0) ? $numbers[$mid] : (($numbers[$mid-1]) + $numbers[$mid]) / 2;
+    }
+
+
+    /**
+     * Calcul de la moyenne
+     * @param   array       $numbers
+     * @param   integer     $precision
+     * @return  integer
+     */
+    public static function moyenne(array $numbers=[], $precision=0)
+    {
+        if (empty($numbers)) {
+            return 0;
+        }
+
+        return round(array_sum($numbers) / count($numbers), 0);
+    }
+
+
+    /**
+     * Calcul de la moyenne tunnel
+     * @param   array       $numbers
+     * @param   integer     $percent
+     * @return  integer
+     */
+    public static function moyenneTunnel(array $numbers=[], $precision=0, $percent=70)
+    {
+        $moyenne = self::moyenne($numbers, $precision);
+        $amplitude = intval(max($numbers)) - intval(min($numbers));
+
+        $diff = ($percent/ 100) * ($amplitude / 2);
+
+        $moyenneHaute = $moyenne + round($diff, $precision);
+        $moyenneBasse = $moyenne - round($diff, $precision);
+
+        return [
+            "max" => $moyenneHaute,
+            "moy" => $moyenne,
+            "min" => $moyenneBasse
+        ];
     }
 }

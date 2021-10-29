@@ -49,8 +49,8 @@ class render
                 $warning
             </div>
 
-            <figure class="highcharts-figure">
-                <div id="$chartName"></div>
+            <figure class="highcharts-figure" align="center">
+                <div id="$chartName"><img src="/img/ajax-loader.gif" style="margin:200px 0;"></div>
                 $backLinkLCH
             </figure>
         </div>
@@ -60,12 +60,13 @@ class render
         <script type="text/javascript" src="//code.highcharts.com/modules/exporting.js"></script>
 
         <script type="text/javascript">
-            $js
-            $jsRender
 
             $(function() {
                 $('body').hide().fadeIn('slow');
             });
+
+            $js
+            $jsRender
         </script>
     </body>
 </html>
@@ -147,9 +148,10 @@ eof;
         $filter .= '<select id="filter-chart" class="form-select">';
 
         $chartCollections = [
-            'item-1'                                    => 'Décès',
-            'eurostat\charts\decesStandardises'         => 'Décés toutes causes confondues (standardisés)',
-            'eurostat\charts\deces'                     => 'Décés toutes causes confondues',
+            'item-1'                                    => 'Décès toutes causes confondues (TTC)',
+            'eurostat\charts\deces'                     => 'Décés TTC',
+            'eurostat\charts\decesStandardises'         => 'Décés TTC standardisés',
+            'eurostat\charts\decesHebdoStandardises'    => 'Décés TTC hebdomadaires standardisés',
             'closeItem-1'                               => '',
 
             'item-2'                                    => 'Population',
@@ -185,6 +187,7 @@ eof;
                 },
                 function success(data)
                 {
+                    $('#decesHebdoStandardises').empty();
                     console.log(data);
                     history.go(0);
                 }, 'json');
@@ -221,6 +224,7 @@ eof;
                 },
                 function success(data)
                 {
+                    $('#decesHebdoStandardises').empty();
                     console.log(data);
                     history.go(0);
                 }, 'json');
@@ -294,6 +298,7 @@ eof;
                 },
                 function success(data)
                 {
+                    $('#decesHebdoStandardises').empty();
                     console.log(data);
                     history.go(0);
                 }, 'json');
@@ -359,6 +364,7 @@ eof;
                 },
                 function success(data)
                 {
+                    $('#decesHebdoStandardises').empty();
                     console.log(data);
                     history.go(0);
                 }, 'json');
@@ -395,6 +401,7 @@ eof;
                 },
                 function success(data)
                 {
+                    $('#decesHebdoStandardises').empty();
                     console.log(data);
                     history.go(0);
                 }, 'json');
@@ -431,6 +438,7 @@ eof;
                 },
                 function success(data)
                 {
+                    $('#decesHebdoStandardises').empty();
                     console.log(data);
                     history.go(0);
                 }, 'json');
@@ -472,6 +480,7 @@ eof;
                 },
                 function success(data)
                 {
+                    $('#decesHebdoStandardises').empty();
                     console.log(data);
                     history.go(0);
                 }, 'json');
