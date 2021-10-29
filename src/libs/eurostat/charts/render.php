@@ -9,17 +9,22 @@ class render
     private static $dbh;
 
     private static $jsRender = '';
+    private static $chartName;
 
 
     public static function html($chartName, $title, $js, $backLink = true, $filterActiv = [], $warning = '')
     {
         self::$dbh = dbSingleton::getInstance();
 
+        self::$chartName = $chartName;
+
         $backLinkLCH = self::backLink($backLink);
         $chartFilter = self::chartFilters($filterActiv);
 
         $jsRender = self::$jsRender;
         $md5Css = md5_file( __DIR__ . '/../../../css/styles.css');
+
+        $loaderSrc = '/img/ajax-loader.gif';
 
         return <<<eof
 <!DOCTYPE html>
@@ -45,12 +50,17 @@ class render
                 $chartFilter
             </div>
 
+            <div id="ajaxLoader" align="center">
+                <img src="$loaderSrc" style="margin:200px 0;">
+            </div>
+
             <div class="warning">
                 $warning
             </div>
 
-            <figure class="highcharts-figure" align="center">
-                <div id="$chartName"><img src="/img/ajax-loader.gif" style="margin:200px 0;"></div>
+
+            <figure class="highcharts-figure">
+                <div id="$chartName"></div>
                 $backLinkLCH
             </figure>
         </div>
@@ -60,7 +70,6 @@ class render
         <script type="text/javascript" src="//code.highcharts.com/modules/exporting.js"></script>
 
         <script type="text/javascript">
-
             $(function() {
                 $('body').hide().fadeIn('slow');
             });
@@ -148,10 +157,10 @@ eof;
         $filter .= '<select id="filter-chart" class="form-select">';
 
         $chartCollections = [
-            'item-1'                                    => 'Décès toutes causes confondues (TTC)',
-            'eurostat\charts\deces'                     => 'Décés TTC',
-            'eurostat\charts\decesStandardises'         => 'Décés TTC standardisés',
-            'eurostat\charts\decesHebdoStandardises'    => 'Décés TTC hebdomadaires standardisés',
+            'item-1'                                    => 'Décès toutes causes confondues (TCC)',
+            'eurostat\charts\deces'                     => 'Décés TCC',
+            'eurostat\charts\decesStandardises'         => 'Décés TCC standardisés',
+            'eurostat\charts\decesHebdoStandardises'    => 'Décés TCC hebdomadaires standardisés',
             'closeItem-1'                               => '',
 
             'item-2'                                    => 'Population',
@@ -179,6 +188,7 @@ eof;
         $filter .= '</select>';
         $filter .= '</div>';
 
+        $chartName = self::$chartName;
         self::$jsRender .= <<<eof
             $("#filter-chart").change( function() {
                 $.post("/ajax/eurostat/filterChart.php",
@@ -187,8 +197,8 @@ eof;
                 },
                 function success(data)
                 {
-                    $('#decesHebdoStandardises').empty();
-                    console.log(data);
+                    $('#$chartName').empty();
+                    $('#ajaxLoader').css('display', 'block');
                     history.go(0);
                 }, 'json');
             });
@@ -216,6 +226,7 @@ eof;
         $filter .= '</select>';
         $filter .= '</div>';
 
+        $chartName = self::$chartName;
         self::$jsRender .= <<<eof
             $("#filter-country").change( function() {
                 $.post("/ajax/eurostat/filterCountries.php",
@@ -224,8 +235,8 @@ eof;
                 },
                 function success(data)
                 {
-                    $('#decesHebdoStandardises').empty();
-                    console.log(data);
+                    $('#$chartName').empty();
+                    $('#ajaxLoader').css('display', 'block');
                     history.go(0);
                 }, 'json');
             });
@@ -290,6 +301,7 @@ eof;
         $filter .= '</select>';
         $filter .= '</div>';
 
+        $chartName = self::$chartName;
         self::$jsRender .= <<<eof
             $("#filter-year1").change( function() {
                 $.post("/ajax/eurostat/filterYear1.php",
@@ -298,8 +310,8 @@ eof;
                 },
                 function success(data)
                 {
-                    $('#decesHebdoStandardises').empty();
-                    console.log(data);
+                    $('#$chartName').empty();
+                    $('#ajaxLoader').css('display', 'block');
                     history.go(0);
                 }, 'json');
             });
@@ -356,6 +368,7 @@ eof;
         $filter .= '</select>';
         $filter .= '</div>';
 
+        $chartName = self::$chartName;
         self::$jsRender .= <<<eof
             $("#filter-year2").change( function() {
                 $.post("/ajax/eurostat/filterYear2.php",
@@ -364,8 +377,8 @@ eof;
                 },
                 function success(data)
                 {
-                    $('#decesHebdoStandardises').empty();
-                    console.log(data);
+                    $('#$chartName').empty();
+                    $('#ajaxLoader').css('display', 'block');
                     history.go(0);
                 }, 'json');
             });
@@ -393,6 +406,7 @@ eof;
         $filter .= '</select>';
         $filter .= '</div>';
 
+        $chartName = self::$chartName;
         self::$jsRender .= <<<eof
             $("#filter-sex").change( function() {
                 $.post("/ajax/eurostat/filterSex.php",
@@ -401,8 +415,8 @@ eof;
                 },
                 function success(data)
                 {
-                    $('#decesHebdoStandardises').empty();
-                    console.log(data);
+                    $('#$chartName').empty();
+                    $('#ajaxLoader').css('display', 'block');
                     history.go(0);
                 }, 'json');
             });
@@ -430,6 +444,7 @@ eof;
         $filter .= '</select>';
         $filter .= '</div>';
 
+        $chartName = self::$chartName;
         self::$jsRender .= <<<eof
             $("#filter-age").change( function() {
                 $.post("/ajax/eurostat/filterAge.php",
@@ -438,8 +453,8 @@ eof;
                 },
                 function success(data)
                 {
-                    $('#decesHebdoStandardises').empty();
-                    console.log(data);
+                    $('#$chartName').empty();
+                    $('#ajaxLoader').css('display', 'block');
                     history.go(0);
                 }, 'json');
             });
@@ -472,6 +487,7 @@ eof;
         $filter .= '</select>';
         $filter .= '</div>';
 
+        $chartName = self::$chartName;
         self::$jsRender .= <<<eof
             $("#filter-unit").change( function() {
                 $.post("/ajax/eurostat/filterUnit.php",
@@ -480,8 +496,8 @@ eof;
                 },
                 function success(data)
                 {
-                    $('#decesHebdoStandardises').empty();
-                    console.log(data);
+                    $('#$chartName').empty();
+                    $('#ajaxLoader').css('display', 'block');
                     history.go(0);
                 }, 'json');
             });

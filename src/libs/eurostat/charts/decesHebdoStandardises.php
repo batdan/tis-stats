@@ -305,7 +305,12 @@ class decesHebdoStandardises
 
             chart: {
                 type: 'line',
-                height: 580
+                height: 580,
+                events: {
+                    load: function () {
+                        $('#ajaxLoader').css('display', 'none');
+                    }
+                }
             },
 
             title: {

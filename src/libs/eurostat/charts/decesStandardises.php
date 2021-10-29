@@ -266,7 +266,12 @@ class decesStandardises
 
             chart: {
                 type: 'column',
-                height: 580
+                height: 580,
+                events: {
+                    load: function () {
+                        $('#ajaxLoader').css('display', 'none');
+                    }
+                }
             },
 
             title: {
