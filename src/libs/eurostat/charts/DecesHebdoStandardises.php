@@ -1,9 +1,9 @@
 <?php
+
 namespace eurostat\charts;
 
 use tools\dbSingleton;
 use tools\config;
-
 use main\highChartsCommon;
 use eurostat\main\tools;
 
