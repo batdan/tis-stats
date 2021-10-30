@@ -7,7 +7,7 @@ use tools\config;
 use main\highChartsCommon;
 use eurostat\main\tools;
 
-class decesHebdoStandardises
+class DecesHebdoStandardises
 {
     private $standardYear;      // Année standard
     private $popStandard;       // Population standardisée
@@ -39,7 +39,7 @@ class decesHebdoStandardises
 
         $this->dbh = dbSingleton::getInstance();
 
-        $this->chartName = 'decesHebdoStandardises';
+        $this->chartName = 'DecesHebdoStandardises';
 
         $this->title    = 'Décès hebdomadaires standardisés toutes causes confondues';
         $this->regTitle();
@@ -82,7 +82,6 @@ class decesHebdoStandardises
         $keysFilterAge = array_keys(tools::rangeFilterAge());
 
         foreach ($keysFilterAge as $key) {
-
             $req = "SELECT      year, SUM(value) AS sumValue
                     FROM        eurostat_demo_pjan_opti
                     WHERE       year    >= :year
@@ -95,7 +94,7 @@ class decesHebdoStandardises
             $sql = $this->dbh->prepare($req);
 
             $sql->execute([
-                ':year'     => $this->standardYear-11,
+                ':year'     => $this->standardYear - 11,
                 ':sex'      => $_SESSION['eurostat_filterSex'],
                 ':geotime'  => 'FR',
                 ':age'      => $key
@@ -107,12 +106,11 @@ class decesHebdoStandardises
         }
 
         foreach ($pop as $age => $yearWeeks) {
-            foreach($yearWeeks as $yearWeek => $val) {
+            foreach ($yearWeeks as $yearWeek => $val) {
                 $year = substr($yearWeek, 0, 4);
                 $week = substr($yearWeek, 4, 3);
 
                 if (isset($pop[$age][($year - 1) . 'W53']) && $week == 'W53') {
-
                     $popYearPrec = $pop[$age][($year - 1) . 'W53'];
                     $popYear = $val;
 
@@ -121,7 +119,7 @@ class decesHebdoStandardises
                     $diff = round(($popYear - $popYearPrec) / $nbWeeks, 2);
 
                     // Ajout des semaines intermédiaires
-                    for ($i=1; $i<=$nbWeeks; $i++) {
+                    for ($i = 1; $i <= $nbWeeks; $i++) {
                         $keyW = $year . 'W' . str_pad($i, 2, '0', STR_PAD_LEFT);
                         $pop[$age][$keyW] = round($popYearPrec + ($i * $diff));
                     }
@@ -168,7 +166,6 @@ class decesHebdoStandardises
         } else {
             // Pour toutes les tranches d'âge hors 'TOTAL'
             if ($_SESSION['eurostat_filterAge'] != 'TOTAL') {
-
                 if (!empty($_SESSION['eurostat_filterAge'])) {
                     $addReq['age'] = " AND age = :age";
                     $addReqValues[':age'] = $_SESSION['eurostat_filterAge'];
@@ -179,7 +176,6 @@ class decesHebdoStandardises
 
             // Pour la tranches d'âge 'TOTAL'
             } else {
-
                 try {
                     $keysFilterAge = array_keys(tools::rangeFilterAge());
                     unset($keysFilterAge[0]);
@@ -191,7 +187,7 @@ class decesHebdoStandardises
 
                         $this->getData($addReqStr, $addReqValues, $fileName, $key);
                     }
-                } catch(\Exception $e) {
+                } catch (\Exception $e) {
                     error_log($e->getMessage());
                 }
             }
@@ -228,7 +224,6 @@ class decesHebdoStandardises
         $addYearWeek = implode(',', $yearWeek);
 
         foreach ($dataDeces as $yearWeek => $value) {
-
             $checkPop = true;
             if (empty($this->popStandard[$addReqValues[':age']][$yearWeek])) {
                 $checkPop = false;
@@ -261,7 +256,6 @@ class decesHebdoStandardises
             }
 
             ksort($this->data);
-
         }
 
         // createCache
@@ -279,7 +273,7 @@ class decesHebdoStandardises
         $yearWeeks = [];
         $value = [];
 
-        foreach($this->data as $yearWeek => $val) {
+        foreach ($this->data as $yearWeek => $val) {
             $yearWeeks[] = "'" . $yearWeek . "'";
             $value[] = $val;
         }

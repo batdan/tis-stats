@@ -160,7 +160,7 @@ eof;
             'item-1'                                    => 'Décès toutes causes confondues (TCC)',
             'eurostat\charts\deces'                     => 'Décés TCC',
             'eurostat\charts\decesStandardises'         => 'Décés TCC standardisés',
-            'eurostat\charts\decesHebdoStandardises'    => 'Décés TCC hebdomadaires standardisés',
+            'eurostat\charts\DecesHebdoStandardises'    => 'Décés TCC hebdomadaires standardisés',
             'closeItem-1'                               => '',
 
             'item-2'                                    => 'Population',
