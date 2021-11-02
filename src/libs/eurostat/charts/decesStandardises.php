@@ -68,7 +68,10 @@ class decesStandardises
 
         // Gestion des caches
         $className = str_replace('\\', '_', get_class($this));
-        $fileName  = date('Y-m-d_') . $className . '_standardYear_' . $this->standardYear . '_sex_' . $_SESSION['eurostat_filterSex'];
+        $fileName  = date('Y-m-d_') . $className;
+        $fileName .= '_country_' . $_SESSION['eurostat_filterCountry'];
+        $fileName .= '_standardYear_' . $this->standardYear;
+        $fileName .= '_sex_' . $_SESSION['eurostat_filterSex'];
 
         if ($this->cache && $this->popStandard = \main\cache::getCache($fileName)) {
             return;
@@ -91,7 +94,7 @@ class decesStandardises
             $sql->execute([
                 ':year'     => $this->standardYear,
                 ':sex'      => $_SESSION['eurostat_filterSex'],
-                ':geotime'  => 'FR',
+                ':geotime'  => $_SESSION['eurostat_filterCountry'],
                 ':age'      => $key
             ]);
 

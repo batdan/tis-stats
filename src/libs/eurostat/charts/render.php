@@ -3,6 +3,7 @@ namespace eurostat\charts;
 
 use tools\dbSingleton;
 use eurostat\main\tools;
+use JSMin\JSMin;
 
 class render
 {
@@ -21,7 +22,12 @@ class render
         $backLinkLCH = self::backLink($backLink);
         $chartFilter = self::chartFilters($filterActiv);
 
+        $js .= "$(function() { $('body').hide().fadeIn('slow'); });";
+        $js = JSMin::minify($js);
+
         $jsRender = self::$jsRender;
+        $jsRender = JSMin::minify($jsRender);
+
         $md5Css = md5_file( __DIR__ . '/../../../css/styles.css');
 
         $loaderSrc = '/img/ajax-loader.gif';
@@ -70,10 +76,6 @@ class render
         <script type="text/javascript" src="//code.highcharts.com/modules/exporting.js"></script>
 
         <script type="text/javascript">
-            $(function() {
-                $('body').hide().fadeIn('slow');
-            });
-
             $js
             $jsRender
         </script>

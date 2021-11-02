@@ -96,7 +96,7 @@ class DecesHebdoStandardises
             $sql->execute([
                 ':year'     => $this->standardYear - 11,
                 ':sex'      => $_SESSION['eurostat_filterSex'],
-                ':geotime'  => 'FR',
+                ':geotime'  => $_SESSION['eurostat_filterCountry'],
                 ':age'      => $key
             ]);
 
@@ -279,6 +279,7 @@ class DecesHebdoStandardises
         }
 
         $moyenne = tools::moyenneTunnel($value, 0, 66);
+        $yearStart = substr($yearWeeks[0], 1, 4);
 
         $yearWeeks = implode(', ', $yearWeeks);
         $value = implode(', ', $value);
@@ -398,7 +399,7 @@ class DecesHebdoStandardises
 
             plotOptions: {
                 series: {
-                    pointStart: Date.UTC(2013, 0, 1),
+                    pointStart: Date.UTC($yearStart, 0, 1),
                     pointInterval: 7 * 24 * 3600 * 1000     // One week
                 }
             },
