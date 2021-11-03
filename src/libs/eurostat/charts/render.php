@@ -163,6 +163,7 @@ eof;
             'eurostat\charts\deces'                     => 'Décés TCC',
             'eurostat\charts\decesStandardises'         => 'Décés TCC standardisés',
             'eurostat\charts\DecesHebdoStandardises'    => 'Décés TCC hebdomadaires standardisés',
+            'eurostat\charts\DecesHebdoStandardises8s'  => 'Décés TCC hebdomadaires standardisés (lissés 8 semaines)',
             'closeItem-1'                               => '',
 
             'item-2'                                    => 'Population',

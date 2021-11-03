@@ -249,18 +249,33 @@ class tools
      */
     public static function moyenneTunnel(array $numbers=[], $precision=0, $percent=70)
     {
-        $moyenne = self::moyenne($numbers, $precision);
-        $amplitude = intval(max($numbers)) - intval(min($numbers));
+        try {
+            if (count($numbers) == 0) {
+                return [
+                    "max" => 0,
+                    "moy" => 0,
+                    "min" => 0
+                ];
+            }
 
-        $diff = ($percent/ 100) * ($amplitude / 2);
+            $moyenne = self::moyenne($numbers, $precision);
+            $amplitude = intval(max($numbers)) - intval(min($numbers));
 
-        $moyenneHaute = $moyenne + round($diff, $precision);
-        $moyenneBasse = $moyenne - round($diff, $precision);
+            $diff = ($percent/ 100) * ($amplitude / 2);
 
-        return [
-            "max" => $moyenneHaute,
-            "moy" => $moyenne,
-            "min" => $moyenneBasse
-        ];
+            $moyenneHaute = $moyenne + round($diff, $precision);
+            $moyenneBasse = $moyenne - round($diff, $precision);
+
+            $res = [
+                "max" => $moyenneHaute,
+                "moy" => $moyenne,
+                "min" => $moyenneBasse
+            ];
+
+            return $res;
+
+        } catch (\Exception $e) {
+            error_log($e->getMessage());
+        }
     }
 }

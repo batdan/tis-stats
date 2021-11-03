@@ -7,7 +7,10 @@ use tools\config;
 use main\highChartsCommon;
 use eurostat\main\tools;
 
-class DecesHebdoStandardises
+/**
+ * Graphique décès hebdomadaire standardisés lissés sur 8 semaines
+ */
+class DecesHebdoStandardises8s
 {
     private $standardYear;      // Année standard
     private $popStandard;       // Population standardisée
@@ -39,13 +42,13 @@ class DecesHebdoStandardises
 
         $this->dbh = dbSingleton::getInstance();
 
-        $this->chartName = 'DecesHebdoStandardises';
+        $this->chartName = 'DecesHebdoStandardises8s';
 
         $this->title    = 'Décès hebdomadaires standardisés toutes causes confondues';
         $this->regTitle();
 
         $maj = tools::lastMajData();
-        $this->subTitle  = "Selon l&#039année 2020 | ";
+        $this->subTitle  = "Selon l&#039année 2020 | lissé sur 8 semaines | ";
         $this->subTitle .= (!empty($maj)) ? 'Source: Eurostat | ' . $maj : 'Source: Eurostats';
 
         $this->yAxisLabel = 'Nb cumulé de décès par semaine';
@@ -206,8 +209,9 @@ class DecesHebdoStandardises
 
         // Récupération des décès
         $req = "SELECT      year_week, value
-                FROM        eurostat_demo_r_mwk_05
+                FROM        eurostat_demo_r_mwk_05_lisse8s
                 WHERE       value IS NOT NULL
+                AND         value != 0
                 $addReq
                 AND         year_week >= :year_week
                 ORDER BY    year_week ASC";
@@ -215,7 +219,10 @@ class DecesHebdoStandardises
         $sql = $this->dbh->prepare($req);
         $sql->execute(array_merge($addReqValues, [':year_week' => $this->standardYear - 10]));
 
+        $i=0;
         while ($res = $sql->fetch()) {
+            $i++;
+            if ($i<8) continue;
             $dataDeces[$res->year_week] = $res->value;
         }
 
@@ -281,10 +288,18 @@ class DecesHebdoStandardises
         $moyenne = tools::moyenneTunnel($value, 0, 66);
 
         if (count($yearWeeks) == 0) {
-            $yearStart = 2020;
+            $yearStart = intval(substr($yearWeeks[0], 1, 4));
+            $m = 0;
+            $d = 1;
         } else {
-            $yearStart = substr($yearWeeks[0], 1, 4);
+            $yearStart = intval(substr($yearWeeks[0], 1, 4));
+
+            $d = new \DateTime();
+            $d->setISODate($yearStart, 8);
+            $m = intval($d->format('m')) - 1;
+            $d = intval($d->format('d'));
         }
+
 
         $yearWeeks = implode(', ', $yearWeeks);
         $value = implode(', ', $value);
@@ -304,7 +319,7 @@ class DecesHebdoStandardises
             $event
 
             chart: {
-                type: 'line',
+                type: 'spline',
                 height: 580,
                 events: {
                     load: function () {
@@ -318,7 +333,10 @@ class DecesHebdoStandardises
             },
 
             subtitle: {
-                text: '{$this->subTitle}'
+                text: '{$this->subTitle}',
+                style: {
+                    fontSize: 14
+                },
             },
 
             plotOptions: {
@@ -404,7 +422,7 @@ class DecesHebdoStandardises
 
             plotOptions: {
                 series: {
-                    pointStart: Date.UTC($yearStart, 0, 1),
+                    pointStart: Date.UTC($yearStart, $m, $d),
                     pointInterval: 7 * 24 * 3600 * 1000     // One week
                 }
             },

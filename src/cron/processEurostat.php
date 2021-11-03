@@ -15,6 +15,7 @@ new main\process([
     'demoMagec',
     'demoMagecOpti',
     'demoRmwk05',
+    'demoRmwk05Calc8s',
     'demoMagecAddYear',
 
 ], 'collect\eurostat');
