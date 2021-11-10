@@ -1,21 +1,23 @@
 <?php
+
+use main\Process;
+
 // Chargement des classes
-include ( __DIR__ . '/../vendor/autoload.php' );
+include(__DIR__ . '/../vendor/autoload.php');
 
 if (php_sapi_name() != "cli") {
     die('Hello World !');
 }
 
 // Santé publique France
-new main\process([
-
+new Process([
     // dataset & optimisation
-    'demoPjan',
-    'demoPjanOpti',
-    'demoMagec',
-    'demoMagecOpti',
-    'demoRmwk05',
-    'demoRmwk05Calc8s',
-    'demoMagecAddYear',
+    'DemoPjan',
+    'DemoPjanOpti',
+    'DemoMagec',
+    'DemoMagecOpti',
+    'DemoRmwk05',
+    'DemoRmwk05Calc8s',
+    'DemoMagecAddYear',
 
 ], 'collect\eurostat');

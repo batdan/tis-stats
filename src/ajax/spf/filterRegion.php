@@ -1,14 +1,15 @@
 <?php
+
 use tools\dbSingleton;
 
 session_start();
 
-include ( __DIR__ . '/../../vendor/autoload.php');
+include(__DIR__ . '/../../vendor/autoload.php');
 
 $dbh = dbSingleton::getInstance();
 
 // Sécurité ------------------------------------------------------------------------------------
-if ( count($_POST)==0 || !isset($_POST['filterRegion']) ) {
+if (count($_POST) == 0 || !isset($_POST['filterRegion'])) {
     die();
 }
 // ---------------------------------------------------------------------------------------------
@@ -27,8 +28,6 @@ if ($_SESSION['spf_filterRegionId'] == 0) {
         $_SESSION['spf_filterRegionName'] = $res->nccenr;
     }
 }
-
-
 
 // test ----------------------------------------------------------------------------------------
 echo json_encode($_POST);

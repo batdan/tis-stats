@@ -4,8 +4,10 @@ namespace eurostat\charts;
 
 use tools\dbSingleton;
 use tools\config;
-use main\highChartsCommon;
-use eurostat\main\tools;
+use main\HighChartsCommon;
+use main\Cache;
+use eurostat\main\Tools;
+use DateTime;
 
 /**
  * Graphique décès hebdomadaire standardisés lissés sur 8 semaines
@@ -47,7 +49,7 @@ class DecesHebdoStandardises8s
         $this->title    = 'Décès hebdomadaires standardisés toutes causes confondues';
         $this->regTitle();
 
-        $maj = tools::lastMajData();
+        $maj = Tools::lastMajData();
         $this->subTitle  = "Selon l&#039année 2020 | lissé sur 8 semaines | ";
         $this->subTitle .= (!empty($maj)) ? 'Source: Eurostat | ' . $maj : 'Source: Eurostats';
 
@@ -76,13 +78,13 @@ class DecesHebdoStandardises8s
         $fileName .= '_standardYear_' . $this->standardYear;
         $fileName .= '_sex_' . $_SESSION['eurostat_filterSex'];
 
-        if ($this->cache && $this->popStandard = \main\cache::getCache($fileName)) {
+        if ($this->cache && $this->popStandard = Cache::getCache($fileName)) {
             return;
         }
 
         $pop = [];
 
-        $keysFilterAge = array_keys(tools::rangeFilterAge());
+        $keysFilterAge = array_keys(Tools::rangeFilterAge());
 
         foreach ($keysFilterAge as $key) {
             $req = "SELECT      year, SUM(value) AS sumValue
@@ -136,7 +138,7 @@ class DecesHebdoStandardises8s
 
         // createCache
         if ($this->cache) {
-            \main\cache::createCache($fileName, $this->popStandard);
+            Cache::createCache($fileName, $this->popStandard);
         }
     }
 
@@ -164,7 +166,7 @@ class DecesHebdoStandardises8s
             $fileName .= '_age_' . $_SESSION['eurostat_filterAge'];
         }
 
-        if ($this->cache && $this->data = \main\cache::getCache($fileName)) {
+        if ($this->cache && $this->data = Cache::getCache($fileName)) {
             return;
         } else {
             // Pour toutes les tranches d'âge hors 'TOTAL'
@@ -180,7 +182,7 @@ class DecesHebdoStandardises8s
             // Pour la tranches d'âge 'TOTAL'
             } else {
                 try {
-                    $keysFilterAge = array_keys(tools::rangeFilterAge());
+                    $keysFilterAge = array_keys(Tools::rangeFilterAge());
                     unset($keysFilterAge[0]);
 
                     foreach ($keysFilterAge as $key) {
@@ -219,10 +221,12 @@ class DecesHebdoStandardises8s
         $sql = $this->dbh->prepare($req);
         $sql->execute(array_merge($addReqValues, [':year_week' => $this->standardYear - 10]));
 
-        $i=0;
+        $i = 0;
         while ($res = $sql->fetch()) {
             $i++;
-            if ($i<8) continue;
+            if ($i < 8) {
+                continue;
+            }
             $dataDeces[$res->year_week] = $res->value;
         }
 
@@ -267,7 +271,7 @@ class DecesHebdoStandardises8s
 
         // createCache
         if ($this->cache) {
-            \main\cache::createCache($fileName, $this->data);
+            Cache::createCache($fileName, $this->data);
         }
     }
 
@@ -285,7 +289,7 @@ class DecesHebdoStandardises8s
             $value[] = $val;
         }
 
-        $moyenne = tools::moyenneTunnel($value, 0, 66);
+        $moyenne = Tools::moyenneTunnel($value, 0, 66);
 
         if (count($yearWeeks) == 0) {
             $yearStart = intval(substr($yearWeeks[0], 1, 4));
@@ -294,7 +298,7 @@ class DecesHebdoStandardises8s
         } else {
             $yearStart = intval(substr($yearWeeks[0], 1, 4));
 
-            $d = new \DateTime();
+            $d = new DateTime();
             $d->setISODate($yearStart, 8);
             $m = intval($d->format('m')) - 1;
             $d = intval($d->format('d'));
@@ -304,12 +308,12 @@ class DecesHebdoStandardises8s
         $yearWeeks = implode(', ', $yearWeeks);
         $value = implode(', ', $value);
 
-        $credit     = highChartsCommon::creditLCH();
-        $event      = highChartsCommon::exportImgLogo();
-        $legend     = highChartsCommon::legend();
-        $responsive = highChartsCommon::responsive();
+        $credit     = HighChartsCommon::creditLCH();
+        $event      = HighChartsCommon::exportImgLogo();
+        $legend     = HighChartsCommon::legend();
+        $responsive = HighChartsCommon::responsive();
 
-        $barsColor  = tools::getSexColor()[$_SESSION['eurostat_filterSex']];
+        $barsColor  = Tools::getSexColor()[$_SESSION['eurostat_filterSex']];
 
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {
@@ -436,16 +440,16 @@ class DecesHebdoStandardises8s
     private function regTitle()
     {
         // Pays
-        $this->title .= ' | ' . tools::getCountries()[$_SESSION['eurostat_filterCountry']];
+        $this->title .= ' | ' . Tools::getCountries()[$_SESSION['eurostat_filterCountry']];
 
         // Sexe
         if ($_SESSION['eurostat_filterSex'] != 'T') {
-            $this->title .= ' | ' . tools::getSex()[$_SESSION['eurostat_filterSex']];
+            $this->title .= ' | ' . Tools::getSex()[$_SESSION['eurostat_filterSex']];
         }
 
         // Ages
         if ($_SESSION['eurostat_filterAge'] != 'TOTAL') {
-            $this->title .= ' | ' . tools::rangeFilterAge()[$_SESSION['eurostat_filterAge']];
+            $this->title .= ' | ' . Tools::rangeFilterAge()[$_SESSION['eurostat_filterAge']];
         }
     }
 
@@ -464,7 +468,7 @@ class DecesHebdoStandardises8s
             'age'       => [true,  'col-lg-2'],
         ];
 
-        echo render::html(
+        echo Render::html(
             $this->chartName,
             $this->title,
             $this->highChartsJs,
