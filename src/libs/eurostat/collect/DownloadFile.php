@@ -1,6 +1,6 @@
 <?php
 
-namespace collect\eurostat;
+namespace eurostat\collect;
 
 use DOMDocument;
 use DOMXPath;

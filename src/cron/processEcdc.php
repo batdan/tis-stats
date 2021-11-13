@@ -11,5 +11,5 @@ if (php_sapi_name() != "cli") {
 
 // Our World in Data
 new Process([
-    'GetOwidData',
-], 'owid');
+    'ResponseMeasure',
+], 'ecdc\collect');

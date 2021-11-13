@@ -1,8 +1,9 @@
 <?php
 
-namespace collect\eurostat;
+namespace eurostat\collect;
 
 use tools\dbSingleton;
+use Exception;
 
 /**
  * Récupération et traiement du jeu de données demo_pjan
@@ -172,7 +173,7 @@ class DemoPjan
 
                 $this->dbh->query($req);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             echo chr(10) . $e->getMessage() . chr(10);
         }
     }

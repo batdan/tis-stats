@@ -5,6 +5,7 @@ namespace spf\charts;
 use tools\dbSingleton;
 use main\HighChartsCommon;
 use main\Cache;
+use DateTime;
 
 class QuotidienDeces
 {
@@ -12,6 +13,7 @@ class QuotidienDeces
     private $dbh;
 
     private $chartName;
+    private $measures;
 
     private $title;
     private $subTitle;
@@ -47,6 +49,7 @@ class QuotidienDeces
         $this->yAxis2Label = 'Nombre quotidien de décès';
 
         $this->getData();
+        $this->getMeasures();
         $this->highChartsJs();
     }
 
@@ -134,6 +137,33 @@ class QuotidienDeces
 
 
     /**
+     * Récupération des confinements
+     */
+    private function getMeasures()
+    {
+        $this->measures = [];
+
+        $req = "SELECT  date_start, date_end 
+                FROM    ecdc_response_measure 
+                WHERE   iso_3166_1_alpha_2  = :iso_3166_1_alpha_2 
+                AND     response_measure    = :response_measure";
+
+        $sql = $this->dbh->prepare($req);
+        $sql->execute([
+            ':iso_3166_1_alpha_2'   => 'FR',
+            ':response_measure'     => 'StayHomeOrder',
+        ]);
+
+        while ($res = $sql->fetch()) {
+            $this->measures[] = [
+                'date_start'    => $res->date_start,
+                'date_end'      => $res->date_end,
+            ];
+        }
+    }
+
+
+    /**
      * Script de configuration de graphique Highcharts
      */
     private function highChartsJs()
@@ -143,6 +173,13 @@ class QuotidienDeces
         $positivite = [];
 
         foreach ($this->data as $jour => $res) {
+            if (!isset($dateDeb_Y)) {
+                $expDateDeb = explode('-', $jour);
+                $dateDeb_Y  = $expDateDeb[0];
+                $dateDeb_m  = intval($expDateDeb[1]) - 1;
+                $dateDeb_d  = intval($expDateDeb[2]);
+            }
+
             $jours[]        = "'" . $jour . "'";
             $dc[]           = round($res['sum_dc'], 2);
 
@@ -154,9 +191,40 @@ class QuotidienDeces
         $dc         = implode(', ', $dc);
         $positivite = implode(', ', $positivite);
 
+        $plotDand = [];
+        foreach ($this->measures as $measure) {
+            $d = new DateTime($measure['date_start']);
+            $date_start_Y = $d->format('Y');
+            $date_start_m = intval($d->format('m')) - 1;
+            $date_start_d = intval($d->format('d'));
+
+            $d = new DateTime($measure['date_end']);
+            $date_end_Y = $d->format('Y');
+            $date_end_m = intval($d->format('m')) - 1;
+            $date_end_d = intval($d->format('d'));
+
+            $plotDand[] = <<<eof
+{
+            color: '#fbe4c2',
+            from: Date.UTC($date_start_Y, $date_start_m, $date_start_d),
+            to: Date.UTC($date_end_Y, $date_end_m, $date_end_d),
+            label: { 
+                text: 'Confinement', 
+                rotation: -90,
+                align: 'left', 
+                x: -5,
+                y: 80
+            }
+        }
+eof;
+        }
+
+        $plotDand  = implode(',', $plotDand);
+        $plotDands = "plotBands: [$plotDand]";
+
         $credit     = HighChartsCommon::creditLCH();
         $event      = HighChartsCommon::exportImgLogo(true);
-        $xAxis      = HighChartsCommon::xAxis($jours);
+        $xAxis      = HighChartsCommon::xAxis([], false, $plotDands);
         $legend     = HighChartsCommon::legend();
         $responsive = HighChartsCommon::responsive();
 
@@ -241,6 +309,13 @@ class QuotidienDeces
                 yAxis: 1,
                 data: [$dc]
             }],
+
+            plotOptions: {
+                series: {
+                    pointStart: Date.UTC($dateDeb_Y, $dateDeb_m, $dateDeb_d),
+                    pointInterval: 24 * 3600 * 1000     // One day
+                }
+            },
 
             $responsive
         });

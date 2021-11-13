@@ -155,11 +155,13 @@ eof;
      * @param    array   $jours      Liste des jours
      * @return   string
      */
-    public static function xAxis($jours)
+    public static function xAxis($jours, $affJour = true, $addCode = '')
     {
+        $jsJour = $affJour == true ? "categories: [$jours]," : '';
+
         return <<<eof
             xAxis: {
-                categories: [$jours],
+                $jsJour
                 type: 'datetime',
                 dateTimeLabelFormats: {
                     week: '%e of %b'
@@ -171,9 +173,14 @@ eof;
                         fontSize: 12
                     }
                 },
+                formatter: function() {
+                    var x = new Date(this.value);
+                    return x.getFullYear() + '<br /> Month: ' + x.getMonth();
+                },
                 tickWidth: 1,
                 tickLength: 7,
-                tickInterval: 2
+                tickInterval: 2,
+                $addCode
             },
 eof;
     }

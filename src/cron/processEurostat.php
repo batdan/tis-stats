@@ -20,4 +20,4 @@ new Process([
     'DemoRmwk05Calc8s',
     'DemoMagecAddYear',
 
-], 'collect\eurostat');
+], 'eurostat\collect');

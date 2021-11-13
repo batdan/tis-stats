@@ -25,10 +25,10 @@ class Render
         $chartFilter = self::chartFilters($filterActiv);
 
         $js .= "$(function() { $('body').hide().fadeIn('slow'); });";
-        $js = JSMin::minify($js);
+        // $js = JSMin::minify($js);
 
         $jsrender = self::$jsrender;
-        $jsrender = JSMin::minify($jsrender);
+        // $jsrender = JSMin::minify($jsrender);
 
         $md5Css = md5_file(__DIR__ . '/../../../css/styles.css');
 

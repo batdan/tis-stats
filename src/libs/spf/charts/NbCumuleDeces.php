@@ -5,6 +5,8 @@ namespace spf\charts;
 use tools\dbSingleton;
 use main\HighChartsCommon;
 use main\Cache;
+use DateTime;
+use DateInterval;
 
 class NbCumuleDeces
 {
@@ -16,12 +18,12 @@ class NbCumuleDeces
     private $title;
     private $subTitle;
 
-    private $yAxis1Label;
-    private $yAxis2Label;
+    private $yAxisLabel;
 
     private $data;
     private $highChartsJs;
 
+    private $years;
 
     /**
      * @param boolean $cache    Activation ou non du cache des résultats de requêtes
@@ -43,10 +45,43 @@ class NbCumuleDeces
 
         $this->subTitle = 'Source: Santé Publique France (lissé sur 7 jours) | Données hospitalières';
 
-        $this->yAxis1Label = 'Nb cumulé de décès covid-19';
+        $this->yAxisLabel = 'Nb cumulé de décès covid-19';
 
+        $this->getYears();
         $this->getData();
         $this->highChartsJs();
+    }
+
+
+    /**
+     * Récupération de la liste des années à traiter
+     */
+    public function getYears()
+    {
+        $this->years = [];
+        
+        $req  = "SELECT DISTINCT(DATE_FORMAT(jour, '%Y')) AS years FROM donnees_hp_cumule_age_covid19_reg_calc";
+        $sql  = $this->dbh->query($req);
+
+        $req2 = "SELECT jour FROM donnees_hp_cumule_age_covid19_reg_calc WHERE jour LIKE :year LIMIT 1";
+        $sql2  = $this->dbh->prepare($req2);
+
+        while ($res = $sql->fetch()) {
+            $sql2->execute([':year' => $res->years . '%']);
+            $res2 = $sql2->fetch();
+            $jour = $res2->jour;
+
+            $lastYear   = ($res->years - 1) . '-' . $res->years;
+            $actualYear = $res->years . '-' . ($res->years + 1);
+
+            if ($jour < $res->years . '-07-01' && !in_array($lastYear, $this->years)) {
+                $this->years[] = $lastYear;
+            }
+
+            if (!in_array($actualYear, $this->years)) {
+                $this->years[] = $actualYear;
+            }
+        }
     }
 
 
@@ -86,22 +121,59 @@ class NbCumuleDeces
         }
 
         $this->data = [];
+        $cumul = [];
 
-        $req = "SELECT      jour,
-                            SUM(dc) AS sum_dc
+        foreach ($this->years as $year) {
+            $exp = explode('-', $year);
 
-                FROM        donnees_hp_cumule_age_covid19_reg_calc_lisse7j
+            $dateDeb = $exp[0] . '-07-01';
+            $dateFin = $exp[1] . '-06-30';
 
-                WHERE       1 $addReq
+            $addReqValues2 = array_merge(
+                [
+                    ':dateDeb' => $dateDeb,
+                    ':dateFin' => $dateFin,
+                ],
+                $addReqValues
+            );
 
-                GROUP BY    jour
-                ORDER BY    jour ASC";
+            $yearDays = $this->listDays($dateDeb, $dateFin);
+            
+            foreach ($yearDays as $day) {
+                $this->data[$year][$day]['sum_dc'] = "null";
+            }
 
-        $sql = $this->dbh->prepare($req);
-        $sql->execute($addReqValues);
+            $req = "SELECT      jour,
+                                SUM(dc) AS sum_dc
+    
+                    FROM        donnees_hp_cumule_age_covid19_reg_calc
+    
+                    WHERE       1 $addReq
+                    AND         jour >= :dateDeb
+                    AND         jour <= :dateFin
+    
+                    GROUP BY    jour
+                    ORDER BY    jour ASC";
+            
+            $sql = $this->dbh->prepare($req);
+            $sql->execute($addReqValues2);
+    
+            while ($res = $sql->fetch()) {
+                $jour = $res->jour;
+  
+                $this->data[$year][$jour]['sum_dc'] = empty($res->sum_dc) ? 'null' : $res->sum_dc;
+                
+                if (is_null($this->data[$year][$jour]['sum_dc'])) {
+                    continue;
+                }
 
-        while ($res = $sql->fetch()) {
-            $this->data[$res->jour]['sum_dc'] = (!isset($res->sum_dc)) ? null : $res->sum_dc;
+                $lastYear = ($exp[0] - 1) . '-' . $exp[0];
+
+                if (isset($this->data[$lastYear][$exp[0] . '-06-30']['sum_dc']) && $this->data[$lastYear][$exp[0] . '-06-30']['sum_dc'] != 'null') {
+                    $cumul[$lastYear] =  $this->data[$lastYear][$exp[0] . '-06-30']['sum_dc'];
+                    $this->data[$year][$jour]['sum_dc'] -= array_sum($cumul);
+                }
+            }
         }
 
         // createCache
@@ -116,20 +188,56 @@ class NbCumuleDeces
      */
     private function highChartsJs()
     {
-        $jours  = [];
-        $dc     = [];
+        $yearStart = substr($this->years[0], 0, 4);
+        $yearsSeries = [];
 
-        foreach ($this->data as $jour => $res) {
-            $jours[] = "'" . $jour . "'";
-            $dc[]    = round($res['sum_dc'], 2);
+        $colors = [
+            '#f89200',
+            '#106097',
+            '#c70000',
+            '#236b53',
+            '#bb45a0',
+        ];
+        
+        $i = 0;
+        foreach ($this->data as $years => $jours) {
+            $listJoursDc = [];
+
+            foreach ($jours as $jour => $sum_dc) {
+                $sum_dc = $sum_dc['sum_dc'];
+                if ($sum_dc != 'null') {
+                    $sum_dc = round($sum_dc);
+                }
+
+                $listJoursDc[] = "['" . str_replace('-', '/', $jour) . "', " . $sum_dc . "]";
+            }
+
+            $listJoursDc = implode(', ', $listJoursDc);
+
+            $color = $colors[$i];
+
+            $yearsSeries[] = <<<eof
+                {
+                    connectNulls: true,
+                    marker:{
+                        enabled:false
+                    },
+                    name: '{$this->yAxisLabel} : $years',
+                    color: '$color',
+                    yAxis: 0,
+                    data: [$listJoursDc]
+                }
+eof;
+        
+            $i++;
         }
 
-        $jours  = implode(', ', $jours);
-        $dc     = implode(', ', $dc);
+        $series  = 'series: [';
+        $series .= implode(',', $yearsSeries);
+        $series .= '],';
 
         $credit     = HighChartsCommon::creditLCH();
         $event      = HighChartsCommon::exportImgLogo();
-        $xAxis      = HighChartsCommon::xAxis($jours);
         $legend     = HighChartsCommon::legend();
         $responsive = HighChartsCommon::responsive();
 
@@ -155,17 +263,17 @@ class NbCumuleDeces
 
             yAxis: [{
                 title: {
-                    text: '{$this->yAxis1Label}',
+                    text: '{$this->yAxisLabel}',
                     style: {
                         color: '#106097',
-                        fontSize: 14
+                        fontSize: 16
                     }
                 },
                 labels: {
                     format: '{value}',
                     style: {
                         color: '#106097',
-                        fontSize: 14
+                        fontSize: 16
                     },
                     formatter: function() {
                         return Highcharts.numberFormat(this.value, 0, '.', ' ');
@@ -174,20 +282,40 @@ class NbCumuleDeces
                 opposite: true
             }],
 
-            $xAxis
+            xAxis: {
+                type: 'datetime',
+                tickInterval: 24 * 3600 * 1000 * 30,
+                dateTimeLabelFormats: {
+                    day: "%e. %b",
+                    month: "%b",
+                    year: "%Y"
+                },
+                formatter: function() {
+                    var x = new Date(this.value);
+                    return x.getFullMonth() + '<br /> Month: ' + x.getDay();
+                },
+
+                gridLineWidth: 1,
+                labels: {
+                    rotation: 0,
+                    style: {
+                        fontSize: 16
+                    }
+                },
+                tickWidth: 1,
+                tickLength: 7,
+            },
 
             $legend
 
-            series: [{
-                connectNulls: true,
-                marker:{
-                    enabled:false
-                },
-                name: '{$this->yAxis1Label}',
-                color: '#106097',
-                yAxis: 0,
-                data: [$dc]
-            }],
+            $series
+
+            plotOptions: {
+                series: {
+                    pointStart: Date.UTC($yearStart, 6, 1),
+                    pointInterval: 24 * 3600 * 1000             // One day
+                }
+            },
 
             $responsive
         });
@@ -213,7 +341,7 @@ class NbCumuleDeces
         $filterActiv = [
             'charts'    => [true, 'col-lg-4'],
             'region'    => [true, 'col-lg-4'],
-            'interval'  => [true, 'col-lg-2'],
+            // 'interval'  => [true, 'col-lg-2'],
             'age'       => [true, 'col-lg-2'],
         ];
 
@@ -224,5 +352,28 @@ class NbCumuleDeces
             $backLink,
             $filterActiv
         );
+    }
+
+
+    /**
+     * Retourne toutes les jours entre 2 dates (incluses)
+     */
+    public function listDays($dateDeb, $dateFin)
+    {
+        $listDays = [$dateDeb];
+        
+        $d = new DateTime($dateDeb);
+
+        $i = 0;
+        while ($i < 10000) {
+            $d->add(new DateInterval('P1D'));
+            $listDays[] = $d->format('Y-m-d');
+            
+            if ($d->format('Y-m-d') == $dateFin) {
+                return $listDays;
+            }
+
+            $i++;
+        }
     }
 }

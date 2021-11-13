@@ -7,6 +7,7 @@ use tools\config;
 use main\HighChartsCommon;
 use main\Cache;
 use eurostat\main\Tools;
+use DateTime;
 
 class DecesHebdoStandardises
 {
@@ -17,6 +18,7 @@ class DecesHebdoStandardises
     private $dbh;
 
     private $chartName;
+    private $measures;
 
     private $title;
     private $subTitle;
@@ -53,6 +55,7 @@ class DecesHebdoStandardises
 
         $this->sandardYear();
         $this->getDataCache();
+        $this->getMeasures();
         $this->highChartsJs();
     }
 
@@ -267,6 +270,33 @@ class DecesHebdoStandardises
 
 
     /**
+     * Récupération des confinements
+     */
+    private function getMeasures()
+    {
+        $this->measures = [];
+        
+        $req = "SELECT  date_start, date_end 
+                FROM    ecdc_response_measure 
+                WHERE   iso_3166_1_alpha_2  = :iso_3166_1_alpha_2 
+                AND     response_measure    = :response_measure";
+
+        $sql = $this->dbh->prepare($req);
+        $sql->execute([
+            ':iso_3166_1_alpha_2'   => $_SESSION['eurostat_filterCountry'],
+            ':response_measure'     => 'StayHomeOrder',
+        ]);
+
+        while ($res = $sql->fetch()) {
+            $this->measures[] = [
+                'date_start'    => $res->date_start,
+                'date_end'      => $res->date_end,
+            ];
+        }
+    }
+
+
+    /**
      * Script de configuration de graphique Highcharts
      */
     private function highChartsJs()
@@ -287,8 +317,8 @@ class DecesHebdoStandardises
             $yearStart = substr($yearWeeks[0], 1, 4);
         }
 
-        $yearWeeks = implode(', ', $yearWeeks);
-        $value = implode(', ', $value);
+        $yearWeeks  = implode(', ', $yearWeeks);
+        $value      = implode(', ', $value);
 
         $credit     = HighChartsCommon::creditLCH();
         $event      = HighChartsCommon::exportImgLogo();
@@ -296,6 +326,37 @@ class DecesHebdoStandardises
         $responsive = HighChartsCommon::responsive();
 
         $barsColor  = Tools::getSexColor()[$_SESSION['eurostat_filterSex']];
+
+        $plotDand = [];
+        foreach ($this->measures as $measure) {
+            $d = new DateTime($measure['date_start']);
+            $date_start_Y = $d->format('Y');
+            $date_start_m = intval($d->format('m')) - 1;
+            $date_start_d = intval($d->format('d'));
+
+            $d = new DateTime($measure['date_end']);
+            $date_end_Y = $d->format('Y');
+            $date_end_m = intval($d->format('m')) - 1;
+            $date_end_d = intval($d->format('d'));
+
+            $plotDand[] = <<<eof
+{
+            color: '#fbe4c2',
+            from: Date.UTC($date_start_Y, $date_start_m, $date_start_d),
+            to: Date.UTC($date_end_Y, $date_end_m, $date_end_d),
+            label: { 
+                text: 'Confinement', 
+                rotation: -90,
+                align: 'left', 
+                x: -5,
+                y: 80
+            }
+        }
+eof;
+        }
+
+        $plotDand  = implode(',', $plotDand);
+        $plotDands = "plotBands: [$plotDand]";
 
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {
@@ -388,6 +449,7 @@ class DecesHebdoStandardises
                 },
                 tickWidth: 1,
                 tickLength: 7,
+                $plotDands
             },
 
             $legend
