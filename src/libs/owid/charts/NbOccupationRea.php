@@ -142,6 +142,7 @@ class NbOccupationRea
             $jours[] = "'" . $jour . "'";
 
             foreach ($this->countries as $iso => $country) {
+                $countriesSerie[$iso] = [];
                 if (isset($res[$iso]['__VAL__'])) {
                     $tdpm = floatval($res[$iso]['__VAL__']);
                     if ($tdpm < 0) {
@@ -155,7 +156,11 @@ class NbOccupationRea
         $jours = implode(',', $jours);
 
         $series = [];
+
         foreach ($this->countries as $iso => $country) {
+            if (!isset($countriesSerie[$iso])) {
+                continue;
+            }
             $serieCountry = implode(',', $countriesSerie[$iso]);
 
             $colorCrountry = '';

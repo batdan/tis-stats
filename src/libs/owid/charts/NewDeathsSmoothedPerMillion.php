@@ -219,7 +219,7 @@ eof;
                         fontSize: 14
                     },
                     formatter: function() {
-                        return Highcharts.numberFormat(this.value, 0, '.', ' ');
+                        return Highcharts.numberFormat(this.value, 2, '.', ' ');
                     }
                 },
                 opposite: true

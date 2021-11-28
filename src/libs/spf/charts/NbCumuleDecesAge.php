@@ -308,8 +308,8 @@ eof;
         $filterActiv = [
             'charts'    => [true, 'col-lg-4'],
             'region'    => [true, 'col-lg-4'],
-            'interval'  => [true, 'col-lg-2'],
-            'age'       => [true, 'col-lg-2'],
+            'interval'  => [true, 'col-lg-4'],
+            // 'age'       => [true, 'col-lg-2'],
         ];
 
         echo Render::html(

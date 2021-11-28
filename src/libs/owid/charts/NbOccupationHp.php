@@ -156,6 +156,9 @@ class NbOccupationHp
 
         $series = [];
         foreach ($this->countries as $iso => $country) {
+            if (!isset($countriesSerie[$iso])) {
+                continue;
+            }
             $serieCountry = implode(',', $countriesSerie[$iso]);
 
             $colorCrountry = '';
