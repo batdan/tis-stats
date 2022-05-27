@@ -22,6 +22,7 @@ class NbCumuleVaccinationAge
     private $curve1;
     private $curve2;
     private $curve3;
+    private $curve4;
     private $yAxisLabel;
 
     private $regions;
@@ -56,6 +57,7 @@ class NbCumuleVaccinationAge
         $this->curve1   = $unite . ' de vaccinés 1ère dose';
         $this->curve2   = $unite . ' de vaccinés 2ème dose';
         $this->curve3   = $unite . ' de vaccinés 3ème dose';
+        $this->curve4   = $unite . ' de vaccinés 4ème dose';
 
         $this->yAxisLabel = $unite . ' de vaccinés';
 
@@ -179,7 +181,8 @@ class NbCumuleVaccinationAge
         $req = "SELECT      jour,
                             SUM(n_cum_dose1) AS sum_n_cum_dose1,
                             SUM(n_cum_dose2) AS sum_n_cum_dose2,
-                            SUM(n_cum_dose3) AS sum_n_cum_dose3
+                            SUM(n_cum_dose3) AS sum_n_cum_dose3,
+                            SUM(n_cum_dose4) AS sum_n_cum_dose4
 
                 FROM        donnees_vaccination_age_covid19
 
@@ -196,6 +199,7 @@ class NbCumuleVaccinationAge
                 'sum_n_cum_dose1' => $res->sum_n_cum_dose1,
                 'sum_n_cum_dose2' => $res->sum_n_cum_dose2,
                 'sum_n_cum_dose3' => $res->sum_n_cum_dose3,
+                'sum_n_cum_dose4' => $res->sum_n_cum_dose4,
             ];
         }
 
@@ -215,6 +219,7 @@ class NbCumuleVaccinationAge
         $n_cum_dose1 = [];
         $n_cum_dose2 = [];
         $n_cum_dose3 = [];
+        $n_cum_dose4 = [];
 
         foreach ($this->data as $jour => $res) {
             $jours[]       = "'" . $jour . "'";
@@ -222,10 +227,12 @@ class NbCumuleVaccinationAge
                 $n_cum_dose1[] = $res['sum_n_cum_dose1'];
                 $n_cum_dose2[] = $res['sum_n_cum_dose2'];
                 $n_cum_dose3[] = $res['sum_n_cum_dose3'];
+                $n_cum_dose4[] = $res['sum_n_cum_dose4'];
             } else {
                 $n_cum_dose1[] = 100 / $this->regions[$_SESSION['spf_filterRegionId']] * $res['sum_n_cum_dose1'];
                 $n_cum_dose2[] = 100 / $this->regions[$_SESSION['spf_filterRegionId']] * $res['sum_n_cum_dose2'];
                 $n_cum_dose3[] = 100 / $this->regions[$_SESSION['spf_filterRegionId']] * $res['sum_n_cum_dose3'];
+                $n_cum_dose4[] = 100 / $this->regions[$_SESSION['spf_filterRegionId']] * $res['sum_n_cum_dose4'];
             }
         }
 
@@ -233,6 +240,7 @@ class NbCumuleVaccinationAge
         $n_cum_dose1 = implode(', ', $n_cum_dose1);
         $n_cum_dose2 = implode(', ', $n_cum_dose2);
         $n_cum_dose3 = implode(', ', $n_cum_dose3);
+        $n_cum_dose4 = implode(', ', $n_cum_dose4);
 
         $credit     = HighChartsCommon::creditLCH();
         $event      = HighChartsCommon::exportImgLogo();
@@ -327,6 +335,15 @@ class NbCumuleVaccinationAge
                 color: '#c70000',
                 yAxis: 0,
                 data: [$n_cum_dose3]
+            }, {
+                connectNulls: true,
+                marker:{
+                    enabled:false
+                },
+                name: '{$this->curve4}',
+                color: '#9032ff',
+                yAxis: 0,
+                data: [$n_cum_dose4]
             }],
 
             $responsive

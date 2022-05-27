@@ -24,6 +24,7 @@ class QuotidienVaccinationAge
     private $yAxis1Label;
     private $yAxis2Label;
     private $yAxis3Label;
+    private $yAxis4Label;
 
     private $data;
     private $highChartsJs;
@@ -52,6 +53,7 @@ class QuotidienVaccinationAge
         $this->yAxis1Label = 'Nb quotidien de vaccinés 1ère dose';
         $this->yAxis2Label = 'Nb quotidien de vaccinés 2ème dose';
         $this->yAxis3Label = 'Nb quotidien de vaccinés 3ème dose';
+        $this->yAxis4Label = 'Nb quotidien de vaccinés 4ème dose';
 
         $this->getData();
         $this->getMeasures();
@@ -99,7 +101,8 @@ class QuotidienVaccinationAge
         $req = "SELECT      jour,
                             SUM(n_dose1) AS sum_n_dose1,
                             SUM(n_dose2) AS sum_n_dose2,
-                            SUM(n_dose3) AS sum_n_dose3
+                            SUM(n_dose3) AS sum_n_dose3,
+                            SUM(n_dose4) AS sum_n_dose4
 
                 FROM        donnees_vaccination_age_covid19_calc_lisse7j
 
@@ -116,6 +119,7 @@ class QuotidienVaccinationAge
                 'sum_n_dose1' => $res->sum_n_dose1,
                 'sum_n_dose2' => $res->sum_n_dose2,
                 'sum_n_dose3' => $res->sum_n_dose3,
+                'sum_n_dose4' => $res->sum_n_dose4,
             ];
         }
 
@@ -162,6 +166,7 @@ class QuotidienVaccinationAge
         $n_dose1    = [];
         $n_dose2    = [];
         $n_dose3    = [];
+        $n_dose4    = [];
 
         foreach ($this->data as $jour => $res) {
             if (!isset($dateDeb_Y)) {
@@ -175,12 +180,14 @@ class QuotidienVaccinationAge
             $n_dose1[]  = $res['sum_n_dose1'];
             $n_dose2[]  = $res['sum_n_dose2'];
             $n_dose3[]  = $res['sum_n_dose3'];
+            $n_dose4[]  = $res['sum_n_dose4'];
         }
 
         $jours      = implode(', ', $jours);
         $n_dose1    = implode(', ', $n_dose1);
         $n_dose2    = implode(', ', $n_dose2);
         $n_dose3    = implode(', ', $n_dose3);
+        $n_dose4    = implode(', ', $n_dose4);
 
         $plotDand = [];
         foreach ($this->measures as $measure) {
@@ -291,6 +298,15 @@ eof;
                 color: '#c70000',
                 yAxis: 0,
                 data: [$n_dose3]
+            }, {
+                connectNulls: true,
+                marker:{
+                    enabled:false
+                },
+                name: '{$this->yAxis4Label}',
+                color: '#9032ff',
+                yAxis: 0,
+                data: [$n_dose4]
             }],
 
             plotOptions: {

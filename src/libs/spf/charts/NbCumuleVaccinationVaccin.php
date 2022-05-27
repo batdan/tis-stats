@@ -22,6 +22,7 @@ class NbCumuleVaccinationVaccin
     private $yAxis1Label;
     private $yAxis2Label;
     private $yAxis3Label;
+    private $yAxis4Label;
 
     private $regions;
     private $data;
@@ -51,6 +52,7 @@ class NbCumuleVaccinationVaccin
         $this->yAxis1Label = 'Pourcentage de vaccinés 1ère dose';
         $this->yAxis2Label = 'Pourcentage de vaccinés 2ème dose';
         $this->yAxis3Label = 'Pourcentage de vaccinés 3ème dose';
+        $this->yAxis4Label = 'Pourcentage de vaccinés 4ème dose';
 
         $this->getRegions();
         $this->getData();
@@ -102,6 +104,10 @@ class NbCumuleVaccinationVaccin
             $addReqValues[':vaccin'] = 0;
         }
 
+        if (!empty($_SESSION['spf_filterUnite'])) {
+            $fileName .= '_' . $_SESSION['spf_filterUnite'];
+        }
+
         if ($this->cache && $this->data = Cache::getCache($fileName)) {
             return;
         }
@@ -111,7 +117,8 @@ class NbCumuleVaccinationVaccin
         $req = "SELECT      jour,
                             SUM(n_cum_dose1) AS sum_n_cum_dose1,
                             SUM(n_cum_dose2) AS sum_n_cum_dose2,
-                            SUM(n_cum_dose3) AS sum_n_cum_dose3
+                            SUM(n_cum_dose3) AS sum_n_cum_dose3,
+                            SUM(n_cum_dose4) AS sum_n_cum_dose4
 
                 FROM        donnees_vaccination_vaccin_covid19
 
@@ -128,6 +135,7 @@ class NbCumuleVaccinationVaccin
                 'sum_n_cum_dose1' => $res->sum_n_cum_dose1,
                 'sum_n_cum_dose2' => $res->sum_n_cum_dose2,
                 'sum_n_cum_dose3' => $res->sum_n_cum_dose3,
+                'sum_n_cum_dose4' => $res->sum_n_cum_dose4,
             ];
         }
 
@@ -147,24 +155,48 @@ class NbCumuleVaccinationVaccin
         $n_cum_dose1 = [];
         $n_cum_dose2 = [];
         $n_cum_dose3 = [];
+        $n_cum_dose4 = [];
 
         foreach ($this->data as $jour => $res) {
             $jours[] = "'" . $jour . "'";
-            $n_cum_dose1[] = 100 / $this->regions[$_SESSION['spf_filterRegionId']] * $res['sum_n_cum_dose1'];
-            $n_cum_dose2[] = 100 / $this->regions[$_SESSION['spf_filterRegionId']] * $res['sum_n_cum_dose2'];
-            $n_cum_dose3[] = 100 / $this->regions[$_SESSION['spf_filterRegionId']] * $res['sum_n_cum_dose3'];
+
+            if ($_SESSION['spf_filterUnite'] == 'quantity') {
+                $n_cum_dose1[] = $res['sum_n_cum_dose1'];
+                $n_cum_dose2[] = $res['sum_n_cum_dose2'];
+                $n_cum_dose3[] = $res['sum_n_cum_dose3'];
+                $n_cum_dose4[] = $res['sum_n_cum_dose4'];
+            } else {
+                $n_cum_dose1[] = 100 / $this->regions[$_SESSION['spf_filterRegionId']] * $res['sum_n_cum_dose1'];
+                $n_cum_dose2[] = 100 / $this->regions[$_SESSION['spf_filterRegionId']] * $res['sum_n_cum_dose2'];
+                $n_cum_dose3[] = 100 / $this->regions[$_SESSION['spf_filterRegionId']] * $res['sum_n_cum_dose3'];
+                $n_cum_dose4[] = 100 / $this->regions[$_SESSION['spf_filterRegionId']] * $res['sum_n_cum_dose4'];
+            }
         }
 
         $jours       = implode(', ', $jours);
         $n_cum_dose1 = implode(', ', $n_cum_dose1);
         $n_cum_dose2 = implode(', ', $n_cum_dose2);
         $n_cum_dose3 = implode(', ', $n_cum_dose3);
+        $n_cum_dose4 = implode(', ', $n_cum_dose4);
 
         $credit     = HighChartsCommon::creditLCH();
         $event      = HighChartsCommon::exportImgLogo();
         $xAxis      = HighChartsCommon::xAxis($jours);
         $legend     = HighChartsCommon::legend();
         $responsive = HighChartsCommon::responsive();
+
+        switch ($_SESSION['spf_filterUnite']) {
+            case 'quantity':
+                $tooltip    = '';
+                $format     = '{value}';
+                $formatter  = "formatter: function() {return Highcharts.numberFormat(this.value, 0, '.', ' ');},";
+                break;
+            case 'percent':
+                $tooltip    = "tooltip: {valueDecimals:2, valueSuffix:'%'},";
+                $format     = '{value:.2f}%';
+                $formatter  = '';
+                break;
+        }
 
         $this->highChartsJs = <<<eof
         Highcharts.chart('{$this->chartName}', {
@@ -195,8 +227,9 @@ class NbCumuleVaccinationVaccin
                     }
                 },
                 labels: {
-                    format: '{value:.2f}%',
+                    format: '$format',
                     allowDecimals: 2,
+                    $formatter
                     style: {
                         color: '#c70000',
                         fontSize: 14
@@ -209,10 +242,7 @@ class NbCumuleVaccinationVaccin
 
             $legend
 
-            tooltip: {
-                valueDecimals: 2,
-                valueSuffix: '%'
-            },
+            $tooltip
 
             series: [{
                 connectNulls: true,
@@ -241,6 +271,15 @@ class NbCumuleVaccinationVaccin
                 color: '#c70000',
                 yAxis: 0,
                 data: [$n_cum_dose3]
+            }, {
+                connectNulls: true,
+                marker:{
+                    enabled:false
+                },
+                name: '{$this->yAxis4Label}',
+                color: '#9032ff',
+                yAxis: 0,
+                data: [$n_cum_dose4]
             }],
 
             $responsive
