@@ -24,12 +24,15 @@ use Exception;
  * n_dose1          integer         Nb 1 doses                                          1
  * n_dose2          integer	        Nb 2 doses                                          1
  * n_dose3          integer	        Nb 3 doses                                          1
+ * n_dose4          integer	        Nb 4 doses                                          1
  * n_cum_dose1      integer         Nb cumulé 1 doses                                   1
  * n_cum_dose2      integer         Nb cumulé 2 doses                                   1
  * n_cum_dose3      integer         Nb cumulé 3 doses                                   1
+ * n_cum_dose4      integer         Nb cumulé 4 doses                                   1
  * couv_dose1       integer         couverture 1 dose                                   1
  * couv_dose2       integer         couverture 2 dose                                   1
  * couv_dose3       integer         couverture 3 dose                                   1
+ * couv_dose4       integer         couverture 4 dose                                   1
  *
  *
  * Ages :
@@ -83,19 +86,22 @@ class StatsVaccinationAgeCalcLisse7j
 
         $req = "INSERT INTO $tmpTable (
             jour, reg, clage_vacsi, 
-            n_dose1, n_dose2, n_dose3,
-            n_cum_dose1, n_cum_dose2, n_cum_dose3,
-            couv_dose1, couv_dose2, couv_dose3) VALUES ";
+            n_dose1, n_dose2, n_dose3, n_dose4,
+            n_cum_dose1, n_cum_dose2, n_cum_dose3, n_cum_dose4,
+            couv_dose1, couv_dose2, couv_dose3, couv_dose4) VALUES ";
 
         $n1  = [];
         $n2  = [];
         $n3  = [];
+        $n4  = [];
         $cn1 = [];
         $cn2 = [];
         $cn3 = [];
+        $cn4 = [];
         $cd1 = [];
         $cd2 = [];
         $cd3 = [];
+        $cd4 = [];
 
         while ($res = $sql->fetch()) {
             $reg = $res->reg;
@@ -104,14 +110,17 @@ class StatsVaccinationAgeCalcLisse7j
             $n1[$reg][$age][]  = $res->n_dose1;
             $n2[$reg][$age][]  = $res->n_dose2;
             $n3[$reg][$age][]  = $res->n_dose3;
+            $n4[$reg][$age][]  = $res->n_dose4;
             
             $cn1[$reg][$age][] = $res->n_cum_dose1;
             $cn2[$reg][$age][] = $res->n_cum_dose2;
             $cn3[$reg][$age][] = $res->n_cum_dose3;
+            $cn4[$reg][$age][] = $res->n_cum_dose4;
             
             $cd1[$reg][$age][] = $res->couv_dose1;
             $cd2[$reg][$age][] = $res->couv_dose2;
             $cd3[$reg][$age][] = $res->couv_dose3;
+            $cd4[$reg][$age][] = $res->couv_dose4;
 
             $count = count($n1[$reg][$age]);
 
@@ -122,19 +131,22 @@ class StatsVaccinationAgeCalcLisse7j
             $n1_2   = ($n1[$reg][$age][$count-7]  + $n1[$reg][$age][$count-6]  + $n1[$reg][$age][$count-5]  + $n1[$reg][$age][$count-4]  + $n1[$reg][$age][$count-3]  + $n1[$reg][$age][$count-2]  + $n1[$reg][$age][$count-1])  / 7;
             $n2_2   = ($n2[$reg][$age][$count-7]  + $n2[$reg][$age][$count-6]  + $n2[$reg][$age][$count-5]  + $n2[$reg][$age][$count-4]  + $n2[$reg][$age][$count-3]  + $n2[$reg][$age][$count-2]  + $n2[$reg][$age][$count-1])  / 7;
             $n3_2   = ($n3[$reg][$age][$count-7]  + $n3[$reg][$age][$count-6]  + $n3[$reg][$age][$count-5]  + $n3[$reg][$age][$count-4]  + $n3[$reg][$age][$count-3]  + $n3[$reg][$age][$count-2]  + $n3[$reg][$age][$count-1])  / 7;
+            $n4_2   = ($n4[$reg][$age][$count-7]  + $n4[$reg][$age][$count-6]  + $n4[$reg][$age][$count-5]  + $n4[$reg][$age][$count-4]  + $n4[$reg][$age][$count-3]  + $n4[$reg][$age][$count-2]  + $n4[$reg][$age][$count-1])  / 7;
             
             $cn1_2  = ($cn1[$reg][$age][$count-7] + $cn1[$reg][$age][$count-6] + $cn1[$reg][$age][$count-5] + $cn1[$reg][$age][$count-4] + $cn1[$reg][$age][$count-3] + $cn1[$reg][$age][$count-2] + $cn1[$reg][$age][$count-1]) / 7;
             $cn2_2  = ($cn2[$reg][$age][$count-7] + $cn2[$reg][$age][$count-6] + $cn2[$reg][$age][$count-5] + $cn2[$reg][$age][$count-4] + $cn2[$reg][$age][$count-3] + $cn2[$reg][$age][$count-2] + $cn2[$reg][$age][$count-1]) / 7;
             $cn3_2  = ($cn3[$reg][$age][$count-7] + $cn3[$reg][$age][$count-6] + $cn3[$reg][$age][$count-5] + $cn3[$reg][$age][$count-4] + $cn3[$reg][$age][$count-3] + $cn3[$reg][$age][$count-2] + $cn3[$reg][$age][$count-1]) / 7;
+            $cn4_2  = ($cn4[$reg][$age][$count-7] + $cn4[$reg][$age][$count-6] + $cn4[$reg][$age][$count-5] + $cn4[$reg][$age][$count-4] + $cn4[$reg][$age][$count-3] + $cn4[$reg][$age][$count-2] + $cn4[$reg][$age][$count-1]) / 7;
             
             $cd1_2  = ($cd1[$reg][$age][$count-7] + $cd1[$reg][$age][$count-6] + $cd1[$reg][$age][$count-5] + $cd1[$reg][$age][$count-4] + $cd1[$reg][$age][$count-3] + $cd1[$reg][$age][$count-2] + $cd1[$reg][$age][$count-1]) / 7;
             $cd2_2  = ($cd2[$reg][$age][$count-7] + $cd2[$reg][$age][$count-6] + $cd2[$reg][$age][$count-5] + $cd2[$reg][$age][$count-4] + $cd2[$reg][$age][$count-3] + $cd2[$reg][$age][$count-2] + $cd2[$reg][$age][$count-1]) / 7;
             $cd3_2  = ($cd3[$reg][$age][$count-7] + $cd3[$reg][$age][$count-6] + $cd3[$reg][$age][$count-5] + $cd3[$reg][$age][$count-4] + $cd3[$reg][$age][$count-3] + $cd3[$reg][$age][$count-2] + $cd3[$reg][$age][$count-1]) / 7;
+            $cd4_2  = ($cd4[$reg][$age][$count-7] + $cd4[$reg][$age][$count-6] + $cd4[$reg][$age][$count-5] + $cd4[$reg][$age][$count-4] + $cd4[$reg][$age][$count-3] + $cd4[$reg][$age][$count-2] + $cd4[$reg][$age][$count-1]) / 7;
 
             $req .= "('" . $res->jour . "','" . $reg . "','" . $age . "',";
-            $req .= $n1_2 . "," . $n2_2 . "," . $n3_2 . ",";
-            $req .= $cn1_2 . "," . $cn2_2 . "," . $cn3_2 . ",";
-            $req .= $cd1_2 . "," . $cd2_2 . "," . $cd3_2 . ")," . chr(10);
+            $req .= $n1_2 . "," . $n2_2 . "," . $n3_2 . "," . $n4_2 . ",";
+            $req .= $cn1_2 . "," . $cn2_2 . "," . $cn3_2 . "," . $cn4_2 . ",";
+            $req .= $cd1_2 . "," . $cd2_2 . "," . $cd3_2 . "," . $cd4_2 . ")," . chr(10);
         }
 
         try {
@@ -190,12 +202,15 @@ class StatsVaccinationAgeCalcLisse7j
             `n_dose1`     int             NOT NULL,
             `n_dose2`     int             NOT NULL,
             `n_dose3`     int             NOT NULL,
+            `n_dose4`     int             NOT NULL,
             `n_cum_dose1` int             NOT NULL,
             `n_cum_dose2` int             NOT NULL,
             `n_cum_dose3` int             NOT NULL,
+            `n_cum_dose4` int             NOT NULL,
             `couv_dose1`  decimal(5,2)    NOT NULL,
             `couv_dose2`  decimal(5,2)    NOT NULL,
-            `couv_dose3`  decimal(5,2)    NOT NULL
+            `couv_dose3`  decimal(5,2)    NOT NULL,
+            `couv_dose4`  decimal(5,2)    NOT NULL
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
         $this->dbh->query($req);
 

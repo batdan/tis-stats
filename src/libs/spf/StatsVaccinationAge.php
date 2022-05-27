@@ -96,12 +96,15 @@ class StatsVaccinationAge
                     n_dose1,
                     n_dose2,
                     n_dose3,
+                    n_dose4,
                     n_cum_dose1,
                     n_cum_dose2,
                     n_cum_dose3,
+                    n_cum_dose4,
                     couv_dose1,
                     couv_dose2,
-                    couv_dose3
+                    couv_dose3,
+                    couv_dose4
                 ) VALUES ";
 
         $i = 0;
@@ -120,17 +123,20 @@ class StatsVaccinationAge
             $n_dose1        = empty($line[3])  ?  0  : $line[3];
             $n_dose2        = empty($line[4])  ?  0  : $line[4];
             $n_dose3        = empty($line[5])  ?  0  : $line[5];
-            $n_cum_dose1    = empty($line[6])  ?  0  : $line[6];
-            $n_cum_dose2    = empty($line[7])  ?  0  : $line[7];
-            $n_cum_dose3    = empty($line[8])  ?  0  : $line[8];
-            $couv_dose1     = empty($line[9])  ?  0  : $line[9];
-            $couv_dose2     = empty($line[10]) ?  0  : $line[10];
-            $couv_dose3     = empty($line[11]) ?  0  : $line[11];
+            $n_dose4        = empty($line[6])  ?  0  : $line[6];
+            $n_cum_dose1    = empty($line[7])  ?  0  : $line[7];
+            $n_cum_dose2    = empty($line[8])  ?  0  : $line[8];
+            $n_cum_dose3    = empty($line[9])  ?  0  : $line[9];
+            $n_cum_dose4    = empty($line[10])  ?  0  : $line[10];
+            $couv_dose1     = empty($line[11])  ?  0  : $line[11];
+            $couv_dose2     = empty($line[12]) ?  0  : $line[12];
+            $couv_dose3     = empty($line[13]) ?  0  : $line[13];
+            $couv_dose4     = empty($line[14]) ?  0  : $line[14];
 
-            $req .= "('" . $jour . "', '" . $reg . "', '" . $clage_vacsi . "',";
-            $req .= $n_dose1 . ", " . $n_dose2 . ", " . $n_dose3 . ",";
-            $req .= $n_cum_dose1 . " , " . $n_cum_dose2 . ", " . $n_cum_dose3 . ",";
-            $req .= $couv_dose1 . ", " . $couv_dose2 . " , " . $couv_dose3 . ")," . chr(10);
+            $req .= "('" . $jour . "', '" . $reg . "', '" . $clage_vacsi . "', ";
+            $req .= $n_dose1 . ", " . $n_dose2 . ", " . $n_dose3 . ", " . $n_dose4 . ", ";
+            $req .= $n_cum_dose1 . " , " . $n_cum_dose2 . ", " . $n_cum_dose3 . ", " . $n_cum_dose4 . ", ";
+            $req .= $couv_dose1 . ", " . $couv_dose2 . " , " . $couv_dose3 . " , " . $couv_dose4 . ")," . chr(10);
 
             $i++;
         }
@@ -188,12 +194,15 @@ class StatsVaccinationAge
             `n_dose1`     int             NOT NULL,
             `n_dose2`     int             NOT NULL,
             `n_dose3`     int             NOT NULL,
+            `n_dose4`     int             NOT NULL,
             `n_cum_dose1` int             NOT NULL,
             `n_cum_dose2` int             NOT NULL,
             `n_cum_dose3` int             NOT NULL,
+            `n_cum_dose4` int             NOT NULL,
             `couv_dose1`  decimal(5,2)    NOT NULL,
             `couv_dose2`  decimal(5,2)    NOT NULL,
-            `couv_dose3`  decimal(5,2)    NOT NULL
+            `couv_dose3`  decimal(5,2)    NOT NULL,
+            `couv_dose4`  decimal(5,2)    NOT NULL
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
         $this->dbh->query($req);
 
