@@ -38,7 +38,7 @@ class GetOwidData
         $this->dbh = dbSingleton::getInstance();
 
         // Url de la stat
-        $this->url = 'https://github.com/owid/covid-19-data/raw/master/public/data/owid-covid-data.json';
+        $this->url = 'https://covid.ourworldindata.org/data/owid-covid-data.json';
 
         $this->getData();
     }

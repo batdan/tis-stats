@@ -48,7 +48,7 @@ class DecesHebdoStandardises
         $this->regTitle();
 
         $maj = Tools::lastMajData();
-        $this->subTitle  = "Selon l&#039année 2020 | ";
+        $this->subTitle  = "Selon l&#039année 2021 | ";
         $this->subTitle .= (!empty($maj)) ? 'Source: Eurostat | ' . $maj : 'Source: Eurostats';
 
         $this->yAxisLabel = 'Nb cumulé de décès par semaine';
@@ -312,7 +312,7 @@ class DecesHebdoStandardises
         $moyenne = Tools::moyenneTunnel($value, 0, 66);
 
         if (count($yearWeeks) == 0) {
-            $yearStart = 2020;
+            $yearStart = 2021;
         } else {
             $yearStart = substr($yearWeeks[0], 1, 4);
         }

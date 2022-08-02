@@ -24,8 +24,8 @@ if (isset($_SESSION['eurostat_filterChart'])) {
 // Initialisation des filtres
 $_SESSION['eurostat_filterChart']       = (isset($_SESSION['eurostat_filterChart']))    ? $_SESSION['eurostat_filterChart']     : 'eurostat\charts\DecesStandardises';
 $_SESSION['eurostat_filterCountry']     = (isset($_SESSION['eurostat_filterCountry']))  ? $_SESSION['eurostat_filterCountry']   : $defaultCountries;
-$_SESSION['eurostat_filterYear1']       = (isset($_SESSION['eurostat_filterYear1']))    ? $_SESSION['eurostat_filterYear1']     : 2020;
-$_SESSION['eurostat_filterYear2']       = (isset($_SESSION['eurostat_filterYear2']))    ? $_SESSION['eurostat_filterYear2']     : 2019;
+$_SESSION['eurostat_filterYear1']       = (isset($_SESSION['eurostat_filterYear1']))    ? $_SESSION['eurostat_filterYear1']     : 2021;
+$_SESSION['eurostat_filterYear2']       = (isset($_SESSION['eurostat_filterYear2']))    ? $_SESSION['eurostat_filterYear2']     : 2020;
 $_SESSION['eurostat_filterSex']         = (isset($_SESSION['eurostat_filterSex']))      ? $_SESSION['eurostat_filterSex']       : 'T';
 $_SESSION['eurostat_filterAge']         = (isset($_SESSION['eurostat_filterAge']))      ? $_SESSION['eurostat_filterAge']       : 'TOTAL';
 $_SESSION['eurostat_filterUnit']        = (isset($_SESSION['eurostat_filterUnit']))     ? $_SESSION['eurostat_filterUnit']      : 'percent';

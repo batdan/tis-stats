@@ -179,6 +179,11 @@ class PyramideAges
         $barsColorM = $barsColor['M'];
         $barsColorF = $barsColor['F'];
 
+        $filterUnit = "Highcharts.numberFormat(Math.abs(this.point.y), 0)";
+        if ($_SESSION['eurostat_filterUnit'] == 'percent') {
+            $filterUnit = "Highcharts.numberFormat(Math.abs(this.point.y), 1) + '%'";
+        }
+
         switch ($_SESSION['eurostat_filterUnit']) {
             case 'percent':
                 $labelFormatter = <<<eof
@@ -286,7 +291,7 @@ eof;
             tooltip: {
                 formatter: function () {
                     return '<b>' + this.series.name + ', age ' + this.point.category + '</b><br/>' +
-                        'Population: ' + Highcharts.numberFormat(Math.abs(this.point.y), 1) + '%';
+                        'Population: ' + $filterUnit;
                 }
             },
 

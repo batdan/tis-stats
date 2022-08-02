@@ -77,12 +77,10 @@ class PcrCumulTests
             $fileName .= '_interval_' . $_SESSION['spf_filterInterval'];
         }
 
-        $addReq .= " AND cl_age90 = :cl_age90";
         if (!empty($_SESSION['spf_filterAge']) && $_SESSION['spf_filterAge'] != '0') {
+            $addReq .= " AND cl_age90 = :cl_age90";
             $addReqValues[':cl_age90'] = $_SESSION['spf_filterAge'];
             $fileName .= '_age_' . $_SESSION['spf_filterAge'];
-        } else {
-            $addReqValues[':cl_age90'] = 0;
         }
 
         if ($this->cache && $this->data = Cache::getCache($fileName)) {

@@ -50,7 +50,7 @@ class DecesHebdoStandardises8s
         $this->regTitle();
 
         $maj = Tools::lastMajData();
-        $this->subTitle  = "Selon l&#039année 2020 | lissé sur 8 semaines | ";
+        $this->subTitle  = "Selon l&#039année 2021 | lissé sur 8 semaines | ";
         $this->subTitle .= (!empty($maj)) ? 'Source: Eurostat | ' . $maj : 'Source: Eurostats';
 
         $this->yAxisLabel = 'Nb cumulé de décès par semaine';
