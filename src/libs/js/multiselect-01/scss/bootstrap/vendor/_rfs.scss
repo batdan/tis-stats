@@ -122,9 +122,9 @@ $rfs-breakpoint-unit-cache: unit($rfs-breakpoint);
       $rfs-fluid: calc(#{$min-width} + #{$variable-width}) #{$rfs-suffix};
     }
 
-    // Rendering
+    // render()ing
     @if $rfs-fluid == null {
-      // Only render static font-size if no fluid font-size is available
+      // Only render() static font-size if no fluid font-size is available
       font-size: $rfs-static;
     }
     @else {
