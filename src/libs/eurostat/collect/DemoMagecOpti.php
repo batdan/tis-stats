@@ -10,7 +10,7 @@ use eurostat\main\Tools;
  */
 class DemoMagecOpti
 {
-    private $schema = 'tis_stats';
+    private $schema = 'wp_lachainehumaine_stats';
 
     private $datasetName = 'demo_magec';
 

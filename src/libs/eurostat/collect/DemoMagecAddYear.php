@@ -12,7 +12,7 @@ use eurostat\main\Tools;
  */
 class DemoMagecAddYear
 {
-    private $schema = 'tis_stats';
+    private $schema = 'wp_lachainehumaine_stats';
 
     private $year;              // Année à rattaper
     private $nbDaysWeek1;       // Nombre de jours dans la permière semaine de l'année

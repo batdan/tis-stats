@@ -10,7 +10,7 @@ use eurostat\main\Tools;
  */
 class DemoPjanOpti
 {
-    private $schema = 'tis_stats';
+    private $schema = 'wp_lachainehumaine_stats';
 
     private $datasetName = 'demo_pjan';
 

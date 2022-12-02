@@ -167,7 +167,7 @@ class StatsVaccinationAgeCalcLisse7j
      */
     private function dropTable($table)
     {
-        $schema = 'tis_stats';
+        $schema = 'wp_lachainehumaine_stats';
 
         $req = "SELECT * FROM information_schema.tables WHERE table_schema = '$schema' AND table_name = '$table'";
         $sql = $this->dbh->query($req);
@@ -207,10 +207,10 @@ class StatsVaccinationAgeCalcLisse7j
             `n_cum_dose2` int             NOT NULL,
             `n_cum_dose3` int             NOT NULL,
             `n_cum_dose4` int             NOT NULL,
-            `couv_dose1`  decimal(5,2)    NOT NULL,
-            `couv_dose2`  decimal(5,2)    NOT NULL,
-            `couv_dose3`  decimal(5,2)    NOT NULL,
-            `couv_dose4`  decimal(5,2)    NOT NULL
+            `couv_dose1`  decimal(10,2)    NOT NULL,
+            `couv_dose2`  decimal(10,2)    NOT NULL,
+            `couv_dose3`  decimal(10,2)    NOT NULL,
+            `couv_dose4`  decimal(10,2)    NOT NULL
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
         $this->dbh->query($req);
 

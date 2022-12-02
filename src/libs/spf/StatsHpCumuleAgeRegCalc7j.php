@@ -96,7 +96,7 @@ class StatsHpCumuleAgeRegCalc7j
      */
     private function dropTable($table)
     {
-        $schema = 'tis_stats';
+        $schema = 'wp_lachainehumaine_stats';
 
         $req = "SELECT * FROM information_schema.tables WHERE table_schema = '$schema' AND table_name = '$table'";
         $sql = $this->dbh->query($req);

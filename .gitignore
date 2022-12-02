@@ -3,3 +3,4 @@
 /src/vendor
 /deploy/*
 /src/env.php
+/src/env.local.php

@@ -9,7 +9,7 @@ use tools\dbSingleton;
  */
 class DemoMagec
 {
-    private $schema = 'tis_stats';
+    private $schema = 'wp_lachainehumaine_stats';
 
     private $datasetName = 'demo_magec';
     private $dataset;

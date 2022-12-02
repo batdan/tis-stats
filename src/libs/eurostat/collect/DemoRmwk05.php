@@ -9,7 +9,7 @@ use tools\dbSingleton;
  */
 class DemoRmwk05
 {
-    private $schema = 'tis_stats';
+    private $schema = 'wp_lachainehumaine_stats';
 
     private $datasetName = 'demo_r_mwk_05';
     private $dataset;

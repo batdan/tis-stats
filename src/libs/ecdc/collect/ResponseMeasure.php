@@ -11,7 +11,7 @@ class ResponseMeasure
 {
     private $src = 'https://www.ecdc.europa.eu/en/publications-data/download-data-response-measures-covid-19';
     
-    private $schema = 'tis_stats';
+    private $schema = 'wp_lachainehumaine_stats';
 
     private $datasetName = 'response_measure';
     private $file;
