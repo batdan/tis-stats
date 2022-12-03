@@ -113,12 +113,12 @@ class StatsVaccinationVaccin
             $n_dose2        = empty($line[4])  ? 0  : $line[4];
             $n_dose3        = empty($line[5])  ? 0  : $line[5];
             $n_dose4        = empty($line[6])  ? 0  : $line[6];
-            $n_doseR        = empty($line[7])  ? 0  : $line[7];
-            $n_cum_dose1    = empty($line[8])  ? 0  : $line[8];
-            $n_cum_dose2    = empty($line[9])  ? 0  : $line[9];
-            $n_cum_dose3    = empty($line[10]) ? 0  : $line[10];
-            $n_cum_dose4    = empty($line[11]) ? 0  : $line[11];
-            $n_cum_doseR    = empty($line[12]) ? 0  : $line[12];
+            $n_doseR        = empty($line[8])  ? 0  : $line[8];
+            $n_cum_dose1    = empty($line[12]) ? 0  : $line[12];
+            $n_cum_dose2    = empty($line[13]) ? 0  : $line[13];
+            $n_cum_dose3    = empty($line[14]) ? 0  : $line[14];
+            $n_cum_dose4    = empty($line[15]) ? 0  : $line[15];
+            $n_cum_doseR    = empty($line[17]) ? 0  : $line[17];
 
             $req .= "('" . $jour . "','" . $reg . "', " . $vaccin . ",";
             $req .= $n_dose1 . "," . $n_dose2 . "," . $n_dose3 . ",";
