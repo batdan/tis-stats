@@ -4,6 +4,8 @@ namespace main;
 
 use tools\dbSingleton;
 use main\Cache;
+use DateTime;
+use DateTimeZone;
 
 /**
  * Récupération des Collection de données
@@ -20,7 +22,9 @@ class Process
         // Delete old caches
         Cache::removeCache();
 
-        echo 'Start : ' . date('Y-m-d H:i:s') . chr(10) . chr(10);
+        $dt = new DateTime('now', new DateTimeZone('UTC'));
+
+        echo 'Start : ' . $dt->format('Y-m-d H:i:s') . chr(10) . chr(10);
 
         foreach ($classList as $class) {
             $className = '\\' . $namespace . '\\' . $class;
@@ -30,7 +34,7 @@ class Process
         }
 
         echo chr(10);
-        echo 'End : ' . date('Y-m-d H:i:s') . chr(10) . chr(10);
+        echo 'End : ' . $dt->format('Y-m-d H:i:s') . chr(10) . chr(10);
 
         $dbh = dbSingleton::getInstance();
 
